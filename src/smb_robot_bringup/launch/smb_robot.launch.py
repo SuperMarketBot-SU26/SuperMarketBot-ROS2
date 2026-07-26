@@ -11,17 +11,20 @@ If those topics don't exist, the SLAM node will sit idle.
 This launch file does NOT start:
   - Gazebo
   - ros_gz_bridge
-  - any micro-ROS agent
+  - any micro-ROS agent (run it separately with `ros2 run micro_ros_agent ...`)
 
 It DOES start:
   - robot_state_publisher (URDF -> static TFs base_link -> laser_frame / imu_link)
   - joint_state_publisher (zero-position JointState so wheels/caster appear in RViz)
   - slam_toolbox online_async against /scan + /odom
-  - RViz2 with config/smb.rviz
+  - RViz2 with config/common/smb.rviz
 
 Args:
   use_sim_time (bool): Should ALWAYS be false in robot mode. Flag exposed for testing.
   rviz (bool):         Open RViz2 with saved config. Default true.
+  slam_params_file (str): Override the SLAM Toolbox config. Default is
+                          config/robot/slam_toolbox.yaml (loop closing enabled).
+                          Pass a custom path to use a hardware-tuned variant.
 """
 
 import os
@@ -59,8 +62,8 @@ def generate_launch_description():
     xacro_path = os.path.join(pkg_robot, 'urdf', 'smb.urdf.xacro')
     robot_description = _xacro_to_string(xacro_path)
 
-    rviz_config = PathJoinSubstitution([pkg_bringup, 'config/smb.rviz'])
-    slam_config = PathJoinSubstitution([pkg_bringup, 'config/slam_toolbox.yaml'])
+    rviz_config = PathJoinSubstitution([pkg_bringup, 'config/common/smb.rviz'])
+    slam_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'slam_toolbox.yaml')
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
@@ -71,6 +74,12 @@ def generate_launch_description():
         'rviz',
         default_value='true',
         description='Open RViz2 with saved config.')
+
+    declare_slam_params_cmd = DeclareLaunchArgument(
+        'slam_params_file',
+        default_value=slam_config_default,
+        description='SLAM Toolbox params YAML. Default uses config/robot/slam_toolbox.yaml '
+                    '(loop closing enabled). Override to test a hardware-tuned variant.')
 
     # 1. robot_state_publisher (URDF -> /tf_static)
     rsp_node = Node(
@@ -105,7 +114,7 @@ def generate_launch_description():
             '/launch/online_async_launch.py',
         ]),
         launch_arguments={
-            'slam_params_file': slam_config,
+            'slam_params_file': LaunchConfiguration('slam_params_file'),
             'use_sim_time': LaunchConfiguration('use_sim_time'),
         }.items(),
     )
@@ -124,6 +133,7 @@ def generate_launch_description():
     return LaunchDescription([
         declare_use_sim_time_cmd,
         declare_rviz_cmd,
+        declare_slam_params_cmd,
         rsp_node,
         jsp_node,
         slam_launch,

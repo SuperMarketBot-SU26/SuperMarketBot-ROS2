@@ -6,7 +6,7 @@
   <name>smb_robot_bringup</name>
   <version>0.1.0</version>
   <description>Launch files, configuration, and worlds for bringing up SuperMarketBot (sim or real).</description>
-  <maintainer email="khoatranse183895@ptit.edu.vn">Khoa Tran</maintainer>
+  <maintainer email="khoatnnse183385@fpt.edu.vn">Khoa Tran</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

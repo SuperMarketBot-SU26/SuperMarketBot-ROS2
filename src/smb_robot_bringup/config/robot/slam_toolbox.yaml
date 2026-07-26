@@ -1,0 +1,92 @@
+# SLAM Toolbox config for SuperMarketBot REAL-ROBOT mode.
+#
+# This is the mirror of config/sim/slam_toolbox.yaml with loop closing
+# re-enabled. The real-robot world is not the symmetric 10x10m sim room,
+# so the loop-closure false-positive that triggered the snap in sim is
+# not expected here.
+#
+# When you move to a new environment:
+#   - `loop_search_maximum_distance` (3.0 m) is the search horizon for
+#     loop-closure candidates. In a small/structured office, you may want
+#     5.0-8.0 m so genuine revisits are found.
+#   - `loop_match_minimum_response_fine` (0.55) — tighten if you see
+#     false loops. Loosen if genuine loops aren't closing.
+#
+# Phase-2 plan: replace this file with the IOT-repo port
+# (ros2_bridge/config/mapper_params_online_async.yaml) once available.
+# That one was tuned on real hardware and is the canonical version.
+
+slam_toolbox:
+  ros__parameters:
+    # Frames (must match docs/TOPIC_CONTRACT.md)
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link
+    # /scan messages arrive with header.frame_id = `laser_frame` because
+    # the ESP32's MicroRos.h publishes with frame_id = "laser_frame" and
+    # the URDF links laser_frame to base_link via robot_state_publisher.
+    scan_topic: /scan
+
+    # Map params
+    mode: mapping          # online_async
+    resolution: 0.05       # 5cm pixel, suitable for indoor supermarket
+    map_start_x: 0.0
+    map_start_y: 0.0
+    map_start_yaw: 0.0
+
+    # Match the YDLIDAR X3 spec + bridge-side filter range
+    max_laser_range: 6.0
+    min_laser_range: 0.15
+
+    # Pose graph — slightly looser than sim to allow genuine returns in
+    # a real environment (not a 10x10m box). Real robot has wheel-encoder
+    # odometry that drifts a bit, so we want enough candidates.
+    minimum_travel_distance: 0.5
+    minimum_travel_heading: 0.5
+    skip_odometry: false
+
+    # Scan matching.
+    #
+    # WHY LOOP CLOSING IS ENABLED HERE (do_loop_closing: true):
+    #   The real-robot environment is not the symmetric 10x10m sim room,
+    #   so loop-closure false positives aren't a concern. The ESP32 wheel
+    #   encoders accumulate drift over time (~5-10 cm per minute of motion
+    #   on smooth surfaces), and without loop closure the map will
+    #   gradually warp as odom drift compounds.
+    #
+    #   Thresholds are kept at moderate values — tighten
+    #   `loop_match_minimum_response_fine` (default 0.45) if you see
+    #   false loops snap the pose graph, loosen if genuine loops aren't
+    #   closing.
+    do_loop_closing: true
+    #
+    # Per-step link matching — keep tighter than upstream defaults (0.1)
+    # but allow some flexibility for real-world sensor noise.
+    link_match_minimum_response_fine: 0.55
+    link_scan_max_distance: 1.5
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+    #
+    # Loop-closure params — upstream defaults; tuned for real environment.
+    loop_search_maximum_distance: 3.0
+    loop_match_minimum_chain_size: 10
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+    loop_match_maximum_variance_coarse: 3.0
+
+    # Solver — on lyrical slam_toolbox only ships `CeresSolver`, not SpaSolver.
+    optimization_solver: slam_toolbox_msgs/msg/SolverMsg
+    solver_plugin: solver_plugins::CeresSolver
+
+    use_scan_matching: true
+    use_scan_barycenter: true
+
+    # Timing
+    transform_publish_period: 0.05   # 20 Hz TF
+    tf_buffer_duration: 30.0
+    throttle_scans: 1
+    publish_occupancy_grid: true
+    publish_tf: true
+
+    debug_logging: false

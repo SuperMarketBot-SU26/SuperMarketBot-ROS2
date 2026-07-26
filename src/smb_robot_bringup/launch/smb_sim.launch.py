@@ -101,9 +101,9 @@ def generate_launch_description():
     robot_description = _xacro_to_string(xacro_path)
 
     world_path = PathJoinSubstitution([pkg_bringup, 'worlds', LaunchConfiguration('world')])
-    bridge_config = PathJoinSubstitution([pkg_bringup, 'config/ros_gz_bridge.yaml'])
-    rviz_config = PathJoinSubstitution([pkg_bringup, 'config/smb.rviz'])
-    slam_config = PathJoinSubstitution([pkg_bringup, 'config/slam_toolbox.yaml'])
+    bridge_config = PathJoinSubstitution([pkg_bringup, 'config/sim/ros_gz_bridge.yaml'])
+    rviz_config = PathJoinSubstitution([pkg_bringup, 'config/common/smb.rviz'])
+    slam_config = PathJoinSubstitution([pkg_bringup, 'config/sim/slam_toolbox.yaml'])
 
     declare_world_cmd = DeclareLaunchArgument(
         'world',

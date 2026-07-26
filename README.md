@@ -37,13 +37,26 @@ ros2_ws/
 │   ├── smb_bridge/            # ESP32 ↔ ROS2 topic bridge (Phase 3)
 │   ├── smb_robot/             # URDF + meshes (Phase 1)
 │   ├── smb_robot_bringup/     # launch files, params, worlds (Phase 1)
+│   │   ├── config/
+│   │   │   ├── common/smb.rviz       # shared RViz config
+│   │   │   ├── sim/                  # sim-only configs
+│   │   │   │   ├── ros_gz_bridge.yaml
+│   │   │   │   └── slam_toolbox.yaml # loop closing disabled (symmetric room)
+│   │   │   └── robot/                # real-robot configs
+│   │   │       └── slam_toolbox.yaml # loop closing enabled
+│   │   ├── launch/
+│   │   └── worlds/smb_world.sdf
 │   ├── smb_nodes/             # higher-level nodes: safety, dock, FSM (Phase 4)
-│   └── slam_toolbox/          # upstream vendor — gitignored, re-cloned from ros2_ws.repos
+│   ├── slam_toolbox/          # upstream vendor — re-cloned from ros2_ws.repos
+│   └── micro_ros_agent/       # upstream vendor — re-cloned from ros2_ws.repos
 ├── docs/
 │   └── TOPIC_CONTRACT.md      # firmware ↔ ROS2 interface spec (READ FIRST)
 ├── .cursor/rules/             # AI assistant rules (mirror of BE repo)
 ├── build/ install/ log/       # colcon artifacts — gitignored
 ├── ros2_ws.repos              # vcstool manifest for re-cloning on other machines
+├── test_sim.sh                # sim wrapper: launches Gazebo + SLAM + RViz
+├── test_robot.sh              # real-robot wrapper: launches micro-ROS agent + SLAM + RViz
+├── test_teleop.sh             # keyboard driver for /cmd_vel (works in both modes)
 └── .colcon_defaults           # default colcon flags
 ```
 
@@ -68,23 +81,17 @@ sudo apt install ros-${ROS_DISTRO}-nav2-bringup ros-${ROS_DISTRO}-robot-state-pu
 source /opt/ros/${ROS_DISTRO:-lyrical}/setup.bash
 colcon build --parallel-workers 2
 
-# 5. Run sim bringup (Phase 1+ — verified working)
+# 5a. Run sim bringup (Phase 1+ — verified working)
 source install/setup.bash
+./test_sim.sh             # windowed (Gazebo GUI + RViz)
+./test_sim.sh true        # headless (Gazebo server only, no RViz)
 
-# Windowed Gazebo (default; needs display):
-ros2 launch smb_robot_bringup smb.launch.py mode:=sim
-
-# Headless (CI/server use):
-ros2 launch smb_robot_bringup smb.launch.py mode:=sim headless:=true rviz:=false
-
-# Custom world, no RViz:
-ros2 launch smb_robot_bringup smb_sim.launch.py world:=smb_world.sdf rviz:=false
-
-# Verify topics:
-ros2 topic list | grep -E "/scan|/odom|/imu/data|/cmd_vel|/tf|/map"
-# Expected: /scan (LaserScan), /odom (Odometry), /imu/data (Imu),
-#           /cmd_vel (Twist), /tf + /tf_static (TFMessage), /map (OccupancyGrid)
+# 5b. Run real-robot bringup (requires ESP32 flashed with MicroRos.h)
+./test_robot.sh           # starts micro-ROS agent + robot bringup + RViz
+./test_robot.sh --check   # verify deps + launch syntax first
 ```
+
+> **Note on `micro_ros_agent`:** ROS2 Lyrical does **not** ship `ros-lyrical-micro-ros-agent` in apt. `ros2_ws.repos` vendors it from `micro-ROS/micro-ROS-Agent` (rolling branch). On a fresh machine, after step 2 (`vcs import src < ros2_ws.repos`), the agent source lives at `src/micro_ros_agent/` and is built with `colcon build --packages-select micro_ros_agent`. `test_robot.sh --check` verifies the binary exists.
 
 ### Current verified pipeline (Phase 1 done)
 
@@ -100,7 +107,7 @@ Physical constants (URDF + SDF matched):
 - LiDAR: 360 samples, range 0.08–10 m (sim); publish on `/lidar` → `/scan`
 - IMU: 100 Hz (sim); publish on `/imu` → `/imu/data`
 
-Topic contract enforced via `config/ros_gz_bridge.yaml`:
+Topic contract enforced via `src/smb_robot_bringup/config/sim/ros_gz_bridge.yaml`:
 
 | Topic | Type | frame_id |
 |---|---|---|

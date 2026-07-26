@@ -6,7 +6,7 @@
   <name>smb_bridge</name>
   <version>0.1.0</version>
   <description>Bridges between ESP32 firmware (WS82/WS81 JSON over TCP) and ROS2 topics.</description>
-  <maintainer email="khoatranse183895@ptit.edu.vn">Khoa Tran</maintainer>
+  <maintainer email="khoatnnse183385@fpt.edu.vn">Khoa Tran</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

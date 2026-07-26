@@ -1,25 +1,37 @@
-    repositories:
-      smb_msgs:
-        type: git
-        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
-        version: main
-      smb_bridge:
-        type: git
-        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
-        version: main
-      smb_robot:
-        type: git
-        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
-        version: main
-      smb_robot_bringup:
-        type: git
-        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
-        version: main
-      smb_nodes:
-        type: git
-        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
-        version: main
-      slam_toolbox:
-        type: git
-        url: https://github.com/SteveMacenski/slam_toolbox.git
-        version: ros2-devel
+repositories:
+  # ---- SMB ROS2 packages (this repo) ----
+  smb_msgs:
+    type: git
+    url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+    version: main
+  smb_bridge:
+    type: git
+    url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+    version: main
+  smb_robot:
+    type: git
+    url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+    version: main
+  smb_robot_bringup:
+    type: git
+    url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+    version: main
+  smb_nodes:
+    type: git
+    url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+    version: main
+
+  # ---- Vendored third-party (apt does not ship these for lyrical) ----
+  slam_toolbox:
+    type: git
+    url: https://github.com/SteveMacenski/slam_toolbox.git
+    version: ros2-devel
+  # micro-ROS agent — needed for real-robot mode (test_robot.sh starts this).
+  # The `rolling` branch tracks ROS 2 rolling, which the lyrical distro
+  # builds against. If the build fails with a fastcdr/foonathan mismatch,
+  # see https://github.com/micro-ROS/micro-ROS-Agent/issues/223 for the
+  # current branch for new distros.
+  micro_ros_agent:
+    type: git
+    url: https://github.com/micro-ROS/micro-ROS-Agent.git
+    version: rolling

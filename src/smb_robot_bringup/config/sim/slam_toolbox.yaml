@@ -1,4 +1,4 @@
-# Minimal SLAM Toolbox config for SuperMarketBot sim (Phase 1).
+# SLAM Toolbox config for SuperMarketBot SIM mode.
 #
 # Once Phase 2 lands, this will be replaced by the IOT-repo port at
 # ros2_bridge/config/mapper_params_online_async.yaml — that one has been
@@ -6,6 +6,10 @@
 #
 # Until then, this file uses sane defaults aligned with the YDLIDAR X3
 # spec and the contract in docs/TOPIC_CONTRACT.md.
+#
+# MIRROR: config/robot/slam_toolbox.yaml is the real-robot variant with
+# loop closing re-enabled. Launch arg `slam_params_file` selects which
+# one is used.
 
 slam_toolbox:
   ros__parameters:
@@ -60,7 +64,14 @@ slam_toolbox:
     #   is still active but no global pose-graph corrections happen. The
     #   10x10m room is small enough that gz DiffDrive's 30Hz wheel-encoder
     #   odometry (published at /odom with frame odom -> base_link) doesn't
-    #   accumulate enough drift to matter for Phase 1.
+    #   accumulate enough drift to matter for Phase 1 — *provided* the robot
+    #   isn't being driven into walls. The gz DiffDrive plugin is a velocity
+    #   controller: it integrates wheel encoder counts into /odom regardless
+    #   of contact, so ramming a wall while holding positive cmd_vel makes
+    #   /odom advance while the robot stays in place. Real robots with
+    #   current-sensing motor drivers don't have this issue (stall-current
+    #   trips the cutoff). Avoid wall-ramming in Phase-1 sim tests; if you
+    #   see /odom vs reality diverging, that's the cause.
     #
     #   Phase-2 plan: add at least one asymmetric feature to the world
     #   (e.g. a 0.3x0.3x1.5m pillar at (3.5, 3.5)) so scans at different
