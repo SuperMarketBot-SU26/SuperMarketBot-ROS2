@@ -217,23 +217,30 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 5b. Nav2 (gated by `use_nav2:=true` arg). Pulls in nav2_bringup's
-    #     bringup_launch.py with slam:=False / use_localization:=False —
-    #     slam_toolbox is already providing /map, and we don't need AMCL
-    #     since the robot starts at the SLAM origin each sim run.
-    #     slam_too is intentionally NOT brought up here: the slam_toolbox
-    #     include above already starts async_slam_toolbox_node. Launching
-    #     a second SLAM inside nav2 would create a second /map publisher
-    #     and break the static layer.
+    # 5b. Nav2 (gated by `use_nav2:=true` arg). We use OUR smb_nav2_minimal
+    #     launch (in this same directory) rather than upstream nav2_bringup's
+    #     bringup_launch.py: upstream's lifecycle_nodes list references
+    #     smoother_server, velocity_smoother, collision_monitor, route_server,
+    #     docking_server, following_server — none of which are packaged for
+    #     our ROS2 "lyrical" distro on Ubuntu 26.04. The lifecycle manager
+    #     then waits forever for `smoother_server/get_state` to appear, and
+    #     `use_nav2:=true` hangs. The minimal launch loads only the 5 nav2
+    #     nodes we have (controller_server, planner_server, behavior_server,
+    #     bt_navigator, waypoint_follower) plus the lifecycle_manager itself.
+    #     See smb_nav2_minimal.launch.py for the design notes.
+    #
+    #     `slam:=False / use_localization:=False` is the right behavior here
+    #     even though we're not using upstream: slam_toolbox is already
+    #     running separately (see the slam_launch IncludeLaunchDescription
+    #     above) and publishes /map directly. No AMCL needed; the robot
+    #     starts at the SLAM origin each sim run.
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            get_package_share_directory('nav2_bringup'),
-            '/launch/bringup_launch.py',
+            get_package_share_directory('smb_robot_bringup'),
+            '/launch/smb_nav2_minimal.launch.py',
         ]),
         condition=IfCondition(LaunchConfiguration('use_nav2')),
         launch_arguments={
-            'slam': 'False',
-            'use_localization': 'False',
             'use_sim_time': LaunchConfiguration('use_sim_time'),
             'params_file': nav2_params,
             'autostart': 'true',
