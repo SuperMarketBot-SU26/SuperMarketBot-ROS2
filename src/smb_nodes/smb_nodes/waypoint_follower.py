@@ -108,15 +108,48 @@ class WaypointFollower(Node):
         return poses
 
     def run(self) -> int:
-        # Block until Nav2 is fully up. Autostarted nav2 bringup flips through
-        # lifecycle states in <2s; if the user launches this script standalone
-        # before nav2, this will sit here (and log) until nav2 is ready.
-        #
-        # localizer='robot_localization' tells BasicNavigator to skip waiting
-        # for AMCL's /get_state + initial-pose handshake: our sim uses
-        # slam_toolbox (continuous mapping, no AMCL), and our real robot
-        # uses robot_localization EKF (also not a lifecycle node).
-        self._navigator.waitUntilNav2Active(localizer='robot_localization')
+        # Block until Nav2 fully active. We do a synchronous poll on
+        # /bt_navigator/get_state ourselves instead of calling
+        # BasicNavigator.waitUntilNav2Active(): the commander wrapper uses
+        # `rclpy.spin_until_future_complete` on a BasicNavigator node that we
+        # created INSIDE our own node's `__init__`, and that path hangs in
+        # lyrical. The service IS reachable — `/bt_navigator/get_state`
+        # returns `active` immediately under `ros2 service call` — so we
+        # just call it directly through our node's executor. ~10ms per check.
+        self.get_logger().info('Waiting for Nav2 components to become active.')
+        from lifecycle_msgs.srv import GetState  # noqa: PLC0415 — local import
+        get_state_clients = {
+            name: self.create_client(GetState, f'/{name}/get_state')
+            for name in ('bt_navigator', 'controller_server', 'planner_server',
+                          'behavior_server', 'waypoint_follower', 'slam_toolbox')
+        }
+        # Wait until all services are reachable AND all are active.
+        deadline = self.get_clock().now() + Duration(seconds=30.0)
+        import time as _time
+        while rclpy.ok() and self.get_clock().now() < deadline:
+            all_ready = True
+            states = {}
+            for name, client in get_state_clients.items():
+                if not client.service_is_ready():
+                    all_ready = False
+                    states[name] = 'no-service'
+                    continue
+                future = client.call_async(GetState.Request())
+                rclpy.spin_until_future_complete(self, future, timeout_sec=1.0)
+                res = future.result()
+                states[name] = res.current_state.label if res else 'no-response'
+                if states[name] != 'active':
+                    all_ready = False
+            if all_ready:
+                self.get_logger().info('All Nav2 nodes are active.')
+                break
+            self.get_logger().info(
+                f'Nav2 not all-active yet: {states}; retrying.')
+            _time.sleep(1.0)
+        else:
+            self.get_logger().error(
+                'Timed out (30s) waiting for Nav2 to come up — bailing.')
+            return 4
 
         self.get_logger().info(f'Sending {len(self._waypoints)} waypoint(s) to Nav2.')
         start = self._navigator.get_clock().now()

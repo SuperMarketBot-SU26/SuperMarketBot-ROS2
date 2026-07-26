@@ -12,8 +12,14 @@
   gz_type_name: "gz.msgs.Clock"
   direction: "GZ_TO_ROS"
 
-- ros_topic_name: "/cmd_vel"
+- ros_topic_name: "/cmd_vel_nav"
   gz_topic_name: "/model/smb/cmd_vel"
+  # Upstream nav2 default remaps controller_server + behavior_server's
+  # output to /cmd_vel_nav (this is the "stamped" topic as of nav2 1.1+).
+  # We bridge that topic here rather than patching the vendored nav2_bringup
+  # launch file — keep the upstream as-shipped.
+  # On the gz side, DiffDrive still wants the unstamped `gz.msgs.Twist` —
+  # its `cmd_vel` topic just reads linear/angular fields.
   ros_type_name: "geometry_msgs/msg/Twist"
   gz_type_name: "gz.msgs.Twist"
   direction: "ROS_TO_GZ"

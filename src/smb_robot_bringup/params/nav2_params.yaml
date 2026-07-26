@@ -37,12 +37,22 @@ bt_navigator:
 controller_server:
   ros__parameters:
     use_sim_time: True
-    controller_frequency: 20.0
+    # controller_frequency lowered from 20 to 5 Hz: the gz-sim-with-GUI
+    # render thread competes with the controller for CPU on a developer
+    # laptop, and DWB aborts with "Failed to make progress" if the actual
+    # loop rate falls below ~75% of the configured rate (we were getting
+    # 7 Hz vs target 20 Hz in windowed mode, 5 Hz in headless).
+    # Tune back up once the sim's CPU budget is known for the target HW.
+    controller_frequency: 5.0
     costmap_update_timeout: 0.30
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
     min_theta_velocity_threshold: 0.001
-    failure_tolerance: 0.3
+    # failure_tolerance is the fraction of failed control cycles before
+    # the controller aborts the goal. Default is 0.3 (i.e. abort if 30%
+    # of cycles fail); we tolerate 1.0 (never abort on cycle misses alone)
+    # because the controller IS reaching the robot, just below target rate.
+    failure_tolerance: 1.0
     progress_checker_plugins: ["progress_checker"]
     goal_checker_plugins: ["general_goal_checker"]
     controller_plugins: ["FollowPath"]
@@ -154,7 +164,8 @@ global_costmap:
 planner_server:
   ros__parameters:
     use_sim_time: True
-    expected_planner_frequency: 20.0
+    # Same throttle-down rationale as controller_frequency (see above).
+    expected_planner_frequency: 5.0
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner::NavfnPlanner"
@@ -165,7 +176,9 @@ planner_server:
 waypoint_follower:
   ros__parameters:
     use_sim_time: True
-    loop_rate: 20
+    # Same 5 Hz rationale: loop_rate controls how often waypoint_follower
+    # ticks to check whether the current goal reached its tolerance.
+    loop_rate: 5
     stop_on_failure: false
     # wait_at_waypoint plugin: pauses N ms at each waypoint, useful for
     # the user to observe robot pose before it advances.
