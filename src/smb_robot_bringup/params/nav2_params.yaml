@@ -1,0 +1,194 @@
+# nav2_params.yaml — Nav2 params for SuperMarketBot SIM mode.
+#
+# Used by smb_sim.launch.py when `use_nav2:=true` — which pulls in
+# nav2_bringup's bringup_launch.py with slam:=False and
+# use_localization:=False (we already run slam_toolbox separately, and
+# slam_toolbox publishes /map directly so AMCL is not needed).
+#
+# Frame conventions (matches docs/TOPIC_CONTRACT.md):
+#   robot_base_frame  = base_link
+#   global_frame      = map      (slam_toolbox publishes /map)
+#   odom_frame        = odom     (DiffDrive publishes /odom)
+#
+# The contract says navigation SHOULD use `/odometry/filtered` (EKF) for
+# real-robot. For now this file uses `/odom` directly because Phase-1 sim
+# doesn't run robot_localization (Phase 2 work). When that lands, change
+# the odom_topic below to /odometry/filtered and the contract is honored.
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: True
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /odom
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    default_cancel_timeout: 50
+    wait_for_service_timeout: 1000
+    # Navigator plugins — both action servers need to be registered.
+    navigators: ["navigate_to_pose", "navigate_through_poses"]
+    navigate_to_pose:
+      plugin: "nav2_bt_navigator::NavigateToPoseNavigator"
+    navigate_through_poses:
+      plugin: "nav2_bt_navigator::NavigateThroughPosesNavigator"
+    bt_search_directories:
+      - $(find-pkg-share nav2_bt_navigator)/behavior_trees
+
+controller_server:
+  ros__parameters:
+    use_sim_time: True
+    controller_frequency: 20.0
+    costmap_update_timeout: 0.30
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    progress_checker_plugins: ["progress_checker"]
+    goal_checker_plugins: ["general_goal_checker"]
+    controller_plugins: ["FollowPath"]
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.5
+      movement_time_allowance: 10.0
+    general_goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      stateful: true
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
+    FollowPath:
+      # DWB controller — robust default, simpler than MPPI for diff-drive.
+      plugin: "dwb_core::DWBLocalPlanner"
+      debug_trajectory_details: True
+      min_vel_x: 0.0
+      min_vel_y: 0.0
+      max_vel_x: 0.26
+      max_vel_y: 0.0
+      max_vel_theta: 1.0
+      min_speed_xy: 0.0
+      max_speed_xy: 0.26
+      min_speed_theta: 0.0
+      acc_lim_x: 2.5
+      acc_lim_theta: 3.2
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
+      stateful: True
+      # Critics — required by DWBLocalPlanner since upstream 1.1+. Without
+      # these, configure() throws "Parameter FollowPath.critics not in
+      # overrides" and lifecycle activation aborts.
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalDist", "PathAlign", "PathDist"]
+      BaseObstacle.scale: 0.02
+      PathAlign.scale: 32.0
+      PathDist.scale: 32.0
+      GoalDist.scale: 20.0
+      RotateToGoal.scale: 32.0
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: True
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_base_frame: base_link
+      rolling_window: true
+      width: 3
+      height: 3
+      resolution: 0.05
+      robot_radius: 0.22
+      plugins: ["obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: scan
+        scan:
+          topic: /scan
+          sensor_frame: laser_frame
+          data_type: "LaserScan"
+          raytrace_range: 3.0
+          obstacle_range: 2.5
+          marking: true
+          clearing: true
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        inflation_radius: 0.55
+        cost_scaling_factor: 1.0
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: True
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_link
+      resolution: 0.05
+      track_unknown_space: true
+      robot_radius: 0.22
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+        map_subscribe_transient_local: true
+        # slam_toolbox publishes /map continuously; subscribe to updates
+        # so the static layer reflects the live map (no save/load step).
+        subscribe_to_updates: true
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          sensor_frame: laser_frame
+          data_type: "LaserScan"
+          raytrace_range: 6.0
+          obstacle_range: 5.0
+          marking: true
+          clearing: true
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        inflation_radius: 0.55
+        cost_scaling_factor: 1.0
+
+planner_server:
+  ros__parameters:
+    use_sim_time: True
+    expected_planner_frequency: 20.0
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner::NavfnPlanner"
+      tolerance: 0.5
+      use_astar: false
+      allow_unknown: true
+
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: True
+    loop_rate: 20
+    stop_on_failure: false
+    # wait_at_waypoint plugin: pauses N ms at each waypoint, useful for
+    # the user to observe robot pose before it advances.
+    waypoint_task_executor_plugin: "wait_at_waypoint"
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: true
+      waypoint_pause_duration: 200
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: True
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    local_footprint_topic: local_costmap/published_footprint
+    global_footprint_topic: global_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
+    spin:
+      plugin: "nav2_behaviors::Spin"
+    backup:
+      plugin: "nav2_behaviors::BackUp"
+    drive_on_heading:
+      plugin: "nav2_behaviors::DriveOnHeading"
+    wait:
+      plugin: "nav2_behaviors::Wait"

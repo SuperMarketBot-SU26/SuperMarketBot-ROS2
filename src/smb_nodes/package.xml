@@ -5,17 +5,20 @@
 <package format="3">
   <name>smb_nodes</name>
   <version>0.1.0</version>
-  <description>Higher-level ROS2 nodes for SuperMarketBot (behaviors, state machine, safety).</description>
+  <description>Higher-level ROS2 nodes for SuperMarketBot (waypoint nav, state machine).</description>
   <maintainer email="khoatnnse183385@fpt.edu.vn">Khoa Tran</maintainer>
   <license>MIT</license>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>rclcpp</depend>
-  <depend>std_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>smb_msgs</depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>smb_msgs</exec_depend>
+  <!-- nav2_simple_commander provides BasicNavigator — used by waypoint_follower. -->
+  <exec_depend>nav2_simple_commander</exec_depend>
+  <!-- nav2_bringup brings up the navigation stack; waypoint_follower talks to it. -->
+  <exec_depend>nav2_bringup</exec_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>ament_python</build_type>
   </export>
 </package>

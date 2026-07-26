@@ -129,6 +129,34 @@ apt-cache search ros-lyrical-X
 
 If empty, find the source on GitHub (often branch `rolling`, `main`, or latest release tag), clone into `src/`, and add the entry to `ros2_ws.repos` so teammates can reproduce the build.
 
+### Nav2 vendoring notes (lyrical build patches)
+
+Nav2 (monorepo `ros-planning/navigation2` branch `main`) is built from source under `src/nav2_repo/`. Three patches are required for it to compile on Ubuntu 26.04 / GCC 15 / ROS2 lyrical:
+
+1. **`src/nav2_repo/nav2_common/cmake/nav2_package.cmake`** — drop `-Werror` from the default compile flags. GCC 15 treats `BT::Any::tryCast()`'s `expected_lite` destructor as `free-nonheap-object` (a false positive in templated headers); the warning floods Nav2's plugin condition sources and breaks the build.
+2. **`src/nav2_repo/nav2_behavior_tree/include/nav2_behavior_tree/utils/loop_rate.hpp`** — `BT::Tree::emitWakeUpSignal()` returns `void` in lyrical's `behaviortree_cpp` 4.x, not a waitable connection object as upstream Nav2 assumed. Replaced the wake-signal-based sleep with simple polling (optimization, not correctness).
+3. **`src/nav2_repo/nav2_bringup/{CMakeLists.txt,package.xml}`** — drop the `find_package(navigation2 REQUIRED)` / `build_depend>navigation2</build_depend>`. `navigation2` is a metapackage whose `<exec_depend>` includes `nav2_smac_planner` / `nav2_mppi_controller` (OMPL/MPI deps, not in apt for lyrical). We don't need the metapackage at runtime — explicit per-package exec_depends on what we actually use are listed in the package.xml.
+4. **`src/nav2_repo/nav2_bringup/launch/navigation_launch.py`** — remove the `ComposableNode` and standalone `Node` entries for `smoother_server`, `velocity_smoother`, `collision_monitor`, `route_server`, `docking_server`, `following_server` (none of those packages are built on lyrical). Update `lifecycle_nodes` list to match the components we actually load (without this, the lifecycle manager blocks forever waiting for services that don't exist).
+5. **`src/smb_robot_bringup/params/nav2_params.yaml`** — DWBLocalPlanner (our controller choice) needs an explicit `critics` list since Nav2 1.1+. Without it, `controller_server` configure callback throws "Parameter FollowPath.critics not in overrides" and lifecycle aborts. We use the subset of critics available in `dwb_critics`: `["RotateToGoal", "Oscillation", "BaseObstacle", "GoalDist", "PathAlign", "PathDist"]` (note the spelling — `GoalDist`, not `GoalDistance`).
+6. **`src/smb_robot_bringup/worlds/smb_world.sdf`** — DiffDrive plugin must declare `<max_linear_acceleration>`, `<min_linear_acceleration>`, `<max_angular_acceleration>`, `<min_angular_acceleration>`, `<max_linear_velocity>`, `<min_linear_velocity>`, `<max_angular_velocity>`, `<min_angular_velocity>`. Without these, the plugin loads and subscribes to cmd_vel but never drives the wheels or publishes `/model/smb/odometry` and `/model/smb/tf`. The reference example at `/opt/ros/lyrical/opt/gz_sim_vendor/share/gz/gz-sim/worlds/diff_drive.sdf` shows the canonical values.
+7. **`src/smb_robot_bringup/launch/smb_sim.launch.py`** — the `gz sim` command must include `-r` (run / start immediately). Without `-r`, gz sim defaults to PAUSED and DiffDrive's tick callback never fires — no `/cmd_vel`, `/odom`, `/tf`, or joint-state messages publish from gz even though `gz topic -l` advertises the topics (those are just ros_gz_bridge's subscriptions). This is the silent-no-odom issue we hit on Phase 3: the topic was declared, the bridge was wired, but no publishers on the gz side ever ticked. Symptom: `ros2 topic info /odom` shows 1 publisher (the bridge), but `gz topic -e -t /model/smb/odometry` returns empty. Fix: pass `-r` to `gz sim` in both headless (`-s -r --headless-rendering`) and windowed (`-r`) branches.
+
+Additional packages we install (transitively required for our subset):
+
+- `nav_2d_utils`, `costmap_queue`, `dwb_critics`, `dwb_plugins` — pulled in by `dwb_core` / `nav2_dwb_controller`.
+
+Packages **skipped** (depend on OMPL or MPI, not in `ros-lyrical-ompl`):
+
+- `nav2_smac_planner`, `nav2_mppi_controller`, `nav2_smoother`, `nav2_theta_star_planner`,
+  `nav2_velocity_smoother`, `nav2_collision_monitor`, `nav2_constrained_smoother`,
+  `nav2_graceful_controller`, `nav2_loopback_sim`, `nav2_rviz_plugins`,
+  `nav2_route`, `opennav_docking*`, `opennav_following`, `navigation2` (metapkg).
+
+The `--packages-skip` flags in our build commands below reflect this.
+
+Our planner choice: `nav2_navfn_planner` (NavfnPlanner) — no extra deps.
+Our controller choice: `nav2_dwb_controller` (DWBLocalPlanner) — no extra deps.
+
 ## Build flags
 
 `.colcon_defaults` sets:
@@ -144,7 +172,7 @@ See `.cursor/rules/20-sim-robot-roadmap.mdc` for the active plan. Summary:
 |-------|------|--------|
 | 0 | Repo init (packages, .gitignore, README) | done |
 | 0.5 | AI rules + topic contract | done |
-| 1 | Sim end-to-end: adapted SDF + URDF + smb_sim.launch.py + smb_robot.launch.py | pending |
+| 1 | Sim end-to-end: adapted SDF + URDF + smb_sim.launch.py + smb_robot.launch.py | done |
 | 2 | Port ekf_config.yaml + mapper_params from IOT repo; add EKF to launch | pending |
-| 3 | `smb_bridge` decide: WS JSON vs micro-ROS (with teammate) | pending |
+| 3 | Nav2 + waypoint navigation in sim | done (verified `follow_waypoints` action runs end-to-end) |
 | 4 | `smb_nodes` FSM (idle / nav / dock / estop) | pending |

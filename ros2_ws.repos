@@ -25,7 +25,10 @@ repositories:
   slam_toolbox:
     type: git
     url: https://github.com/SteveMacenski/slam_toolbox.git
-    version: ros2-devel
+    # Branch 'ros2-devel' does NOT exist upstream; the rolling-aligned
+    # branch is named 'ros2'. Use 'lyrical' if you want distro-specific
+    # tagging; 'ros2' tracks the latest ROS2 development.
+    version: ros2
   # micro-ROS agent — needed for real-robot mode (test_robot.sh starts this).
   # The `rolling` branch tracks ROS 2 rolling, which the lyrical distro
   # builds against. If the build fails with a fastcdr/foonathan mismatch,
@@ -35,3 +38,13 @@ repositories:
     type: git
     url: https://github.com/micro-ROS/micro-ROS-Agent.git
     version: rolling
+  # Nav2 stack — also not on lyrical apt. Vendored as a single monorepo
+  # under src/nav2_repo; colcon picks up individual packages (nav2_bringup,
+  # nav2_planner, nav2_controller, nav2_bt_navigator, nav2_waypoint_follower,
+  # nav2_simple_commander, etc.) from subdirs. Branch 'main' is the
+  # rolling-development line; no 'rolling' or 'lyrical' branch exists
+  # upstream for navigation2.
+  nav2_repo:
+    type: git
+    url: https://github.com/ros-planning/navigation2.git
+    version: main

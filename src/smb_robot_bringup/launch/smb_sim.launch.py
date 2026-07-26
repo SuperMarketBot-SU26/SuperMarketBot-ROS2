@@ -79,11 +79,11 @@ def _make_gz_sim(context, *args, **kwargs):
         # EGL_PLATFORM=surfaceless on Ubuntu 26+NVIDIA prevents gz from hanging
         # on EGL device enumeration when X is present.
         env_overrides['EGL_PLATFORM'] = 'surfaceless'
-        cmd = ['gz', 'sim', '-s', '--headless-rendering', world_path]
+        cmd = ['gz', 'sim', '-s', '-r', '--headless-rendering', world_path]
     else:
         # Combined-mode (legacy): GUI + server in one process. Avoids the
         # `gz sim -g` Wayland hang on Ubuntu 26.04.
-        cmd = ['gz', 'sim', world_path]
+        cmd = ['gz', 'sim', '-r', world_path]
 
     gz_sim = ExecuteProcess(
         cmd=cmd,
@@ -104,6 +104,7 @@ def generate_launch_description():
     bridge_config = PathJoinSubstitution([pkg_bringup, 'config/sim/ros_gz_bridge.yaml'])
     rviz_config = PathJoinSubstitution([pkg_bringup, 'config/common/smb.rviz'])
     slam_config = PathJoinSubstitution([pkg_bringup, 'config/sim/slam_toolbox.yaml'])
+    nav2_params = PathJoinSubstitution([pkg_bringup, 'params/nav2_params.yaml'])
 
     declare_world_cmd = DeclareLaunchArgument(
         'world',
@@ -124,6 +125,16 @@ def generate_launch_description():
         'headless',
         default_value='false',
         description='If true, run gz sim with -s (server only, no GUI). Default = false (GUI).')
+
+    # `use_nav2=true` pulls in nav2_bringup. Off by default so the existing
+    # Phase-1 sim (gazebo + bridge + slam + rviz) keeps working as before;
+    # Phase-3 work enables nav2 here. Slam is kept separate so its params
+    # file (loop-closing-on/off for sim/robot) doesn't fight nav2's bringup.
+    declare_use_nav2_cmd = DeclareLaunchArgument(
+        'use_nav2',
+        default_value='false',
+        description='If true, also bring up Nav2 (planner+controller+BT+waypoint_follower). '
+                    'Requires slam_toolbox to be running; nav2 subscribes to /map and /tf.')
 
     # 1. Gazebo Sim.
     #    gz sim 10 (Ionic) uses positional `[file]` for the world; only one of
@@ -192,6 +203,29 @@ def generate_launch_description():
         output='screen',
     )
 
+    # 5b. Nav2 (gated by `use_nav2:=true` arg). Pulls in nav2_bringup's
+    #     bringup_launch.py with slam:=False / use_localization:=False —
+    #     slam_toolbox is already providing /map, and we don't need AMCL
+    #     since the robot starts at the SLAM origin each sim run.
+    #     slam_too is intentionally NOT brought up here: the slam_toolbox
+    #     include above already starts async_slam_toolbox_node. Launching
+    #     a second SLAM inside nav2 would create a second /map publisher
+    #     and break the static layer.
+    nav2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            get_package_share_directory('nav2_bringup'),
+            '/launch/bringup_launch.py',
+        ]),
+        condition=IfCondition(LaunchConfiguration('use_nav2')),
+        launch_arguments={
+            'slam': 'False',
+            'use_localization': 'False',
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+            'params_file': nav2_params,
+            'autostart': 'true',
+        }.items(),
+    )
+
     # 6. Teleop keyboard (gated by `teleop:=true` arg).
     #    Press Ctrl-C in this terminal to stop the whole launch; the robot
     #    will respond to /cmd_vel in another terminal that runs:
@@ -223,10 +257,12 @@ def generate_launch_description():
         declare_use_sim_time_cmd,
         declare_rviz_cmd,
         declare_headless_cmd,
+        declare_use_nav2_cmd,
         declare_teleop_cmd,
         OpaqueFunction(function=_make_gz_sim),
         rsp_node,
         bridge_node,
         slam_launch,
         rviz_node,
+        nav2_launch,
     ])
