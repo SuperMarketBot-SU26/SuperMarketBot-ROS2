@@ -24,15 +24,23 @@
   <xacro:property name="wheel_radius"   value="0.04"/>
   <xacro:property name="wheel_thickness" value="0.02"/>
   <xacro:property name="track"          value="0.22"/>
-  <xacro:property name="caster_offset_x" value="-0.13"/>
-  <xacro:property name="caster_radius"  value="0.02"/>
+  <!-- Drive wheels forward of chassis center (x = +0.05), single caster at the
+       rear (x = -0.105). This mirrors the visualize_lidar.sdf reference layout:
+       wheels carry the front load, caster balances the rear. Masses/inertia
+       sized for a chibi ~30cm supermarket robot. -->
+  <xacro:property name="wheel_offset_x" value="0.05"/>
+  <xacro:property name="caster_offset_x" value="-0.105"/>
+  <!-- Caster uses the same radius as the drive wheels so all three contact
+       points lie on the same ground plane. The wheel_radius property above
+       is reused for the caster sphere. -->
 
   <xacro:property name="lidar_offset_z" value="0.075"/>
   <xacro:property name="imu_offset_z"   value="0.05"/>
 
-  <xacro:property name="chassis_mass"   value="1.14395"/>
-  <xacro:property name="wheel_mass"     value="2.0"/>
-  <xacro:property name="caster_mass"    value="1.0"/>
+  <!-- Masses kept low so the sim runs smoothly; chassis dominates the dynamics. -->
+  <xacro:property name="chassis_mass"   value="2.0"/>
+  <xacro:property name="wheel_mass"     value="0.1"/>
+  <xacro:property name="caster_mass"    value="0.05"/>
 
   <link name="base_link">
     <!-- KDL doesn't support a root link with inertia, but RobotDescription does.
@@ -42,10 +50,14 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="${chassis_mass}"/>
+      <!-- Box inertia for 0.30 x 0.22 x 0.13 m @ 2.0 kg:
+           Ixx = m/12 * (y^2 + z^2) = 2/12 * (0.0484 + 0.0169) = 0.0109
+           Iyy = m/12 * (x^2 + z^2) = 2/12 * (0.09 + 0.0169) = 0.0178
+           Izz = m/12 * (x^2 + y^2) = 2/12 * (0.09 + 0.0484) = 0.0231 -->
       <inertia
-        ixx="0.126164" ixy="0" ixz="0"
-        iyy="0.416519" iyz="0"
-        izz="0.481014"/>
+        ixx="0.0109" ixy="0" ixz="0"
+        iyy="0.0178" iyz="0"
+        izz="0.0231"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -64,11 +76,11 @@
     </collision>
   </link>
 
-  <!-- Left wheel: positive y side -->
+  <!-- Left wheel: positive y side, FORWARD of chassis center (x = +0.05) -->
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="left_wheel"/>
-    <origin xyz="0 ${track/2} -${wheel_radius}" rpy="-1.5707 0 0"/>
+    <origin xyz="${wheel_offset_x} ${track/2} -${wheel_radius}" rpy="-1.5707 0 0"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
@@ -76,10 +88,13 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="${wheel_mass}"/>
+      <!-- Solid cylinder r=0.04, h=0.02, m=0.1:
+           Ixx = Iyy = m/12 * (3r^2 + h^2) = 0.1/12 * (0.0048 + 0.0004) = 0.0000433
+           Izz = m r^2 / 2 = 0.1 * 0.0016 / 2 = 0.00008 -->
       <inertia
-        ixx="0.145833" ixy="0" ixz="0"
-        iyy="0.145833" iyz="0"
-        izz="0.125"/>
+        ixx="0.0000433" ixy="0" ixz="0"
+        iyy="0.0000433" iyz="0"
+        izz="0.00008"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -98,11 +113,11 @@
     </collision>
   </link>
 
-  <!-- Right wheel: negative y side -->
+  <!-- Right wheel: negative y side, FORWARD of chassis center (x = +0.05) -->
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="right_wheel"/>
-    <origin xyz="0 -${track/2} -${wheel_radius}" rpy="-1.5707 0 0"/>
+    <origin xyz="${wheel_offset_x} -${track/2} -${wheel_radius}" rpy="-1.5707 0 0"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
@@ -111,9 +126,9 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="${wheel_mass}"/>
       <inertia
-        ixx="0.145833" ixy="0" ixz="0"
-        iyy="0.145833" iyz="0"
-        izz="0.125"/>
+        ixx="0.0000433" ixy="0" ixz="0"
+        iyy="0.0000433" iyz="0"
+        izz="0.00008"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -132,25 +147,30 @@
     </collision>
   </link>
 
-  <!-- Caster ball (rear, passive) -->
+  <!-- Single rear caster ball (passive). Same offset z as the drive wheels
+       (-wheel_radius) so the caster sphere bottom rests on the ground at the
+       same plane as the wheel bottoms. Ball-jointed at the chassis for free
+       yaw. Layout matches visualize_lidar.sdf's vehicle_blue: 2 forward drive
+       wheels + 1 rear caster, forming a stable 3-point contact polygon. -->
   <joint name="caster_wheel_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="caster"/>
+    <child link="caster_back"/>
     <origin xyz="${caster_offset_x} 0 -${wheel_radius}" rpy="0 0 0"/>
   </joint>
-  <link name="caster">
+  <link name="caster_back">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="${caster_mass}"/>
+      <!-- Solid sphere r=0.04, m=0.05: I = 2/5 m r^2 = 0.4 * 0.05 * 0.0016 = 0.000032 -->
       <inertia
-        ixx="0.1" ixy="0" ixz="0"
-        iyy="0.1" iyz="0"
-        izz="0.1"/>
+        ixx="0.000032" ixy="0" ixz="0"
+        iyy="0.000032" iyz="0"
+        izz="0.000032"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="${caster_radius}"/>
+        <sphere radius="${wheel_radius}"/>
       </geometry>
       <material name="caster_dark">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -159,7 +179,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="${caster_radius}"/>
+        <sphere radius="${wheel_radius}"/>
       </geometry>
     </collision>
   </link>

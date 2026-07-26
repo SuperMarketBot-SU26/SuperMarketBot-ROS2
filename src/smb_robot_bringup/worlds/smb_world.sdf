@@ -346,20 +346,30 @@
     </model>
 
     <!-- SuperMarketBot robot (renamed from vehicle_blue for clarity).
-         Physical dimensions kept identical to original visualize_lidar.sdf so the
-         URDF (src/smb_robot/description/urdf/smb.urdf.xacro) can match exactly. -->
+         Scaled-down version of visualize_lidar.sdf's vehicle_blue:
+           - 2 drive wheels FORWARD of chassis center (x = +0.05), large enough
+             to support the front load.
+           - 1 passive caster at the rear (x = -0.105), small (radius 0.02).
+           - Chassis dimensions and inertia are physically correct for the
+             actual 0.30 x 0.22 x 0.13 m / 2.0 kg body, so the dynamics
+             match the URDF (src/smb_robot/urdf/smb.urdf.xacro). -->
     <model name='smb'>
-      <pose>0 0 0.325 0 0 0.0</pose>
+      <!-- Model origin = chassis center. Chassis bottom is at z=-0.065 (1.5cm
+           clearance above ground). Wheels (r=0.04) and caster (r=0.02) extend
+           below the chassis to touch the ground at z=0. This way the chassis
+           is supported by the wheels, not the other way around (the wheels
+           carry the load and the chassis floats just above the ground). -->
+      <pose>0 0 0.08 0 0 0.0</pose>
 
-      <!-- base_link: main chassis. Same dimensions as vehicle_blue/chassis. -->
+      <!-- base_link: main chassis. Same dimensions as URDF base_link. -->
       <link name='base_link'>
         <pose>0 0 0 0 0 0</pose>
         <inertial>
-          <mass>1.14395</mass>
+          <mass>2.0</mass>
           <inertia>
-            <ixx>0.126164</ixx><ixy>0</ixy><ixz>0</ixz>
-            <iyy>0.416519</iyy><iyz>0</iyz>
-            <izz>0.481014</izz>
+            <ixx>0.0109</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.0178</iyy><iyz>0</iyz>
+            <izz>0.0231</izz>
           </inertia>
         </inertial>
         <visual name='visual'>
@@ -442,16 +452,20 @@
         </sensor>
       </link>
 
-      <!-- Drive wheels (left/right), 2 sphere wheels + a caster.
-           Geometry retained from original; frame naming standardized. -->
+      <!-- Drive wheels (left/right), 2 sphere wheels FORWARD of chassis center.
+           Sphere matches visualize_lidar.sdf's reference: avoids the wheel-axis
+           direction error that cylinder wheels have under the rpy=-1.5707 pose
+           rotation. With chassis_inertia sized to the chassis mass (2 kg) and
+           wheels at x=+0.05 carrying the front load, the chassis stays level
+           under forward thrust. -->
       <link name='left_wheel'>
-        <pose>0 0.11 -0.04 -1.5707 0 0</pose>
+        <pose>0.05 0.11 -0.04 -1.5707 0 0</pose>
         <inertial>
-          <mass>2</mass>
+          <mass>0.1</mass>
           <inertia>
-            <ixx>0.145833</ixx><ixy>0</ixy><ixz>0</ixz>
-            <iyy>0.145833</iyy><iyz>0</iyz>
-            <izz>0.125</izz>
+            <ixx>0.0000433</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.0000433</iyy><iyz>0</iyz>
+            <izz>0.00008</izz>
           </inertia>
         </inertial>
         <visual name='visual'>
@@ -476,13 +490,13 @@
       </link>
 
       <link name='right_wheel'>
-        <pose>0 -0.11 -0.04 -1.5707 0 0</pose>
+        <pose>0.05 -0.11 -0.04 -1.5707 0 0</pose>
         <inertial>
-          <mass>2</mass>
+          <mass>0.1</mass>
           <inertia>
-            <ixx>0.145833</ixx><ixy>0</ixy><ixz>0</ixz>
-            <iyy>0.145833</iyy><iyz>0</iyz>
-            <izz>0.125</izz>
+            <ixx>0.0000433</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.0000433</iyy><iyz>0</iyz>
+            <izz>0.00008</izz>
           </inertia>
         </inertial>
         <visual name='visual'>
@@ -506,20 +520,24 @@
         </collision>
       </link>
 
-      <link name='caster'>
-        <pose>-0.13 0 -0.05 0 0 0</pose>
+      <!-- Single rear caster (passive). Sphere radius 0.04 at x=-0.105 (same
+           as the drive wheels). Ball joint at chassis local z = -0.04, so the
+           caster centre is at world z = 0.04 (when model origin is at z=0.08)
+           and the caster bottom touches the ground. -->
+      <link name='caster_back'>
+        <pose>-0.105 0 -0.04 0 0 0</pose>
         <inertial>
-          <mass>1</mass>
+          <mass>0.05</mass>
           <inertia>
-            <ixx>0.1</ixx><ixy>0</ixy><ixz>0</ixz>
-            <iyy>0.1</iyy><iyz>0</iyz>
-            <izz>0.1</izz>
+            <ixx>0.000043</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.000043</iyy><iyz>0</iyz>
+            <izz>0.000043</izz>
           </inertia>
         </inertial>
         <visual name='visual'>
           <geometry>
             <sphere>
-              <radius>0.02</radius>
+              <radius>0.04</radius>
             </sphere>
           </geometry>
           <material>
@@ -531,7 +549,7 @@
         <collision name='collision'>
           <geometry>
             <sphere>
-              <radius>0.02</radius>
+              <radius>0.04</radius>
             </sphere>
           </geometry>
         </collision>
@@ -561,9 +579,9 @@
         </axis>
       </joint>
 
-      <joint name='caster_wheel_joint' type='ball'>
+      <joint name='caster_back_joint' type='ball'>
         <parent>base_link</parent>
-        <child>caster</child>
+        <child>caster_back</child>
       </joint>
 
       <!-- DiffDrive: publishes odom + tf + accepts cmd_vel.
