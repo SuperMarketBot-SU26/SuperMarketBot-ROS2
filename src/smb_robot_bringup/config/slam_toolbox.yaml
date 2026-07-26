@@ -30,25 +30,61 @@ slam_toolbox:
     max_laser_range: 6.0
     min_laser_range: 0.15
 
-    # Pose graph
-    minimum_travel_distance: 0.2
-    minimum_travel_heading: 0.2
+    # Pose graph — keep nodes dense (low travel thresholds) so the loop-closure
+    # search has plenty of candidates.
+    minimum_travel_distance: 0.3
+    minimum_travel_heading: 0.3
     skip_odometry: false
 
-    # Scan matching — tightened, but not as much as the hardware-tuned config.
-    # (Loosened vs initial sim defaults: Phase-1 room is a featureless square,
-    # so conservative thresholds like 0.6/0.65 reject the loop closure we need
-    # to compensate for residual DiffDrive odom drift. The plan is to replace
-    # this file with the IOT-repo port (real-hardware-tuned) once Phase 2 lands.)
-    link_match_minimum_response_fine: 0.5
-    link_scan_max_distance: 1.5
-    do_loop_closing: true
-    loop_search_maximum_distance: 8.0      # was 5.0 — wider search
-    loop_match_minimum_chain_size: 5       # was 10 — close loops earlier
-    loop_match_minimum_response_fine: 0.55 # was 0.65 — more permissive match
-    correlation_search_space_dimension: 0.5
+    # Scan matching.
+    #
+    # WHY LOOP CLOSING IS DISABLED HERE (do_loop_closing: false):
+    #   The Phase-1 sim world is a near-symmetric 10x10m room (walls on all
+    #   four sides, mirrored shelf rows on x=+1.5 and x=-1.5, one box at
+    #   (0, -1)). From many positions the 360° scan looks strikingly similar
+    #   to scans taken 4-6m away — the box and shelf rows look near-identical
+    #   from positions equidistant from them.
+    #
+    #   Symptom (before this fix): driving close along the walls near the
+    #   box (e.g. along the south wall on the outside of the box) triggers
+    #   slam_toolbox's loop-closure search to match the current scan against
+    #   a near-twin scan from a different part of the room. Even with tight
+    #   response thresholds (loop_match_minimum_response_fine: 0.65, loop_
+    #   search_maximum_distance: 4.0) the symmetric room produces matches
+    #   that pass both coarse and fine gates. slam_toolbox then re-anchors
+    #   the pose graph, RViz's Map display (anchored to odom) slides under
+    #   the robot, and subsequent scans get placed from the wrong anchor —
+    #   corrupting the map.
+    #
+    #   With loop closing disabled, the per-step scan-to-scan link matching
+    #   is still active but no global pose-graph corrections happen. The
+    #   10x10m room is small enough that gz DiffDrive's 30Hz wheel-encoder
+    #   odometry (published at /odom with frame odom -> base_link) doesn't
+    #   accumulate enough drift to matter for Phase 1.
+    #
+    #   Phase-2 plan: add at least one asymmetric feature to the world
+    #   (e.g. a 0.3x0.3x1.5m pillar at (3.5, 3.5)) so scans at different
+    #   positions look distinguishably different. With the pillar in place,
+    #   loop closing can be re-enabled with the upstream-style defaults.
+    do_loop_closing: false
+    #
+    # Per-step link matching — tight so bogus per-step alignments are
+    # rejected. Threshold 0.85 = "match must be very strong" (default is
+    # 0.1, which is far too permissive for a symmetric room).
+    link_match_minimum_response_fine: 0.85
+    link_scan_max_distance: 0.8
+    correlation_search_space_dimension: 0.3
     correlation_search_space_resolution: 0.01
     correlation_search_space_smear_deviation: 0.1
+    #
+    # Loop-closure params below are kept at upstream-safe values so that
+    # re-enabling do_loop_closing only requires flipping the flag above.
+    # They are NOT consulted by slam_toolbox while do_loop_closing is false.
+    loop_search_maximum_distance: 3.0
+    loop_match_minimum_chain_size: 10
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+    loop_match_maximum_variance_coarse: 3.0
 
     # Solver — on lyrical slam_toolbox only ships `CeresSolver`, not SpaSolver.
     optimization_solver: slam_toolbox_msgs/msg/SolverMsg
