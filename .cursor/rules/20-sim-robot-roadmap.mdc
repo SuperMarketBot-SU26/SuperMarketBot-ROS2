@@ -1,0 +1,80 @@
+---
+description: Phased roadmap — sim-only development, hardware-swappable via launch arg
+globs: "**/*.{py,xacro,urdf,sdf,yaml,yml,md}"
+alwaysApply: false
+---
+
+# Phased development (ROS2)
+
+Repo này KHÔNG tự đứng một mình. Giao tiếp với firmware qua **topic contract** (xem `docs/TOPIC_CONTRACT.md`). Thay đổi contract = thay đổi `TopIotBridge` = phải sync với teammate ở `SuperMarketBot-IOT/`.
+
+## Nguyên tắc phân vai
+
+| Owner | Codebase | Quyền sở hữu |
+|---|---|---|
+| Bạn | `~/ros2_ws/` (repo này) | launch, URDF, params, worlds, smb_bridge Python, smb_nodes C++/Py |
+| Teammate | `~/me/Projects/SMB/SuperMarketBot-IOT/` | ESP32 firmware, ESP32-CAM, Android hub, MicroRos.h |
+| Shared | topic contract | cả 2 đều sửa được; mọi thay đổi PHẢI thông báo bên kia |
+
+## Hardware realities
+
+- Bạn KHÔNG có robot thật → Phase 1–3 làm 100% trên sim. Mọi launch file phải chạy được khi `mode:=sim`.
+- Teammate CÓ robot → anh ấy code + test phần cứng; bạn không cần đợi.
+- Khi có robot thật (không rõ khi nào): cùng launch file, đổi `mode:=robot` — KHÔNG cần sửa config.
+
+## Phase roadmap
+
+### Phase 0 — Workspace bootstrap ✅ DONE (Jul 26)
+
+- [x] `git init` + repo-local `user.name` / `user.email`
+- [x] `.gitignore` (excludes `build/`, `install/`, `log/`, `src/slam_toolbox/`, debug exports)
+- [x] 5 ament package skeletons (`smb_*`)
+- [x] Top-level README, `ros2_ws.repos`, `.colcon_defaults`
+- [x] Initial commit + push
+
+### Phase 1 — Sim end-to-end (PENDING)
+
+**Goal:** `ros2 launch smb_robot_bringup smb.launch.py mode:=sim` chạy được: Gazebo + ros_gz_bridge + URDF + SLAM + RViz. Drive được bằng teleop.
+
+- [ ] Adapt `~/ros2_ws/visualize_lidar.sdf` → đổi frame names `vehicle_blue/*` → `base_link`/`laser_frame`/`imu_link`.
+- [ ] Thêm `<sensor type='imu'>` vào SDF, bridge `/imu`.
+- [ ] Tạo URDF `src/smb_robot/description/urdf/smb.urdf.xacro` — same physical model as SDF, used by `robot_state_publisher`.
+- [ ] `smb_robot_bringup/launch/smb_sim.launch.py` — Gazebo + ros_gz_bridge + robot_state_publisher + slam_toolbox + RViz2.
+- [ ] `smb_robot_bringup/launch/smb_robot.launch.py` — chỉ robot_state_publisher + SLAM + RViz (giả định ESP32 đã publish topics).
+- [ ] `smb_robot_bringup/launch/smb.launch.py` — dispatcher với `mode` arg.
+- [ ] Test: chạy sim, lái teleop, SLAM build được map.
+
+### Phase 2 — Topic contract + EKF (PENDING)
+
+- [ ] `docs/TOPIC_CONTRACT.md` — canonical spec (topic, type, frame_id, rate, covariance, QoS).
+- [ ] Port `ros2_bridge/config/{ekf_config.yaml, mapper_params_online_async.yaml}` từ IOT repo vào `src/smb_robot_bringup/params/`.
+- [ ] Port `ros2_bridge/launch/ekf_localization.launch.py` vào `src/smb_robot_bringup/launch/`.
+- [ ] Add EKF vào sim + robot launch.
+- [ ] Báo teammate review contract.
+
+### Phase 3 — smb_bridge (PENDING — coordinate với teammate)
+
+- [ ] Cùng teammate quyết: dùng WebSocket JSON bridge (cũ, đã có trong IOT) hay micro-ROS bridge (mới, đang viết).
+- [ ] Nếu WebSocket: port `ros2_bridge/esp32_ros2_bridge.py` từ IOT repo vào `src/smb_bridge/src/`, biến thành ament_python package.
+- [ ] Nếu micro-ROS: chỉ cần install/setup script — không có Python bridge.
+
+### Phase 4 — Auto-dock + state machine (PENDING — phase 4 từ roadmap gốc)
+
+- [ ] `smb_nodes/` FSM (idle / nav / dock / estop).
+- [ ] Nav2 BT trees cho dock sequence.
+
+## Không được sửa nếu không báo trước
+
+| Item | Lý do |
+|---|---|
+| Topic names (`/scan`, `/odom`, `/cmd_vel`, `/imu/data`) | firmware đang nhắm theo tên này; đổi = firmware phải patch lại |
+| Frame IDs (`base_link`, `odom`, `map`, `laser_frame`, `imu_link`) | EKF config cứng vào frame IDs này |
+| Message types (sensor_msgs/LaserScan, nav_msgs/Odometry, ...) | contract với firmware |
+| SLAM Toolbox param names trong YAML | team đã tuning kỹ (mapper_params_online_async.yaml) |
+| Covariance matrices trong EKF config | team đã tune cho hardware; touch chỉ khi có data mới |
+
+## Edge cases đặc biệt cho ROS2 "lyrical" / Ubuntu 26.04
+
+- Nhiều package chưa lên apt (vd `slam-toolbox`) → build từ source, commit vào `src/` hoặc `ros2_ws.repos`.
+- Một số package Humble API chưa ổn định trên lyrical → check release notes khi gặp lỗi lạ.
+- `colcon build` trên lyrical có thể cần `--parallel-workers 2` để tránh OOM (Ubuntu 26 mặc định nhẹ RAM khi dev).

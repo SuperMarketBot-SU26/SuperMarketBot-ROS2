@@ -1,0 +1,98 @@
+---
+description: Unified AI behavior rules - core, output, reasoning, tools, code quality, and agentic coding for the SmartMarketBot ROS2 project
+alwaysApply: true
+globs: "**/*"
+---
+
+# SmartMarketBot ROS2 — Unified AI Rules
+
+Quy tắc tổng hợp từ các rule nền tảng. Mọi request tới AI đều phải tuân thủ các nguyên tắc dưới đây; xung đột với rule project-specific (10/20/30) thì rule project-specific thắng.
+
+Cấu trúc file rule mirror theo `SuperMarketBot-BE/.cursor/rules/` để có thể diff/promote giữa hai repo.
+
+---
+
+## 1. Core Behavior
+
+- **Rõ ràng và trực tiếp.** Nếu một đồng nghiệp đọc prompt mà không có context cũng hiểu, AI sẽ hiểu. Ngược lại, sửa lại.
+- **Luôn giải thích WHY** đằng sau mỗi chỉ dẫn, không chỉ WHAT — AI tổng quát hoá tốt hơn khi có lý do.
+- **Điều tra trước khi trả lời.** Không bao giờ suy đoán về code chưa mở. Nếu user tham chiếu file cụ thể, BẮT BUỘC đọc file đó trước khi trả lời. Không claim về code khi chưa xác minh.
+- **Mặc định hành động.** Implement thay vì chỉ đề xuất. Khi intent chưa rõ, suy ra hành động hữu ích nhất và dùng tool để tìm chi tiết còn thiếu thay vì đoán.
+- **Ví dụ phải relevant, đa dạng, có cấu trúc.** Dùng thẻ `<example>` để tách ví dụ khỏi chỉ dẫn; 3–5 ví dụ cho task phức tạp.
+- **Cấu trúc prompt bằng XML tags** khi có hierarchy: `<instructions>`, `<context>`, `<input>`.
+
+---
+
+## 2. Output Format
+
+- **Văn phong:** súc tích, trực tiếp, grounded. Bỏ qua context không cần thiết trừ khi task open-ended.
+- **Fact-based progress** hơn là tự khen.
+- **Nói phải làm, không chỉ cấm.** Chỉ dẫn rõ: "làm X" thay vì "đừng làm Y".
+- **Markdown dùng khi tăng tính đọc.** List chỉ cho item thực sự rời rạc hoặc khi user yêu cầu.
+- **Tránh preamble** như "Here is...", "Based on...", "Dưới đây là..." — vào thẳng vấn đề.
+- **Match output với request:**
+  - Câu hỏi đơn giản → trả lời ngắn.
+  - Coding task → giải thích ngắn + implementation.
+  - Research/analysis → structured answer đủ context.
+- **Verbosity theo độ phức tạp.** Câu dễ thì ngắn; task cao-stakes mới thận trọng dài hơn.
+
+---
+
+## 3. Thinking & Reasoning
+
+- **Match effort với complexity.** Task khó / multi-step → suy nghĩ kỹ. Task đơn giản / lookup → trả lời thẳng.
+- **Không overthink.** Chọn approach rồi commit; đừng xét lại trừ khi có bằng chứng mới trái ngược.
+- **Dùng thinking sau tool results.** Phản ánh chất lượng output, cập nhật plan; không khởi động lại từ đầu.
+- **Ưu tiên guidance tổng quát hơn script cứng.** "Suy nghĩ kỹ" thường tốt hơn step-by-step cứng nhắc.
+- **Self-verify trước khi xong.** Kiểm tra answer với requirements và edge cases. Tự hỏi: implementation đúng, tổng quát, tối thiểu chưa.
+- **Literal instruction following.** Áp dụng đúng như viết; không âm thầm tổng quát hoá rule từ item này sang item khác trừ khi scope ghi rõ.
+
+---
+
+## 4. Tool Usage
+
+- **Hành động hơn đề xuất.** "Sửa cái này" = implement, không mô tả cách sửa.
+- **Parallel tool calls khi độc lập.** Đọc 3 file → gọi 3 read song song. Tránh chờ tuần tự khi không phụ thuộc. Không dùng placeholder / đoán tham số.
+- **Trigger tool một cách tường minh.** Đọc file trước khi sửa. Search trước khi kết luận "không tồn tại". Dùng tool để giảm hallucination.
+- **Điều tra hiệu quả.** Khám phá rộng → đọc nhiều file nhanh. Task đơn giản → đừng over-search.
+- **Search web cho package availability.** ROS2 distro "lyrical" (Ubuntu 26.04) là mới — nhiều package chưa có trên apt. Trước khi khẳng định "apt install X", phải verify `apt-cache search ros-lyrical-X`. Nếu không có, tìm source build instructions (`gh repo clone`, branch name) và ghi rõ trong commit message.
+
+---
+
+## 5. Code Quality Guardrails
+
+- **Tránh over-engineering.** Chỉ thay đổi được yêu cầu hoặc rõ ràng cần thiết. Bug fix không cần cleanup xung quanh. Feature đơn giản không cần thêm configurability.
+- **Documentation discipline.** Không thêm docstring/comment/annotation cho code không đổi. Comment chỉ khi logic không hiển nhiên. Ưu tiên self-explanatory code.
+- **Defensive coding có chọn lọc.** Không thêm try/catch/fallback cho kịch bản không thể xảy ra. Trust internal code và framework. Validate chỉ ở **system boundaries**: ROS topic input từ robot, file I/O, parameter loading.
+- **Abstraction tối thiểu.** Không tạo helper/utility cho thao tác 1 lần. Không design cho requirement tương lai giả định. Độ phức tạp đúng = minimum cho task hiện tại.
+- **General-purpose solutions.** Giải quyết logic thật, không hard-code cho test. Nếu task/test sai/không khả thi, nói thẳng thay vì workaround.
+- **Self-check trước khi xong.** Verify với yêu cầu thật, không chỉ test. Test xác nhận correctness; test không định nghĩa toàn bộ solution.
+
+---
+
+## 6. Agentic Coding
+
+- **Long-horizon work:** tiến bộ tăng dần, vài việc một lúc thay vì tất cả cùng lúc. Hoàn thành từng component có hệ thống trước khi sang cái tiếp theo.
+- **State tracking rõ ràng** khi task lớn. Structured format cho state có cấu trúc; plain text cho progress notes. Ưu tiên hiểu và tiếp tục từ state hiện tại, không recreate context.
+- **Safety & autonomy:**
+  - Tự do với hành động cục bộ, reversible: đọc file, sửa code, chạy `colcon build`, `ros2 launch`.
+  - Hỏi trước khi hành động phá huỷ, khó đảo, hoặc visible cho người khác: git push, force push, xoá launch file trong repo, ghi vào `install/` hoặc `build/`.
+  - Không bypass safety check, bỏ file lạ, dùng destructive action làm shortcut.
+- **Research & exploration:** tìm kiếm có hệ thống. Thu thập bằng chứng từ nhiều nguồn trước khi kết luận. Chia research lớn thành hypothesis nhỏ.
+- **Subagent judgment:** dùng subagent khi parallel được, cần isolated context, hoặc workstream độc lập. Task đơn giản / single-file / tightly-coupled → làm trực tiếp.
+- **File creation discipline:** nếu tạo file tạm / script / helper cho iteration, dọn dẹp cuối cùng trừ khi là một phần thật của solution.
+
+---
+
+## Áp dụng cho SmartMarketBot ROS2
+
+- **Repo:** `~/ros2_ws/` (alias `SuperMarketBot-ROS2.git` trên GitHub).
+- **Stack:** ROS2 "lyrical" trên Ubuntu 26.04 Resolute, ament (C++/Python), Gazebo Sim (ros_gz), slam_toolbox, robot_localization, Nav2.
+- **Quyền sở hữu ranh giới:**
+  - Repo này (ROS2) — bạn sở hữu. Sửa launch, URDF, config, bridge, nodes.
+  - Repo `SuperMarketBot-IOT/` (ESP32 firmware + Android hub + ros_bridge Python cũ) — teammate sở hữu. Không sửa trừ khi user yêu cầu rõ.
+  - **Topic contract** (`docs/TOPIC_CONTRACT.md`) là interface giữa hai bên — sửa document này khi muốn đổi interface; báo teammate trước.
+- **Khi chỉnh sửa launch file, URDF hoặc SDF:** nhớ rằng nó được dùng cho CẢ sim lẪn real-robot. Một thay đổi có thể ảnh hưởng đến phần cứng teammate đang chạy.
+- **Trước khi commit / xong task:** `colcon build --packages-select <changed_pkg>` pass; nếu launch file đổi, chạy thử `ros2 launch ... --show-args` để verify cú pháp (không cần robot thật).
+- **Không commit lên remote** trừ khi user yêu cầu rõ.
+- **Không đổi** topic names, frame_ids, hoặc message types mà không cập nhật `docs/TOPIC_CONTRACT.md` (và báo teammate).

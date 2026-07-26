@@ -1,0 +1,183 @@
+---
+description: ROS2-specific guidelines — launch, params, topics, frames, sim/real, and lyrical distro caveats
+globs: "src/**/*.{py,xacro,urdf,sdf,yaml,yml}"
+alwaysApply: true
+---
+
+# 🚀 SMARTMARKETBOT - ROS2 SYSTEM GUIDELINES (Lyrical, Ubuntu 26.04)
+
+ROS2 workspace cho hệ thống SuperMarketBot. Stack không truyền thống (Ubuntu 26 mới, ROS2 "lyrical" mới) nên có vài điểm cần chú ý.
+
+---
+
+## 🌐 1. ROS2 DISTRO & UBUNTU (RẤT QUAN TRỌNG)
+
+**Workspace này dùng ROS2 "lyrical" trên Ubuntu 26.04 "Resolute Raccoon"**. Đây là distro mới:
+
+- **Không phải Jazzy, không phải Humble.** Các tutorial online phần lớn nói về Humble (Ubuntu 22) hoặc Jazzy (Ubuntu 24) — API gần giống nhưng KHÔNG đồng nhất.
+- **Nhiều package chưa có trên apt** cho lyrical. Trước khi `apt install`, LUÔN kiểm tra: `apt-cache search ros-lyrical-<pkg>`. Nếu không có:
+  1. Tìm source GitHub tương ứng.
+  2. Xác định branch lyrical-compatible (thường là `rolling`, `main`, hoặc tag release mới nhất).
+  3. Thêm vào `ros2_ws.repos` để teammate + CI tái tạo được.
+- Source build example: `slam_toolbox/` đã có sẵn tại `src/slam_toolbox` (đã vendor). Build bằng: `colcon build --packages-select slam_toolbox`.
+- Nếu `apt install ros-lyrical-X` fail vì dependency: KHÔNG pin phiên bản Humble — tìm bản source mới hơn.
+
+---
+
+## 🏗️ 2. PACKAGE LAYOUT & DEPENDENCY DIRECTION
+
+Đảm bảo dependency direction một chiều. Không có vòng lặp.
+
+```
+                    smb_msgs (leaf, chỉ .msg)
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+   smb_bridge      smb_nodes       smb_robot (URDF + meshes)
+        │               │               │
+        └───────────────┴───────────────┘
+                        │
+              smb_robot_bringup (launch + params + worlds)
+                        │
+              (consumes nav2, slam_toolbox, ros_gz from apt/source)
+```
+
+- **`smb_msgs`** KHÔNG được `depend` lên `rclcpp` / `rclpy` / bất kỳ runtime nào. Pure message definitions.
+- **`smb_bridge`** / **`smb_nodes`** chỉ depend lên `smb_msgs` + std libs. KHÔNG depend lên `smb_robot_bringup`.
+- **`smb_robot`** (URDF package) không được launch nodes; chỉ export meshes/urdf cho `robot_state_publisher` consume.
+- **`smb_robot_bringup`** depend lên TẤT CẢ packages khác + external (nav2, slam_toolbox). Đây là entry point duy nhất cho `ros2 launch`.
+
+---
+
+## 🎯 3. TOPIC CONTRACT — BẮT BUỘC
+
+Mọi node/launch phải tuân thủ `docs/TOPIC_CONTRACT.md`. Tóm tắt:
+
+| Topic | Type | frame_id | child_frame_id | Rate | Source |
+|---|---|---|---|---|---|
+| `/scan` | sensor_msgs/LaserScan | `laser_frame` | — | 10 Hz | sim/micro-ROS |
+| `/odom` | nav_msgs/Odometry | `odom` | `base_link` | 30 Hz | diff_drive/EKF |
+| `/imu/data` | sensor_msgs/Imu | `imu_link` | — | 30 Hz | sim/MPU6050 |
+| `/cmd_vel` | geometry_msgs/Twist | — | — | 10–50 Hz | Nav2 |
+| `/tf` | tf2_msgs/TFMessage | — | — | various | rsp, slam, ekf |
+| `/map` | nav_msgs/OccupancyGrid | `map` | — | on change | slam_toolbox |
+| `/amcl_pose` | PoseWithCovarianceStamped | `map` | — | on change | slam_toolbox |
+| `/odometry/filtered` | nav_msgs/Odometry | `odom` | `base_link` | 30 Hz | robot_localization |
+
+**Rules:**
+- **KHÔNG đổi** tên topic, type, frame_id mà không cập nhật contract đồng thời và báo teammate.
+- Mọi remapping trong launch files phải dùng đúng tên chuẩn: `-r /gz_topic:=/cmd_vel`.
+- QoS: sensor data (lidar) dùng `BEST_EFFORT`; commands (cmd_vel) dùng `RELIABLE`.
+
+---
+
+## 🔧 4. LAUNCH FILE BEST PRACTICES
+
+- Launch file đặt ở `src/<pkg>/launch/<name>.launch.py`.
+- ALWAYS dùng `ament_index_python.get_package_share_path()` cho paths. NEVER hard-code.
+- `output='screen'` cho nodes có log quan trọng.
+- `DeclareLaunchArgument(...)` cho mọi configurable input, với `default_value` và `description`.
+- Multi-stage: top-level launch (`smb.launch.py`) include sub-launch dựa trên arg `mode`.
+- Test cú pháp: `ros2 launch <pkg> <file>.launch.py --show-args`. KHÔNG cần robot để verify cú pháp.
+
+Example:
+
+```python
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.substitutions import LaunchConfiguration
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from ament_index_python import get_package_share_directory
+import os
+
+
+def generate_launch_description():
+    pkg_smb_bringup = get_package_share_directory('smb_robot_bringup')
+    mode = LaunchConfiguration('mode')
+
+    return LaunchDescription([
+        DeclareLaunchArgument(
+            'mode',
+            default_value='sim',
+            choices=['sim', 'robot'],
+            description='sim = Gazebo, robot = assume ESP32 publishing topics'),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(pkg_smb_bringup, 'launch', f'smb_{mode}.launch.py')
+            )
+        ),
+    ])
+```
+
+---
+
+## 📦 5. PARAMETER YAMLS
+
+- Đặt tại `src/<pkg>/params/<name>.yaml`.
+- Namespace theo package: prefix key với `/<pkg_name>:/<node_name>:`. Mỗi node load file riêng qua `parameters=[<yaml_path>]` trong launch.
+- `use_sim_time: True` cho TẤT CẢ nodes khi chạy sim. Khi chạy real robot phải là `False`.
+- Override trong launch file qua `<param_name>:=<value>`.
+- KHÔNG hard-code parameter trong C++/Python code. Mọi thứ user muốn chỉnh phải là launch arg.
+
+---
+
+## 🤖 6. URDF & SIM-REAL SWAP
+
+URDF là **robot description duy nhất** cho cả sim lẫn real. SDF dùng riêng cho sim physics.
+
+- URDF ở `src/smb_robot/description/urdf/<robot>.urdf.xacro`.
+- SDF ở `src/smb_robot_bringup/worlds/<world>.sdf` (sim only — real robot dùng world vật lý).
+- Physical constants (wheelbase, wheel_radius, sensor offsets) PHẢI giống nhau giữa URDF và SDF. Nếu khác: sim sẽ không khớp real.
+- TF từ URDF (`base_link → laser_frame`, `base_link → imu_link`) phải match với frame_ids mà sensors publish trong header.
+
+---
+
+## 🔄 7. SIM ↔ REAL SWAP PATTERN
+
+**Quy tắc vàng:** Mọi node downstream SLAM/Nav2 không được biết nó đang chạy sim hay real. Chỉ nhìn topics.
+
+```
+[ SIM ]  Gazebo + ros_gz_bridge     ─┐
+                                      ├─→ /scan, /odom, /imu/data → SLAM + Nav2 → /cmd_vel ─┐
+[REAL]  ESP32 + micro-ROS agent      ─┘                                                       │
+                                                                                            │
+                                          ┌────────────── cmd_vel ──────────────┐           │
+                                          ▼                                        │           │
+                              [SIM] diff_drive plugin                              │           │
+                              [REAL] ESP32 motor driver                           ◀───────────┘
+```
+
+Real-robot launch file **KHÔNG** start Gazebo, **KHÔNG** start ros_gz_bridge. Nó tin rằng micro-ROS agent đang chạy riêng và topics đã tồn tại.
+
+---
+
+## 🧪 8. CI / SMOKE TEST
+
+Mỗi launch file phải có smoke test:
+
+```python
+# Test 1: cú pháp launch OK (không cần robot)
+# $ ros2 launch <pkg> <file>.launch.py --show-args
+# Kỳ vọng: in ra danh sách args + không crash
+
+# Test 2: tất cả node được declare đều tồn tại trong install
+# $ ros2 pkg executables <pkg>
+```
+
+URDF phải parse được:
+
+```bash
+$ check_urdf src/smb_robot/description/urdf/smb.urdf.xacro
+# Kỳ vọng: in ra tree hierarchy, không lỗi
+```
+
+---
+
+## 🚫 TRÁNH
+
+- **Topic/frame renaming** không cập nhật contract → firmware chết im lặng (no error, just no data).
+- **Hard-coded paths** trong launch files (`/home/...`, `~/...`) → teammate máy khác crash.
+- **Pinning phiên bản Humble** khi lyrical đang dùng → mismatch runtime.
+- **Commit `install/`, `build/`, `log/`, `*.pdf`, `*.gv`** → repo phình.
+- **`apt install` không verify trước** → fail ở máy teammate khi package chưa có.
+- **`colcon build` parallel workers quá cao** trên lyrical → OOM crash. Default 2.

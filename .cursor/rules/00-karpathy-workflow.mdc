@@ -1,0 +1,54 @@
+---
+description: Quy trinh lam viec voi AI (Karpathy) — ap dung moi session ROS2
+alwaysApply: true
+---
+
+# SmartMarketBot ROS2 — Quy trinh AI
+
+## Quy trinh (6 buoc)
+
+1. **Len ke hoach truoc** — Task khong don gian: neu ro spec, launch argument, topic/frame_ids anh huong, package nao se doi; tranh mo ho truoc khi code.
+2. **Kiem tra lien tuc** — Sau moi thay doi: `colcon build`, xem diff, `ros2 launch ... --show-args` de verify launch file cu phap; khong chap nhan output AI ma khong verify.
+3. **Giu don gian** — Uu tien diff nho, it launch argument thua; hoi "co cach don gian hon khong?" truoc khi them parameter.
+4. **Chi sua can thiet** — Khong refactor / format file ngoai pham vi task; khong doi topic names, frame_ids, message types neu khong duoc yeu cau.
+5. **Huong ket qua** — Dinh nghia xong khi nao (build pass, launch syntax OK, ros2 topic list cho output mong doi); lap lai den dat.
+6. **Phan tach cong viec** — Research codebase / launch files / docs co the tach task; tong hop ket qua truoc khi commit.
+
+## Nguyen tac cot loi
+
+- **Don gian truoc** — Code giai quyet dung bai toan, khong doan. Mot launch file dang chay tot xin dung lau hon launch file "sach hon" bi loi.
+- **Khong luoi** — Tim root cause (vi du: launch file bi sai, build error o package nao, dependency missing); khong workaround tam thoi che warning.
+- **Tac dong toi thieu** — Khong tao side effect cho package khac trong workspace; khong vo hop dong topic/frame_id voi firmware dang chay.
+
+## Pham vi role (chi ROS2)
+
+- Lam viec trong `~/ros2_ws/`; khong sua `SuperMarketBot-IOT/` (ESP32 firmware) tru khi user yeu cau ro.
+- Khi doi launch file → test `ros2 launch <pkg> <file>.launch.py --show-args` (no need hardware).
+- Khi doi URDF / SDF → test `check_urdf <file>` (urdfdom) va `gz sim -s -r <world>` headless.
+- Khi doi topic / frame_id → cap nhat `docs/TOPIC_CONTRACT.md` dong thoi.
+- Khi can package moi (apt khong co cho "lyrical") → clone source, ghi ro vao `ros2_ws.repos` de teammate may khac pull lai duoc.
+
+## Build & verify commands
+
+```bash
+# Source ROS2 (phai chay truoc moi lenh ros2)
+source /opt/ros/${ROS_DISTRO:-lyrical}/setup.bash
+
+# Build 1 package (sau khi sua)
+colcon build --packages-select <pkg_name> --symlink-install
+
+# Build toan bo (bo qua slam_toolbox vendor theo .colcon_defaults)
+colcon build
+
+# Verify launch file cu phap (no need robot)
+ros2 launch <pkg> <file>.launch.py --show-args
+
+# Check URDF (can `sudo apt install liburdfdom-tools`)
+check_urdf <path>.urdf
+
+# List topics hien co
+ros2 topic list
+
+# Test message contract (verify topic type + frame_id)
+ros2 topic info /scan --verbose
+```

@@ -1,0 +1,76 @@
+---
+description: ROS2 ament package layout for SmartMarketBot-ROS2
+globs: "src/**/*.{xml,cmake,txt,py,xacro,urdf,sdf,launch.py}"
+alwaysApply: false
+---
+
+# ROS2 conventions (SmartMarketBot)
+
+## Package layout (5 ament packages)
+
+Package ownership và ranh giới phụ thuộc (không đảo ngược):
+
+```
+smb_msgs               ─┐  (no deps, leaf)
+smb_bridge             ─┼── depends on smb_msgs
+smb_nodes              ─┘
+smb_robot              ─── URDF + meshes (depends on xacro, robot_state_publisher)
+smb_robot_bringup      ─── launch + params + worlds; depends on ALL of above + nav2 + slam_toolbox
+```
+
+- **`smb_msgs`** — pure `.msg` / `.srv` / `.action` definitions. Không có logic runtime, không phụ thuộc rclcpp/rclpy.
+- **`smb_bridge`** — runtime node: ESP32 WS-JSON ↔ ROS2 topics (legacy WebSocket bridge) hoặc micro-ROS agent bridge stub. Sử dụng `smb_msgs` cho custom message types.
+- **`smb_nodes`** — higher-level behaviors: safety, FSM, dock controller. Không biết về phần cứng cụ thể; chỉ consume topics chuẩn ROS2.
+- **`smb_robot`** — URDF + meshes + xacro. Không launch files, không nodes.
+- **`smb_robot_bringup`** — launch files + parameter YAMLs + world SDFs. Đây là package duy nhất user chạy `ros2 launch` cho cả sim và real robot.
+
+## Ament rules
+
+- Mỗi package có `package.xml` với `format=3`, `<buildtool_depend>ament_cmake</buildtool_depend>` (hoặc `ament_python` cho Python-only).
+- Python packages dùng `ament_python`; setup.py setup cho `find_packages` tự động.
+- C++ packages: dùng `ament_cmake_auto` (auto-find dependencies từ `package.xml`) — không hard-code `find_package(...)` trong CMakeLists nếu không cần thiết.
+- Không để package nào `.gitignore` cả folder — mỗi package phải có `<pkg>/package.xml`, `<pkg>/CMakeLists.txt`, `<pkg>/README.md` (skeleton rule từ project init).
+- Tất cả C++ targets được register qua `ament_target_dependencies(...)`; install qua `ament_package()`.
+
+## Launch file rules
+
+- Launch files là `.launch.py` (Python), KHÔNG dùng `.launch.xml` hay `.launch.yaml` (legacy XML launch deprecated trong ROS2 kilted+).
+- Đặt launch files ở `src/<pkg>/launch/<name>.launch.py` — KHÔNG trong root của workspace.
+- Dùng `ament_index_python.get_package_share_path()` để tìm package paths. KHÔNG hard-code `/home/nhatkhoa1124/...`.
+- Mỗi launch file có docstring mô tả purpose và arguments (cho `--show-args`).
+- `output='screen'` cho nodes mà user cần xem log trực tiếp.
+- Multi-launch pattern: một "top-level" launch file (`smb.launch.py`) làm dispatcher, include `smb_sim.launch.py` hoặc `smb_robot.launch.py` qua launch arg `mode`.
+
+## Tránh
+
+- Tạo package mới khi package hiện tại đã đúng concern (ví dụ: tạo `smb_utils` chung chung — không).
+- Copy-paste config giữa các launch files — dùng `ros2 param load` hoặc YAML trong `src/<pkg>/params/`.
+- Đặt launch file ngoài `launch/` directory — sẽ không tìm thấy qua `ros2 launch` properly.
+- Hard-code paths (`/home/...`, `~/...`) — luôn dùng `get_package_share_path()` hoặc `ament_index_python`.
+
+## Topic & frame conventions (tóm tắt)
+
+Full contract ở `docs/TOPIC_CONTRACT.md`. Tóm tắt:
+
+| Topic | Type | frame_id (header) | child_frame_id | Rate | Source |
+|---|---|---|---|---|---|
+| `/scan` | sensor_msgs/LaserScan | `laser_frame` | — | ~10 Hz | sim hoặc micro-ROS agent |
+| `/odom` | nav_msgs/Odometry | `odom` | `base_link` | ~30 Hz | sim hoặc ESP32 |
+| `/imu/data` | sensor_msgs/Imu | `imu_link` | — | ~30 Hz | sim hoặc ESP32 |
+| `/cmd_vel` | geometry_msgs/Twist | — | — | 10–50 Hz | Nav2 → ESP32 |
+| `/tf`, `/tf_static` | tf2_msgs/TFMessage | — | — | various | robot_state_publisher, slam_toolbox, EKF |
+| `/map` | nav_msgs/OccupancyGrid | `map` | — | on change | slam_toolbox |
+| `/amcl_pose` | geometry_msgs/PoseWithCovarianceStamped | `map` | — | on change | slam_toolbox |
+| `/odometry/filtered` | nav_msgs/Odometry | `odom` | `base_link` | 30 Hz | robot_localization EKF |
+
+**Frame hierarchy (TF tree phải đúng):**
+```
+map → odom → base_link → laser_frame
+                       → imu_link
+                       → (wheels, caster)
+```
+- `map → odom` do slam_toolbox publish.
+- `odom → base_link` do diff_drive (sim) HOẶC robot_localization EKF (real hoặc khi EKF chạy).
+- `base_link → {laser_frame, imu_link, ...}` do `robot_state_publisher` từ URDF.
+
+ROS2 distro lyric (Ubuntu 26.04) chỉ support humble 1 số package. Trước khi dùng `apt install`, kiểm tra: `apt-cache search ros-lyrical-<pkg>`. Nếu không có, tìm source GitHub + branch và cập nhật `ros2_ws.repos`.
