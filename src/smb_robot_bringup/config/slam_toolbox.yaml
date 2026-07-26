@@ -35,13 +35,17 @@ slam_toolbox:
     minimum_travel_heading: 0.2
     skip_odometry: false
 
-    # Scan matching — tightened, but not as much as the hardware-tuned config
-    link_match_minimum_response_fine: 0.6
+    # Scan matching — tightened, but not as much as the hardware-tuned config.
+    # (Loosened vs initial sim defaults: Phase-1 room is a featureless square,
+    # so conservative thresholds like 0.6/0.65 reject the loop closure we need
+    # to compensate for residual DiffDrive odom drift. The plan is to replace
+    # this file with the IOT-repo port (real-hardware-tuned) once Phase 2 lands.)
+    link_match_minimum_response_fine: 0.5
     link_scan_max_distance: 1.5
     do_loop_closing: true
-    loop_search_maximum_distance: 5.0
-    loop_match_minimum_chain_size: 10
-    loop_match_minimum_response_fine: 0.65
+    loop_search_maximum_distance: 8.0      # was 5.0 — wider search
+    loop_match_minimum_chain_size: 5       # was 10 — close loops earlier
+    loop_match_minimum_response_fine: 0.55 # was 0.65 — more permissive match
     correlation_search_space_dimension: 0.5
     correlation_search_space_resolution: 0.01
     correlation_search_space_smear_deviation: 0.1
