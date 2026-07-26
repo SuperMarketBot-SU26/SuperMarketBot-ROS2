@@ -1,0 +1,68 @@
+# ros_gz_bridge configuration.
+#
+# Each entry maps a Gazebo topic <-> ROS2 topic via the bridge.
+# Format: <ros_topic_name>@<ros_type>[<gz_type>
+#        (square bracket at start = ROS2 -> Gazebo, at end = Gazebo -> ROS2)
+#
+# Remapping (changing the ROS2 name) is done in ros_gz_bridge launch arguments.
+
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: "GZ_TO_ROS"
+
+- ros_topic_name: "/cmd_vel"
+  gz_topic_name: "/model/smb/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: "ROS_TO_GZ"
+
+- ros_topic_name: "/tf"
+  gz_topic_name: "/model/smb/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: "GZ_TO_ROS"
+
+- ros_topic_name: "/odom"
+  gz_topic_name: "/model/smb/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: "GZ_TO_ROS"
+
+- ros_topic_name: "/scan"
+  gz_topic_name: "/lidar"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  # Gazebo Ionic (gz sim 10) names gpu_lidar sensors using the convention
+  # `<model_name>/<link_name>/<sensor_name>`. We override the ROS2 message
+  # header.frame_id to match the URDF's lidar link (`laser_frame`) so
+  # slam_toolbox can look up `scan.header.frame_id -> base_link` directly
+  # without an extra static TF. See docs/TOPIC_CONTRACT.md.
+  frame_id: "laser_frame"
+  direction: "GZ_TO_ROS"
+
+- ros_topic_name: "/imu/data"
+  gz_topic_name: "/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  # Gazebo Ionic (gz sim 10) names IMU sensors as
+  # `<model_name>/<link_name>/<sensor_name>` by default. Override to match the
+  # URDF's IMU link (`imu_link`) so consumers (robot_localization, EKF) can
+  # look up `imu/data.header.frame_id -> base_link` without an extra static TF.
+  # See docs/TOPIC_CONTRACT.md.
+  frame_id: "imu_link"
+  direction: "GZ_TO_ROS"
+
+# Joint states from gz-sim-joint-state-publisher-system. This is what makes the
+# wheels (and any other revolute joints) actually animate in RViz RobotModel:
+# robot_state_publisher reads /joint_states and emits the base_link -> wheel TFs.
+#
+# Topic name format follows ros_gz_sim_demos/launch/joint_states.launch.py:
+#   /world/<world_name>/model/<model_name>/joint_state
+# Topic type is gz.msgs.Model, ROS2 type is sensor_msgs/JointState.
+- ros_topic_name: "/joint_states"
+  gz_topic_name: "/world/smb_world/model/smb/joint_state"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: "GZ_TO_ROS"

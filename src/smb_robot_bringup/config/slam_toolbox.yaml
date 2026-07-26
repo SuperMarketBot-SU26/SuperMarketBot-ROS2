@@ -1,0 +1,63 @@
+# Minimal SLAM Toolbox config for SuperMarketBot sim (Phase 1).
+#
+# Once Phase 2 lands, this will be replaced by the IOT-repo port at
+# ros2_bridge/config/mapper_params_online_async.yaml — that one has been
+# tuned on real hardware and is the canonical version.
+#
+# Until then, this file uses sane defaults aligned with the YDLIDAR X3
+# spec and the contract in docs/TOPIC_CONTRACT.md.
+
+slam_toolbox:
+  ros__parameters:
+    # Frames (must match docs/TOPIC_CONTRACT.md)
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link
+    # /scan messages arrive with header.frame_id = `laser_frame` because the
+    # ros_gz_bridge config sets `frame_id: laser_frame` in the YAML. slam_toolbox
+    # then looks up `laser_frame -> base_link`, which robot_state_publisher
+    # already provides from the URDF.
+    scan_topic: /scan
+
+    # Map params
+    mode: mapping          # online_async
+    resolution: 0.05       # 5cm pixel, suitable for indoor supermarket
+    map_start_x: 0.0
+    map_start_y: 0.0
+    map_start_yaw: 0.0
+
+    # Match the YDLIDAR X3 spec + bridge-side filter range
+    max_laser_range: 6.0
+    min_laser_range: 0.15
+
+    # Pose graph
+    minimum_travel_distance: 0.2
+    minimum_travel_heading: 0.2
+    skip_odometry: false
+
+    # Scan matching — tightened, but not as much as the hardware-tuned config
+    link_match_minimum_response_fine: 0.6
+    link_scan_max_distance: 1.5
+    do_loop_closing: true
+    loop_search_maximum_distance: 5.0
+    loop_match_minimum_chain_size: 10
+    loop_match_minimum_response_fine: 0.65
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+
+    # Solver — on lyrical slam_toolbox only ships `CeresSolver`, not SpaSolver.
+    optimization_solver: slam_toolbox_msgs/msg/SolverMsg
+    solver_plugin: solver_plugins::CeresSolver
+
+    use_scan_matching: true
+    use_scan_barycenter: true
+
+    # Timing
+    transform_publish_period: 0.05   # 20 Hz TF
+    tf_buffer_duration: 30.0
+    throttle_scans: 1
+    publish_occupancy_grid: true
+    publish_tf: true
+
+    debug_logging: false

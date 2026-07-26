@@ -68,10 +68,49 @@ sudo apt install ros-${ROS_DISTRO}-nav2-bringup ros-${ROS_DISTRO}-robot-state-pu
 source /opt/ros/${ROS_DISTRO:-lyrical}/setup.bash
 colcon build --parallel-workers 2
 
-# 5. Run sim bringup (Phase 1+)
+# 5. Run sim bringup (Phase 1+ — verified working)
 source install/setup.bash
+
+# Windowed Gazebo (default; needs display):
 ros2 launch smb_robot_bringup smb.launch.py mode:=sim
+
+# Headless (CI/server use):
+ros2 launch smb_robot_bringup smb.launch.py mode:=sim headless:=true rviz:=false
+
+# Custom world, no RViz:
+ros2 launch smb_robot_bringup smb_sim.launch.py world:=smb_world.sdf rviz:=false
+
+# Verify topics:
+ros2 topic list | grep -E "/scan|/odom|/imu/data|/cmd_vel|/tf|/map"
+# Expected: /scan (LaserScan), /odom (Odometry), /imu/data (Imu),
+#           /cmd_vel (Twist), /tf + /tf_static (TFMessage), /map (OccupancyGrid)
 ```
+
+### Current verified pipeline (Phase 1 done)
+
+The following launches cleanly and produces all expected topics:
+
+- `smb_sim.launch.py` — Gazebo Sim + ros_gz_bridge + URDF + SLAM Toolbox + RViz2
+- `smb_robot.launch.py` — same minus Gazebo (assumes micro-ROS agent feeding /scan, /odom, /imu/data)
+- `smb.launch.py mode:=sim|robot` — dispatcher
+
+Physical constants (URDF + SDF matched):
+- Chassis: 0.30 m × 0.22 m × 0.13 m
+- Wheel radius: 0.04 m, wheelbase (track): 0.22 m
+- LiDAR: 360 samples, range 0.08–10 m (sim); publish on `/lidar` → `/scan`
+- IMU: 100 Hz (sim); publish on `/imu` → `/imu/data`
+
+Topic contract enforced via `config/ros_gz_bridge.yaml`:
+
+| Topic | Type | frame_id |
+|---|---|---|
+| `/scan` | sensor_msgs/LaserScan | `laser_frame` |
+| `/odom` | nav_msgs/Odometry | `odom` (child: `base_link`) |
+| `/imu/data` | sensor_msgs/Imu | `imu_link` |
+| `/cmd_vel` | geometry_msgs/Twist | — |
+| `/tf` | tf2_msgs/TFMessage | — |
+
+See `docs/TOPIC_CONTRACT.md` for the full spec.
 
 ### Lyrical caveat (Ubuntu 26.04)
 
