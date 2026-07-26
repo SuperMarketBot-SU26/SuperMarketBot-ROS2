@@ -1,0 +1,25 @@
+    repositories:
+      smb_msgs:
+        type: git
+        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+        version: main
+      smb_bridge:
+        type: git
+        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+        version: main
+      smb_robot:
+        type: git
+        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+        version: main
+      smb_robot_bringup:
+        type: git
+        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+        version: main
+      smb_nodes:
+        type: git
+        url: https://github.com/SuperMarketBot-SU26/SuperMarketBot-ROS2.git
+        version: main
+      slam_toolbox:
+        type: git
+        url: https://github.com/SteveMacenski/slam_toolbox.git
+        version: ros2-devel

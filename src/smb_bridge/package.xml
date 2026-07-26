@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>smb_bridge</name>
+  <version>0.1.0</version>
+  <description>Bridges between ESP32 firmware (WS82/WS81 JSON over TCP) and ROS2 topics.</description>
+  <maintainer email="khoatranse183895@ptit.edu.vn">Khoa Tran</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>smb_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

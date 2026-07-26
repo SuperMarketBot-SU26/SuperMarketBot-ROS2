@@ -1,0 +1,22 @@
+# colcon build artifacts
+build/
+install/
+log/
+
+# upstream vendor: re-cloned on other machines via the `repos` file
+src/slam_toolbox/
+
+# editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# one-off debug exports
+*.pdf
+*.gv

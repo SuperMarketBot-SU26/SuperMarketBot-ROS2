@@ -1,0 +1,2 @@
+--packages-skip slam_toolbox
+--cmake-args -DBUILD_TESTING=OFF
