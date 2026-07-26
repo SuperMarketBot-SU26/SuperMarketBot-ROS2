@@ -136,6 +136,20 @@ def generate_launch_description():
         description='If true, also bring up Nav2 (planner+controller+BT+waypoint_follower). '
                     'Requires slam_toolbox to be running; nav2 subscribes to /map and /tf.')
 
+    # `use_supervisor=true` brings up smb_nodes.supervisor: the FSM that gates
+    # /cmd_vel between controllers (Nav2 publishes /cmd_vel_nav, teleop would
+    # publish /cmd_vel_nav) and the ros_gz_bridge. When the supervisor is
+    # OFF, /cmd_vel has no publisher and the robot stays parked (safe default).
+    # Default ON because the bridge now consumes /cmd_vel (the contract topic),
+    # not /cmd_vel_nav, so without supervisor nothing reaches gz's
+    # DiffDrive /model/smb/cmd_vel.
+    declare_use_supervisor_cmd = DeclareLaunchArgument(
+        'use_supervisor',
+        default_value='true',
+        description='If true, start smb_nodes.supervisor (FSM gating /cmd_vel). '
+                    'On = estop+state machine available, '
+                    'Off = direct controllers must publish /cmd_vel themselves.')
+
     # 1. Gazebo Sim.
     #    gz sim 10 (Ionic) uses positional `[file]` for the world; only one of
     #    `-g` (GUI) or `-s` (server/headless) can be passed, NOT both. To choose:
@@ -226,6 +240,27 @@ def generate_launch_description():
         }.items(),
     )
 
+    # 5c. Supervisor FSM (gated by `use_supervisor:=true` arg, default ON).
+    #     Sits between upstream controllers (/cmd_vel_nav from Nav2; in
+    #     future, /cmd_vel_nav from teleop) and the contract output /cmd_vel.
+    #     See smb_nodes/supervisor.py for the FSM semantics. We pass topic
+    #     names explicitly so the user can reroute them in custom test setups;
+    #     the defaults match the upstream nav2 remap (`cmd_vel` -> `cmd_vel_nav`)
+    #     and the contract topic `/cmd_vel`.
+    supervisor_node = Node(
+        package='smb_nodes',
+        executable='supervisor',
+        name='supervisor',
+        parameters=[{
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+            # All four topic names are exposed as launch args so that tests
+            # running against a stubbed publisher can override them. Defaults
+            # match the values documented in supervisor.py.
+        }],
+        condition=IfCondition(LaunchConfiguration('use_supervisor')),
+        output='screen',
+    )
+
     # 6. Teleop keyboard (gated by `teleop:=true` arg).
     #    Press Ctrl-C in this terminal to stop the whole launch; the robot
     #    will respond to /cmd_vel in another terminal that runs:
@@ -258,11 +293,13 @@ def generate_launch_description():
         declare_rviz_cmd,
         declare_headless_cmd,
         declare_use_nav2_cmd,
+        declare_use_supervisor_cmd,
         declare_teleop_cmd,
         OpaqueFunction(function=_make_gz_sim),
         rsp_node,
         bridge_node,
         slam_launch,
         rviz_node,
+        supervisor_node,
         nav2_launch,
     ])

@@ -165,7 +165,7 @@ class WaypointFollower(Node):
             feedback_count += 1
 
             if self._navigator.get_clock().now() - start > self._timeout:
-                self.get_logger().warn('Waypoint sequence timed out — cancelling.')
+                self.get_logger().warning('Waypoint sequence timed out — cancelling.')
                 self._navigator.cancelTask()
                 break
 
@@ -176,7 +176,7 @@ class WaypointFollower(Node):
             self.get_logger().info('Goal succeeded!')
             return 0
         if result == TaskResult.CANCELED:
-            self.get_logger().warn('Goal was canceled.')
+            self.get_logger().warning('Goal was canceled.')
             return 1
         if result == TaskResult.FAILED:
             code, msg = self._navigator.getTaskError()

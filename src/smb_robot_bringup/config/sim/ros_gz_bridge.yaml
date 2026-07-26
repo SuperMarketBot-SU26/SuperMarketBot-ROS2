@@ -12,14 +12,15 @@
   gz_type_name: "gz.msgs.Clock"
   direction: "GZ_TO_ROS"
 
-- ros_topic_name: "/cmd_vel_nav"
+- ros_topic_name: "/cmd_vel"
   gz_topic_name: "/model/smb/cmd_vel"
-  # Upstream nav2 default remaps controller_server + behavior_server's
-  # output to /cmd_vel_nav (this is the "stamped" topic as of nav2 1.1+).
-  # We bridge that topic here rather than patching the vendored nav2_bringup
-  # launch file — keep the upstream as-shipped.
-  # On the gz side, DiffDrive still wants the unstamped `gz.msgs.Twist` —
-  # its `cmd_vel` topic just reads linear/angular fields.
+  # /cmd_vel is the contract topic (firmware/sim DiffDrive consumer). The
+  # publisher chain is: controllers (Nav2, teleop) → /cmd_vel_nav →
+  # smb_nodes.supervisor (passes through unless ESTOP) → /cmd_vel.
+  # Without supervisor, /cmd_vel has no publisher and the robot stays
+  # parked (safe default). With use_supervisor:=false (or in the real
+  # robot bringup where the ESP32 already owns the topic), controllers
+  # should be remapped to publish /cmd_vel directly.
   ros_type_name: "geometry_msgs/msg/Twist"
   gz_type_name: "gz.msgs.Twist"
   direction: "ROS_TO_GZ"

@@ -12,6 +12,7 @@
   <exec_depend>rclpy</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
   <exec_depend>smb_msgs</exec_depend>
   <!-- nav2_simple_commander provides BasicNavigator — used by waypoint_follower. -->
   <exec_depend>nav2_simple_commander</exec_depend>

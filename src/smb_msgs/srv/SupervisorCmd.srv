@@ -1,0 +1,29 @@
+# SupervisorCmd.srv — state-machine control for smb_nodes.supervisor.
+#
+# Phase 4 (2026-07-27): minimal FSM, only IDLE + ESTOP implemented.
+# NAV / DOCK are accepted by the service but are no-ops on the supervisor
+# side — the actual Nav2 waypoint sequence runs via the separate
+# `waypoint_follower` executable, which is launched by a higher-level
+# orchestrator (Android hub or a future BT tree) once the supervisor is in
+# NAV. The supervisor does NOT launch waypoint_follower itself: keeping
+# single responsibility between this node (state machine) and the nav runner
+# (Nav2 client) makes each side independently testable.
+#
+# Requested `command` values:
+#   'idle'   — enter IDLE (pass-through cmd_vel).
+#   'nav'    — enter NAV (pass-through cmd_vel; logs informational).
+#   'dock'   — enter DOCK (stub: logs "not implemented" and stays IDLE).
+#   'estop'  — enter ESTOP (zeroes cmd_vel; emergency stop).
+#   'reset'  — leave ESTOP and return to IDLE. Required after estop before
+#              any other command is accepted.
+
+string command
+string current_state    # echoed back for caller convenience (filled by
+                        # service handler in the same call) — set to empty
+                        # in the request.
+
+---
+
+bool success
+string message           # human-readable status; non-empty on failure.
+string new_state         # state the supervisor is in AFTER the call.
