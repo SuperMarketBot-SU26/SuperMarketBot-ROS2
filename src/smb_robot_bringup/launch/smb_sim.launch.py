@@ -24,7 +24,7 @@ import subprocess
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, OpaqueFunction, TimerAction
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, OpaqueFunction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -151,7 +151,6 @@ def generate_launch_description():
     #     already links to `base_link` via robot_state_publisher. slam_toolbox
     #     therefore performs `laser_frame -> base_link` lookup against an
     #     existing static TF — no extra node required.
-    laser_frame_remap = TimerAction(period=0.0, actions=[])
 
     # 3. ros_gz_bridge (per config/ros_gz_bridge.yaml)
     bridge_node = Node(
@@ -209,24 +208,15 @@ def generate_launch_description():
         description='Spawn teleop_twist_keyboard in this launch. Default false (run it yourself in another terminal).',
     )
 
-    # 6. WorldControl (gz-sim-gui / ServerConfig plugins) may load the world in a
-    #    paused state (e.g. when a GUI is present and the user expects to hit the
-    #    Play button). To make the sim work unattended under `ros2 launch` (no human
-    #    at the GUI), unpause the world 5 s after launch. This is a no-op when the
-    #    world is already running.
-    #    Service: `/world/<world_name>/control`, WorldControl message, field `pause`.
-    unpause_cmd = [
-        'gz', 'service', '-s', '/world/smb_world/control',
-        '--reqtype', 'gz.msgs.WorldControl',
-        '--reptype', 'gz.msgs.Boolean',
-        '--timeout', '2000',
-        '--req', 'pause: false',
-    ]
-    unpause_world = ExecuteProcess(
-        cmd=unpause_cmd,
-        output='screen',
-        name='unpause_world',
-    )
+    # The world starts unpaused via <start_paused>false</start_paused> in the
+    # SDF (WorldControl plugin). Previously this launch had a 5s TimerAction
+    # that called `gz service ... --req 'pause: false'` to unpause the world
+    # at runtime — that was a workaround for the SDF defaulting to paused when
+    # a GUI is present. Removing the SDF-side pause eliminates a ~5s window
+    # after launch where the physics doesn't step even though /cmd_vel is
+    # being forwarded. (Felt by users as "the robot doesn't move for the first
+    # 10s".) The 5s wait was for the world/control service to become available,
+    # which is also no longer needed.
 
     return LaunchDescription([
         declare_world_cmd,
@@ -236,10 +226,7 @@ def generate_launch_description():
         declare_teleop_cmd,
         OpaqueFunction(function=_make_gz_sim),
         rsp_node,
-        laser_frame_remap,
         bridge_node,
         slam_launch,
         rviz_node,
-        # Run after gz sim has had time to load the world and register services.
-        TimerAction(period=5.0, actions=[unpause_world]),
     ])

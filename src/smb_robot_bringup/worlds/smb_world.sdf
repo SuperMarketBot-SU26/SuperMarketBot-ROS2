@@ -111,7 +111,7 @@
         </gz-gui>
         <play_pause>true</play_pause>
         <step>true</step>
-        <start_paused>true</start_paused>
+        <start_paused>false</start_paused>
         <use_event>true</use_event>
       </plugin>
 
@@ -166,8 +166,16 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
 
-    <!-- Ground plane -->
+    <!-- Ground plane.
+         Top surface = world z = 0. Default SDF pose would center this 0.1m-thick
+         box at z=0 (top at z=+0.05), which means the robot's wheels (spawned
+         with bottom at z=0.0) start 5cm below the visible ground. The physics
+         solver then has to push the robot up to settle on top of the plane,
+         which over the first ~5-10s of wall-clock time looks like "the car is
+         sunk into the ground". Shifting the plane center to z=-0.05 puts the
+         top surface at z=0, where the rest of the model assumes it is. -->
     <model name="ground_plane">
+      <pose>0 0 -0.05 0 0 0</pose>
       <static>true</static>
       <link name="link">
         <collision name="collision">
