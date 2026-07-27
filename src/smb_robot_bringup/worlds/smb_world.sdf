@@ -460,14 +460,12 @@
         </sensor>
       </link>
 
-      <!-- Drive wheels (left/right), 2 sphere wheels FORWARD of chassis center.
-           Sphere matches visualize_lidar.sdf's reference: avoids the wheel-axis
-           direction error that cylinder wheels have under the rpy=-1.5707 pose
-           rotation. With chassis_inertia sized to the chassis mass (2 kg) and
-           wheels at x=+0.05 carrying the front load, the chassis stays level
-           under forward thrust. -->
+      <!-- Drive wheels (left/right) at the REAR of the chassis (x = -0.05).
+           Sphere shape avoids the wheel-axis direction error that cylinder wheels
+           have under the rpy=-1.5707 pose rotation.
+           Matches the real robot: rear drive wheels driven by motors with encoders. -->
       <link name='left_wheel'>
-        <pose>0.05 0.11 -0.04 -1.5707 0 0</pose>
+        <pose>-0.05 0.11 -0.04 -1.5707 0 0</pose>
         <inertial>
           <mass>0.1</mass>
           <inertia>
@@ -498,7 +496,7 @@
       </link>
 
       <link name='right_wheel'>
-        <pose>0.05 -0.11 -0.04 -1.5707 0 0</pose>
+        <pose>-0.05 -0.11 -0.04 -1.5707 0 0</pose>
         <inertial>
           <mass>0.1</mass>
           <inertia>
@@ -528,12 +526,12 @@
         </collision>
       </link>
 
-      <!-- Single rear caster (passive). Sphere radius 0.04 at x=-0.105 (same
-           as the drive wheels). Ball joint at chassis local z = -0.04, so the
-           caster centre is at world z = 0.04 (when model origin is at z=0.08)
-           and the caster bottom touches the ground. -->
-      <link name='caster_back'>
-        <pose>-0.105 0 -0.04 0 0 0</pose>
+      <!-- One passive front ball caster (free-rolling). Sphere radius 0.04 at x=+0.05.
+           Ball joint so the caster rolls freely during turns — this is critical
+           for DiffDrive odometry accuracy: the plugin assumes free-rolling wheels,
+           and any caster dragging causes odometry errors that break SLAM scan matching. -->
+      <link name='caster_front'>
+        <pose>0.05 0 -0.04 0 0 0</pose>
         <inertial>
           <mass>0.05</mass>
           <inertia>
@@ -587,9 +585,9 @@
         </axis>
       </joint>
 
-      <joint name='caster_back_joint' type='ball'>
+      <joint name='caster_front_joint' type='ball'>
         <parent>base_link</parent>
-        <child>caster_back</child>
+        <child>caster_front</child>
       </joint>
 
       <!-- DiffDrive: publishes odom + tf + accepts cmd_vel.

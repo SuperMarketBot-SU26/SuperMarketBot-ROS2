@@ -24,12 +24,12 @@
   <xacro:property name="wheel_radius"   value="0.04"/>
   <xacro:property name="wheel_thickness" value="0.02"/>
   <xacro:property name="track"          value="0.22"/>
-  <!-- Drive wheels forward of chassis center (x = +0.05), single caster at the
-       rear (x = -0.105). This mirrors the visualize_lidar.sdf reference layout:
-       wheels carry the front load, caster balances the rear. Masses/inertia
-       sized for a chibi ~30cm supermarket robot. -->
-  <xacro:property name="wheel_offset_x" value="0.05"/>
-  <xacro:property name="caster_offset_x" value="-0.105"/>
+  <!-- Drive wheels at the REAR of the chassis (x = -0.05), driven by motors with
+       encoders — matches the real robot layout. Single ball caster at the front
+       (x = +0.05) for free-rolling turns. Ball joint is critical: the front caster
+       must roll freely during rotation so DiffDrive odometry stays accurate. -->
+  <xacro:property name="wheel_offset_x" value="-0.05"/>
+  <xacro:property name="caster_offset_x" value="+0.05"/>
   <!-- Caster uses the same radius as the drive wheels so all three contact
        points lie on the same ground plane. The wheel_radius property above
        is reused for the caster sphere. -->
@@ -76,7 +76,7 @@
     </collision>
   </link>
 
-  <!-- Left wheel: positive y side, FORWARD of chassis center (x = +0.05) -->
+  <!-- Left rear drive wheel: positive y side, REAR of chassis -->
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="left_wheel"/>
@@ -113,7 +113,7 @@
     </collision>
   </link>
 
-  <!-- Right wheel: negative y side, FORWARD of chassis center (x = +0.05) -->
+  <!-- Right rear drive wheel: negative y side, REAR of chassis -->
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="right_wheel"/>
@@ -147,17 +147,17 @@
     </collision>
   </link>
 
-  <!-- Single rear caster ball (passive). Same offset z as the drive wheels
+  <!-- One passive front ball caster (free-rolling). Same offset z as the drive wheels
        (-wheel_radius) so the caster sphere bottom rests on the ground at the
-       same plane as the wheel bottoms. Ball-jointed at the chassis for free
-       yaw. Layout matches visualize_lidar.sdf's vehicle_blue: 2 forward drive
-       wheels + 1 rear caster, forming a stable 3-point contact polygon. -->
-  <joint name="caster_wheel_joint" type="fixed">
+       same plane as the wheel bottoms.
+       URDF uses 'fixed' (KDL/RViz limitation; ball is SDF-only).
+       SDF uses 'ball' for Gazebo free-rolling physics. -->
+  <joint name="caster_front_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="caster_back"/>
+    <child link="caster_front"/>
     <origin xyz="${caster_offset_x} 0 -${wheel_radius}" rpy="0 0 0"/>
   </joint>
-  <link name="caster_back">
+  <link name="caster_front">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="${caster_mass}"/>

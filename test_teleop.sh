@@ -9,6 +9,9 @@
 # What it does:
 #   1. Cleans leftover teleop processes from a previous run.
 #   2. Spawns an xterm window with teleop_twist_keyboard publishing to /cmd_vel.
+#      Teleop publishes plain geometry_msgs/Twist (not TwistStamped), so it bypasses
+#      the supervisor and goes directly to ros_gz_bridge → Gazebo.
+#      Nav2 sends TwistStamped via /cmd_vel_nav → supervisor → /cmd_vel (separate path).
 #   3. Cleans up teleop processes on Ctrl-C / exit. Does NOT touch the sim —
 #      run test_sim.sh in parallel to get the full bringup.
 #
@@ -136,8 +139,11 @@ fi
 # its own window so the user controls the keyboard input there; this script
 # stays in the foreground so Ctrl-C in this terminal cleanly stops the xterm.
 #
-# ros_gz_bridge maps /cmd_vel (ROS) -> /model/smb/cmd_vel (gz), so teleop must
-# publish to /cmd_vel on the ROS side (no remap). See config/ros_gz_bridge.yaml.
+# ros_gz_bridge maps /cmd_vel (ROS) -> /model/smb/cmd_vel (gz). Teleop
+# publishes plain Twist on /cmd_vel, bypassing the supervisor. Nav2 publishes
+# TwistStamped on /cmd_vel_nav, which the supervisor normalizes to Twist before
+# it reaches /cmd_vel. See config/ros_gz_bridge.yaml and
+# smb_nodes/supervisor.py.
 if ! command -v xterm >/dev/null 2>&1; then
     echo "[test_teleop] ERROR: xterm is not installed."
     echo "                sudo apt install xterm"
