@@ -19,13 +19,21 @@ States
 
 Topic / service contract
 ------------------------
-- Subscribes: ``cmd_vel_in`` (Twist AND TwistStamped — both supported
-  simultaneously so we work with legacy teleop/firmware (Twist) and modern
-  Nav2 (TwistStamped) without remap dance). ``emergency_stop`` (Bool,
-  latched).
-- Publishes:  ``cmd_vel`` (Twist, RELIABLE), ``supervisor/state`` (String,
-  latched, TRANSIENT_LOCAL).
+- Subscribes: ``cmd_vel_in`` (geometry_msgs/TwistStamped — Nav2 main/rolling
+  publish this on ``/cmd_vel_nav`` per the topic contract; legacy teleop that
+  publishes ``Twist`` would need a launch arg remap). ``emergency_stop``
+  (Bool, latched).
+- Publishes:  ``cmd_vel`` (geometry_msgs/Twist, RELIABLE — downstream
+  ros_gz_bridge and the firmware expect this type). ``supervisor/state``
+  (String, latched, TRANSIENT_LOCAL).
 - Service:    ``supervisor/cmd`` (smb_msgs/SupervisorCmd).
+
+The supervisor normalizes the incoming TwistStamped down to a plain Twist
+(stamp/header discarded) so the contracted output type matches what
+ros_gz_bridge / firmware already consume. Single subscription on the
+input topic: rclpy/DDS reject two subscriptions on the same topic with
+incompatible types, so we canonicalize on TwistStamped — the type Nav2
+publishes — and document the teleop convention separately.
 
 Default topics match the values in ``docs/TOPIC_CONTRACT.md`` where they
 overlap (``/cmd_vel``); the supervisor-owned topics are namespaced
@@ -114,15 +122,13 @@ class Supervisor(Node):
 
         # ---- I/O ----
         # Nav2 main (and rolling) publishes geometry_msgs/TwistStamped on the
-        # controller output topic; legacy teleop and the SMB firmware-side
-        # contract publish geometry_msgs/Twist. We subscribe to BOTH on the
-        # same topic name — rclpy will create two subscriptions and route
-        # incoming messages by their declared type. The cache write goes
-        # through a single helper so both paths collapse into _last_cmd_vel
-        # as a plain Twist.
+        # controller output topic (see smb_nav2_minimal.launch.py which remaps
+        # controller_server's internal cmd_vel -> cmd_vel_nav). The contract
+        # publishes geometry_msgs/Twist on /cmd_vel for the ros_gz_bridge and
+        # firmware, so the supervisor normalizes TwistStamped -> Twist and
+        # caches it as _last_cmd_vel; the output timer publishes the cached
+        # value at state_publish_period_sec.
         self._cmd_vel_in_sub = self.create_subscription(
-            Twist, cmd_vel_in, self._on_cmd_vel_in, cmd_vel_qos)
-        self._cmd_vel_in_sub_stamped = self.create_subscription(
             TwistStamped, cmd_vel_in, self._on_cmd_vel_in_stamped, cmd_vel_qos)
         self._estop_sub = self.create_subscription(
             Bool, estop_topic, self._on_estop, latched_qos)
@@ -151,10 +157,6 @@ class Supervisor(Node):
             f'estop={estop_topic}, service={cmd_service}')
 
     # ---- Callbacks ----
-
-    def _on_cmd_vel_in(self, msg: Twist) -> None:
-        """Cache the latest upstream Twist command (legacy / teleop / firmware)."""
-        self._last_cmd_vel = msg
 
     def _on_cmd_vel_in_stamped(self, msg: TwistStamped) -> None:
         """Cache the latest upstream TwistStamped command (Nav2 main/rolling).

@@ -210,6 +210,15 @@ else
     HEADER="Windowed=YES (combined-mode GUI), RViz=YES"
 fi
 
+# Opt into the full Nav2 stack (planner+controller+BT+waypoint+behaviors).
+# Off by default — without Nav2 the sim is a SLAM + teleop sandbox, which is
+# what most callers want for bringup / URDF verification. Set `NAV2=true` to
+# bring up the bt_navigator so /navigate_to_pose action becomes available.
+if [[ "${NAV2:-false}" == "true" ]]; then
+    LAUNCH_ARGS+=("use_nav2:=true")
+    HEADER="$HEADER, Nav2=YES (controller_server+planner_server+bt_navigator+...)"
+fi
+
 echo
 echo "[test_sim] Workspace : $SCRIPT_DIR"
 echo "[test_sim] ROS distro: $ROS_DISTRO"

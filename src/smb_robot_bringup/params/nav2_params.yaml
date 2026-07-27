@@ -56,6 +56,15 @@ controller_server:
     progress_checker_plugins: ["progress_checker"]
     goal_checker_plugins: ["general_goal_checker"]
     controller_plugins: ["FollowPath"]
+    # Nav2 (lyrical) requires an explicit "current_*" parameter naming which
+    # plugin in the list is active. Without these, controller_server crashes
+    # on the first goal with exit code -11 (SIGSEGV) — the warnings
+    # "No goal checker was specified in parameter 'current_goal_checker'"
+    # / "current_progress_checker" / "current_path_handler" appear once
+    # then the container process dies. This pattern matches upstream Jazzy+
+    # where the controller server validates these names.
+    current_progress_checker: progress_checker
+    current_goal_checker: general_goal_checker
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
       required_movement_radius: 0.5
@@ -66,31 +75,25 @@ controller_server:
       xy_goal_tolerance: 0.25
       yaw_goal_tolerance: 0.25
     FollowPath:
-      # DWB controller — robust default, simpler than MPPI for diff-drive.
-      plugin: "dwb_core::DWBLocalPlanner"
+      # Regulated Pure Pursuit — simpler than DWB, more stable for diff-drive.
+      # Avoids the segment-traj critics that DWB depends on, which can segfault
+      # controller_server in some lyrical builds when path samples are nearly
+      # co-linear (the case for short in-place headings).
+      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
       max_vel_x: 0.26
-      max_vel_y: 0.0
+      min_vel_theta: 0.0
       max_vel_theta: 1.0
-      min_speed_xy: 0.0
-      max_speed_xy: 0.26
-      min_speed_theta: 0.0
       acc_lim_x: 2.5
       acc_lim_theta: 3.2
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
-      stateful: True
-      # Critics — required by DWBLocalPlanner since upstream 1.1+. Without
-      # these, configure() throws "Parameter FollowPath.critics not in
-      # overrides" and lifecycle activation aborts.
-      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalDist", "PathAlign", "PathDist"]
-      BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
-      PathDist.scale: 32.0
-      GoalDist.scale: 20.0
-      RotateToGoal.scale: 32.0
+      # xy_goal_tolerance / yaw_goal_tolerance / stateful inherit from defaults.
+      desired_linear_vel: 0.20
+      lookahead_dist: 0.6
+      rotate_to_heading_angular_vel: 0.6
+      transform_tolerance: 0.5
+      use_collision_detection: true
 
 local_costmap:
   local_costmap:
