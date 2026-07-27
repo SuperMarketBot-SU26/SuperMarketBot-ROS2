@@ -7,10 +7,6 @@ Panels:
         - /Global Options1
       Splitter Ratio: 0.5
     Tree Height: 70
-  - Class: nav2_rviz_plugins/Navigation 2
-    Name: Navigation 2
-  - Class: nav2_rviz_plugins/Selector
-    Name: Selector
 Visualization Manager:
   Class: ""
   Displays:
