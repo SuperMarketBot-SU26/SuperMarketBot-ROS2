@@ -17,7 +17,8 @@ You (`ros2_ws` maintainer) don't have the robot. Teammate (in `SuperMarketBot-IO
 | `/scan` | firmware → ROS2 | `sensor_msgs/msg/LaserScan` | `BEST_EFFORT`, depth=10 | 10 Hz | `laser_frame` | — | YDLIDAR X3 (or sim equivalent). `range_min=0.12m`, `range_max=6.0m` for indoor supermarket. |
 | `/odom` | firmware → ROS2 | `nav_msgs/msg/Odometry` | `RELIABLE` | 30 Hz | `odom` | `base_link` | From wheel encoders + IMU EKF fusion. Covariance: x/y 0.25 m², yaw 0.05 rad². |
 | `/imu/data` | firmware → ROS2 | `sensor_msgs/msg/Imu` | `RELIABLE` | 30 Hz | `imu_link` | — | Orientation only (no accel). Orientation covariance: `[-1, -1, 0.05, -1, -1, -1]`. |
-| `/cmd_vel` | ROS2 → firmware | `geometry_msgs/msg/Twist` | `RELIABLE` | 10–50 Hz | — | — | Units: `linear.x` = m/s, `angular.z` = rad/s. |
+| `/cmd_vel` | ROS2 → firmware | `geometry_msgs/msg/Twist` | `RELIABLE` | 10–50 Hz | — | — | Units: `linear.x` = m/s, `angular.z` = rad/s. Output of `smb_nodes.supervisor`. |
+| `/cmd_vel_nav` | Nav2 → supervisor | `geometry_msgs/msg/Twist` *or* `TwistStamped` | `RELIABLE` | 10–50 Hz | — | — | Internal between Nav2 and the supervisor. `smb_nodes.supervisor` subscribes to **both** types so it works with legacy `Twist` publishers and modern Nav2 main (which publishes `TwistStamped`). The supervisor normalizes incoming `TwistStamped` to `Twist` before republishing on `/cmd_vel`. |
 | `/tf` | both | `tf2_msgs/msg/TFMessage` | — | various | — | — | Dynamic transforms. |
 | `/tf_static` | ROS2 → ROS2 | `tf2_msgs/msg/TFMessage` | `TRANSIENT_LOCAL` | latched | — | — | `robot_state_publisher` publishes `base_link → laser_frame`, `base_link → imu_link`. |
 | `/map` | ROS2 internal | `nav_msgs/msg/OccupancyGrid` | `TRANSIENT_LOCAL` | on change | `map` | — | From slam_toolbox. |

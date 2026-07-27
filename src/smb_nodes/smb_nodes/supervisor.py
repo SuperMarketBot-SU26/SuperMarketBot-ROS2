@@ -19,9 +19,12 @@ States
 
 Topic / service contract
 ------------------------
-- Subscribes: ``cmd_vel_in`` (Twist), ``emergency_stop`` (Bool, latched).
+- Subscribes: ``cmd_vel_in`` (Twist AND TwistStamped — both supported
+  simultaneously so we work with legacy teleop/firmware (Twist) and modern
+  Nav2 (TwistStamped) without remap dance). ``emergency_stop`` (Bool,
+  latched).
 - Publishes:  ``cmd_vel`` (Twist, RELIABLE), ``supervisor/state`` (String,
-              latched, TRANSIENT_LOCAL).
+  latched, TRANSIENT_LOCAL).
 - Service:    ``supervisor/cmd`` (smb_msgs/SupervisorCmd).
 
 Default topics match the values in ``docs/TOPIC_CONTRACT.md`` where they
@@ -44,7 +47,7 @@ import enum
 from typing import Optional
 
 import rclpy
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, TwistStamped
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import QoSDurabilityPolicy, QoSProfile, QoSReliabilityPolicy
@@ -110,8 +113,17 @@ class Supervisor(Node):
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL)
 
         # ---- I/O ----
+        # Nav2 main (and rolling) publishes geometry_msgs/TwistStamped on the
+        # controller output topic; legacy teleop and the SMB firmware-side
+        # contract publish geometry_msgs/Twist. We subscribe to BOTH on the
+        # same topic name — rclpy will create two subscriptions and route
+        # incoming messages by their declared type. The cache write goes
+        # through a single helper so both paths collapse into _last_cmd_vel
+        # as a plain Twist.
         self._cmd_vel_in_sub = self.create_subscription(
             Twist, cmd_vel_in, self._on_cmd_vel_in, cmd_vel_qos)
+        self._cmd_vel_in_sub_stamped = self.create_subscription(
+            TwistStamped, cmd_vel_in, self._on_cmd_vel_in_stamped, cmd_vel_qos)
         self._estop_sub = self.create_subscription(
             Bool, estop_topic, self._on_estop, latched_qos)
         self._cmd_vel_out_pub = self.create_publisher(
@@ -141,8 +153,20 @@ class Supervisor(Node):
     # ---- Callbacks ----
 
     def _on_cmd_vel_in(self, msg: Twist) -> None:
-        """Cache the latest upstream command. ESTOP gate happens at publish."""
+        """Cache the latest upstream Twist command (legacy / teleop / firmware)."""
         self._last_cmd_vel = msg
+
+    def _on_cmd_vel_in_stamped(self, msg: TwistStamped) -> None:
+        """Cache the latest upstream TwistStamped command (Nav2 main/rolling).
+
+        Normalize to a plain Twist — the contract topic ``/cmd_vel`` is
+        ``geometry_msgs/Twist`` and downstream (ros_gz_bridge, firmware)
+        expects that type. We discard the stamp and header.
+        """
+        plain = Twist()
+        plain.linear = msg.twist.linear
+        plain.angular = msg.twist.angular
+        self._last_cmd_vel = plain
 
     def _on_estop(self, msg: Bool) -> None:
         """Latched ESTOP from /emergency_stop. True forces ESTOP state."""
