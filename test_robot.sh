@@ -1,62 +1,56 @@
 #!/usr/bin/env bash
-# test_robot.sh — one-command test for the real-robot bringup.
+# test_robot.sh — one-command bringup for the real-robot integration.
 #
 # Usage:
-#   ./test_robot.sh                 # start micro-ROS agent + robot bringup (with RViz)
-#   ./test_robot.sh false           # robot bringup only (no RViz)
-#   ./test_robot.sh --check         # verify deps + launch syntax, do not start anything
+#   ./test_robot.sh             # full bringup (agent + SLAM + Nav2 + RViz)
+#   ./test_robot.sh --check     # verify deps + launch syntax only (no bringup)
+#   SKIP_MICRO_ROS=true ./test_robot.sh  # skip micro-ROS agent (already running)
 #
 # Env vars:
-#   ROS_DISTRO           (default: lyrical)
-#   AGENT_TRANSPORT      (default: udp4)         — micro-ROS agent transport
-#   AGENT_PORT           (default: 8888)          — micro-ROS agent port
-#   ESP32_AGENT_IP       (default: empty)         — if set, agent binds to this interface
-#                                                    instead of 0.0.0.0 (use to match ESP32's
-#                                                    MICRO_ROS_AGENT_IP)
-#   SKIP_AGENT           (default: false)         — if true, don't start the agent;
-#                                                    useful when it's already running
-#                                                    in another terminal.
+#   ROS_DISTRO          (default: lyrical)
+#   SKIP_MICRO_ROS      (default: false)  — set true if agent is already running
 #
 # What it does:
-#   1. Cleans leftover sim/slam/agent processes from a previous run.
-#   2. Starts micro-ROS agent in background on UDP 8888 (unless SKIP_AGENT=true).
-#   3. Launches robot bringup via smb.launch.py mode:=robot (URDF + SLAM + RViz).
-#   4. Cleans up agent + launch on Ctrl-C / exit.
+#   1. Cleans leftover robot/slam processes from a previous run.
+#   2. Launches smb.launch.py mode:=robot which starts:
+#        - micro-ROS agent (WiFi UDP 8888) ← bridges ESP32 ↔ ROS2
+#        - robot_state_publisher
+#        - joint_state_publisher (zero-pose for RViz)
+#        - slam_toolbox online_async
+#        - Nav2 (planner + controller + BT + behaviors + waypoint_follower)
+#        - supervisor FSM (/cmd_vel gating with estop)
+#        - RViz2 with smb.rviz
+#   3. Cleans up on Ctrl-C / exit.
 #
-# Telemetry input (teleop) is NOT included here. To drive the robot, run
-# ./test_teleop.sh in another terminal. This separation lets you Ctrl-C
-# teleop without killing the bringup.
+# Telemetry / driving:
+#   Use ./test_teleop.sh in another terminal to drive via /cmd_vel.
+#   Use ./test_nav2_goal.sh to send Nav2 NavigateToPose goals.
 #
-# Requires:
-#   - micro_ros_agent (apt: ros-${ROS_DISTRO}-micro-ros-agent; or source build
-#     via the entry in ros2_ws.repos). On lyrical this is NOT on apt — vendor
-#     from source per the rule in .cursor/rules/30-ros2-guidelines.mdc.
-#   - The ESP32 must be running MicroRos.h and reachable on the WiFi network.
+# Hardware prerequisite:
+#   - ESP32 must be running MicroRos.h firmware
+#   - ESP32 MICRO_ROS_AGENT_IP must match the host PC's IP on the shared WiFi
+#     Run `ip addr show` to find the host IP, then update MicroRos.h or set
+#     a matching static IP (default in firmware: 192.168.1.241).
+#   - micro-ROS agent built from source (in install/micro_ros_agent/...).
+#     The snap build is NOT compatible with ROS 2 lyrical (CDR format
+#     mismatch causes std::bad_alloc storm). See ros2_ws.repos notes.
 
 set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROS_DISTRO="${ROS_DISTRO:-lyrical}"
-AGENT_TRANSPORT="${AGENT_TRANSPORT:-udp4}"
-AGENT_PORT="${AGENT_PORT:-8888}"
-SKIP_AGENT="${SKIP_AGENT:-false}"
+SKIP_MICRO_ROS="${SKIP_MICRO_ROS:-false}"
 
 # ----- Args --------------------------------------------------------------------
-opt="${1:-true}"
+opt="${1:-}"
 
 if [[ "$opt" == "--check" ]]; then
     do_check_only=1
-    HEADLESS="${2:-false}"
-elif [[ -z "$opt" ]]; then
-    opt="true"
-elif [[ "$opt" != "true" && "$opt" != "false" ]]; then
-    echo "Usage: $0 [true|false] [--check]"
-    echo "       true|false   Open RViz2 (default true)"
-    echo "       --check      Verify deps + launch syntax only"
+elif [[ -n "$opt" && "$opt" != "--check" ]]; then
+    echo "Usage: $0 [--check]"
+    echo "       --check   verify deps + launch syntax only"
     exit 1
 fi
-
-OPEN_RVIZ="$opt"
 
 # ----- Sanity checks -----------------------------------------------------------
 if [[ ! -d "$SCRIPT_DIR/install/smb_robot_bringup" ]]; then
@@ -64,149 +58,101 @@ if [[ ! -d "$SCRIPT_DIR/install/smb_robot_bringup" ]]; then
     echo "Build it first:"
     echo "  cd $SCRIPT_DIR"
     echo "  source /opt/ros/${ROS_DISTRO}/setup.bash"
-    echo "  colcon build --parallel-workers 2 --packages-select smb_msgs smb_bridge smb_nodes smb_robot smb_robot_bringup"
+    echo "  colcon build"
     exit 1
 fi
 
 if ! [[ -f "/opt/ros/${ROS_DISTRO}/setup.bash" ]]; then
     echo "ERROR: /opt/ros/${ROS_DISTRO}/setup.bash not found."
-    echo "Is ROS '${ROS_DISTRO}' installed? Try: ls /opt/ros/"
     exit 1
 fi
 
-# Source ROS (handle set -u semantics in /opt/ros setup.bash).
+# Source ROS
 set +u
-# shellcheck source=/opt/ros/lyrical/setup.bash
 source "/opt/ros/${ROS_DISTRO}/setup.bash"
 source "$SCRIPT_DIR/install/setup.bash"
 
-# ----- --check short-circuit ---------------------------------------------------
+# ----- --check -----------------------------------------------------------------
 if [[ "${do_check_only:-0}" -eq 1 ]]; then
-    echo "[test_robot] --check mode: verifying deps + launch syntax (no agent, no bringup)."
-    printf "  %-30s ... " "micro_ros_agent"
-    if ros2 pkg executables micro_ros_agent 2>/dev/null | grep -q .; then
+    echo "[test_robot] --check mode: verifying deps + launch syntax."
+    printf "  %-30s ... " "micro_ros_agent (source)"
+    if [[ -x "$SCRIPT_DIR/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent" ]]; then
         echo "OK"
     else
         echo "FAIL"
-        echo "    On ${ROS_DISTRO}, the agent is NOT in apt. Vendor from source:"
-        echo "    vcs import src < ros2_ws.repos   # adds micro_ros_agent entry"
-        echo "    colcon build --packages-select micro_ros_agent"
+        echo "    Build: cd $SCRIPT_DIR && source /opt/ros/${ROS_DISTRO}/setup.bash && \\"
+        echo "      colcon build --packages-select micro_ros_agent --cmake-args \\"
+        echo "        -DMICROROSAGENT_SUPERBUILD=ON -DUAGENT_USE_SYSTEM_LOGGER=OFF \\"
+        echo "        -DSPDLOG_FMT_EXTERNAL=OFF -DCMAKE_BUILD_TYPE=Release"
         exit 1
     fi
-    for f in smb.launch.py smb_robot.launch.py; do
-        printf "  %-30s ... " "$f"
-        if ros2 launch smb_robot_bringup "$f" --show-args >/dev/null 2>&1; then
-            echo "OK"
-        else
-            echo "FAIL"
-            ros2 launch smb_robot_bringup "$f" --show-args 2>&1 | tail -20
-            exit 1
-        fi
-    done
+    printf "  %-30s ... " "smb_robot.launch.py"
+    if ros2 launch smb_robot_bringup smb_robot.launch.py --show-args >/dev/null 2>&1; then
+        echo "OK"
+    else
+        echo "FAIL"
+        ros2 launch smb_robot_bringup smb_robot.launch.py --show-args 2>&1 | tail -10
+        exit 1
+    fi
+    printf "  %-30s ... " "smb.launch.py (dispatcher)"
+    if ros2 launch smb_robot_bringup smb.launch.py --show-args >/dev/null 2>&1; then
+        echo "OK"
+    else
+        echo "FAIL"
+        exit 1
+    fi
     echo "[test_robot] --check OK. Nothing was started."
-    trap - INT TERM EXIT
     exit 0
 fi
 
-# ----- Pre-flight: topics check ------------------------------------------------
-# Refuse to start if a previous run is still publishing to /scan, /odom, or
-# /clock (clock implies sim is still running). The agent binds to UDP so it
-# won't conflict with leftover publishers, but stale slam_toolbox / RViz
-# processes will eat messages.
-echo "[test_robot] Cleaning leftover sim/agent/slam processes..."
-pkill -INT -f "ros2 launch smb_robot_bringup" 2>/dev/null || true
-pkill -INT -f "ros2 launch smb.launch.py"     2>/dev/null || true
+# ----- Pre-launch cleanup ------------------------------------------------------
+echo "[test_robot] Cleaning leftover processes..."
+pkill -INT -f "ros2 launch smb_robot_bringup"  2>/dev/null || true
+pkill -INT -f "ros2 launch smb.launch.py"      2>/dev/null || true
 sleep 2
-pkill -9 -f "micro_ros_agent"                                                    2>/dev/null || true
-pkill -9 -f "/opt/ros/lyrical/lib/slam_toolbox/.*async_slam_toolbox_node"          2>/dev/null || true
-pkill -9 -x async_slam_toolbox_node                                                2>/dev/null || true
-pkill -9 -f "/opt/ros/lyrical/lib/robot_state_publisher/robot_state_publisher"     2>/dev/null || true
-pkill -9 -x robot_state_publi                                                      2>/dev/null || true
-pkill -9 -f "/opt/ros/lyrical/lib/rviz2/rviz2.*smb_robot_bringup"                  2>/dev/null || true
-pkill -9 -x rviz2                                                                 2>/dev/null || true
-# Catch sim leftovers from a previous test_sim.sh session that might be on
-# the same machine.
-pkill -9 -f "/opt/ros/lyrical/lib/gz_sim_vendor/libexec/gz/sim10/gz-sim-main"     2>/dev/null || true
-pkill -9 -f "gz-sim-gui-client"                                                    2>/dev/null || true
-pkill -9 -f "/opt/ros/lyrical/lib/ros_gz_bridge/parameter_bridge"                  2>/dev/null || true
-pkill -9 -x parameter_bridge                                                       2>/dev/null || true
+# Nuke snap micro-ros-agent processes.
+pkill -9 -f "snap.micro-ros-agent"  2>/dev/null || true
+# Kill remaining node binaries (snap agents spawn their own process names).
+pkill -9 -f "micro_ros_agent"        2>/dev/null || true
+pkill -9 -f "async_slam_toolbox_node"     2>/dev/null || true
+pkill -9 -f "robot_state_publisher"  2>/dev/null || true
+pkill -9 -f "nav2_container"        2>/dev/null || true
+pkill -9 -f "rviz2"                 2>/dev/null || true
+pkill -9 -f "supervisor"             2>/dev/null || true
 sleep 1
 echo "[test_robot] Cleanup done."
 
-# ----- Start micro-ROS agent (if not skipped) ----------------------------------
-AGENT_PID=""
-if [[ "$SKIP_AGENT" == "true" ]]; then
-    echo "[test_robot] SKIP_AGENT=true — assuming agent is already running."
-else
-    if ! ros2 pkg executables micro_ros_agent 2>/dev/null | grep -q .; then
-        echo "ERROR: micro_ros_agent not built. On ${ROS_DISTRO} it is NOT in apt."
-        echo "Either set SKIP_AGENT=true if you've started it another way, or:"
-        echo "  vcs import src < ros2_ws.repos   # vendors the agent"
-        echo "  colcon build --packages-select micro_ros_agent"
-        exit 1
-    fi
-    echo "[test_robot] Starting micro-ROS agent on ${AGENT_TRANSPORT} port ${AGENT_PORT}..."
-    # Background the agent. Its logs go to the agent log file so the user can
-    # tail it separately. SIGINT propagation is handled by our trap below.
-    AGENT_LOG="/tmp/smb_micro_ros_agent.log"
-    ros2 run micro_ros_agent micro_ros_agent "${AGENT_TRANSPORT}" --port "${AGENT_PORT}" \
-        > "${AGENT_LOG}" 2>&1 &
-    AGENT_PID=$!
-    # Give the agent a moment to bind the UDP socket so the ESP32 doesn't
-    # bounce when it next sends a discovery packet.
-    sleep 1
-    if ! kill -0 "${AGENT_PID}" 2>/dev/null; then
-        echo "[test_robot] Agent failed to start. Last 20 log lines:"
-        tail -20 "${AGENT_LOG}" 2>/dev/null || true
-        exit 1
-    fi
-    echo "[test_robot] Agent PID=${AGENT_PID}, log=${AGENT_LOG}"
-fi
-
-# ----- Cleanup on Ctrl-C -------------------------------------------------------
+# ----- Cleanup on exit ---------------------------------------------------------
 cleanup() {
     echo
     echo "[test_robot] Shutting down..."
-    # Bring down the launch first (it forwards SIGINT to its children).
-    pkill -INT -f "ros2 launch smb_robot_bringup" 2>/dev/null || true
-    pkill -INT -f "ros2 launch smb.launch.py"     2>/dev/null || true
+    pkill -INT -f "ros2 launch smb_robot_bringup"  2>/dev/null || true
+    pkill -INT -f "ros2 launch smb.launch.py"      2>/dev/null || true
     sleep 2
-    # Then nuke the agent if we started it.
-    if [[ -n "${AGENT_PID}" ]]; then
-        kill "${AGENT_PID}" 2>/dev/null || true
-    fi
-    pkill -9 -f "micro_ros_agent" 2>/dev/null || true
-    # Final sweep — anything still alive from our bringup.
-    pkill -9 -f "/opt/ros/lyrical/lib/slam_toolbox/.*async_slam_toolbox_node"     2>/dev/null || true
-    pkill -9 -x async_slam_toolbox_node                                              2>/dev/null || true
-    pkill -9 -f "/opt/ros/lyrical/lib/robot_state_publisher/robot_state_publisher"  2>/dev/null || true
-    pkill -9 -x robot_state_publi                                                    2>/dev/null || true
-    pkill -9 -f "/opt/ros/lyrical/lib/rviz2/rviz2.*smb_robot_bringup"                2>/dev/null || true
-    pkill -9 -x rviz2                                                                2>/dev/null || true
-    sleep 1
+    pkill -9 -f "snap.micro-ros-agent"    2>/dev/null || true
+    pkill -9 -f "micro_ros_agent"        2>/dev/null || true
+    pkill -9 -f "async_slam_toolbox_node"     2>/dev/null || true
+    pkill -9 -f "robot_state_publisher"  2>/dev/null || true
+    pkill -9 -f "nav2_container"        2>/dev/null || true
+    pkill -9 -f "rviz2"                 2>/dev/null || true
+    pkill -9 -f "supervisor"             2>/dev/null || true
     echo "[test_robot] Done."
 }
 trap cleanup INT TERM EXIT
 
 # ----- Launch ------------------------------------------------------------------
-if [[ "$OPEN_RVIZ" == "true" ]]; then
-    LAUNCH_ARGS=(mode:=robot rviz:=true)
-    HEADER="RViz=YES"
-else
-    LAUNCH_ARGS=(mode:=robot rviz:=false)
-    HEADER="RViz=NO"
-fi
-
 echo
 echo "[test_robot] Workspace : $SCRIPT_DIR"
 echo "[test_robot] ROS distro: ${ROS_DISTRO}"
-echo "[test_robot] Agent     : ${SKIP_AGENT} (transport=${AGENT_TRANSPORT}, port=${AGENT_PORT})"
-echo "[test_robot] Mode      : ${HEADER}"
-echo "[test_robot] Command   : ros2 launch smb_robot_bringup smb.launch.py ${LAUNCH_ARGS[*]}"
-echo "[test_robot] Tip       : in another terminal, run ./test_teleop.sh to drive /cmd_vel"
+echo "[test_robot] Agent     : source-built micro_ros_agent (install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent)"
+echo "[test_robot] Command   : ros2 launch smb_robot_bringup smb.launch.py mode:=robot"
+echo
+echo "[test_robot] Tip: in another terminal:"
+echo "              ./test_teleop.sh    — drive via /cmd_vel"
+echo "              ./test_nav2_goal.sh — send NavigateToPose goals"
 echo
 
-ros2 launch smb_robot_bringup smb.launch.py "${LAUNCH_ARGS[@]}"
+ros2 launch smb_robot_bringup smb.launch.py mode:=robot
 exit_code=$?
 cleanup
 exit "$exit_code"

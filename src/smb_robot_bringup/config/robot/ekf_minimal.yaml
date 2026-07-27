@@ -1,0 +1,73 @@
+# Minimal EKF for real-robot mode.
+#
+# Purpose: convert ESP32's /odom (NavMsg Odometry) into /tf (odom → base_link).
+# slam_toolbox expects this TF but the ESP32 firmware only publishes the topic,
+# not the transform. Without EKF, SLAM has no `odom → base_link` TF and
+# cannot produce `map → odom` → no map → no Nav2.
+#
+# This is a single-source, single-odom EKF (no IMU fusion). Full sensor
+# fusion (wheel + IMU + AMCL) is in the IOT-repo ekf_config.yaml and is the
+# target for Phase 2. For now, this minimal config unblocks SLAM.
+
+ekf_filter_node:
+  ros__parameters:
+    # Frames (must match docs/TOPIC_CONTRACT.md)
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: odom          # EKF shouldn't publish world→odom itself
+    map_frame: map
+
+    # Frequency
+    frequency: 30.0
+    sensor_timeout: 0.1
+    two_d_mode: true           # planar robot, ignore Z / roll / pitch
+    publish_tf: true           # publish odom → base_link TF
+    print_diagnostics: false
+    debug: false
+
+    # Process noise (loose — single-source, no IMU correction)
+    process_noise_covariance: [
+      0.05,   0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0.05,   0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0.06, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0.03, 0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0.03, 0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0.06, 0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0.025, 0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0.025, 0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0,    0.04, 0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.05]
+
+    # Initial covariance — small because ESP32 starts at origin
+    initial_estimate_covariance: [
+      1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    1e-9,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    1e-9]
+
+    odom0: /odom
+    odom0_config: [
+      true,  true,  false,
+      false, false, true,
+      false, false, false,
+      false, false, false,
+      false, false, false]
+
+    odom0_differential: false
+    odom0_relative: false

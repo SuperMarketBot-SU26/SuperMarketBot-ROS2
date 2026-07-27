@@ -6,6 +6,7 @@ log/
 # upstream vendor: re-cloned on other machines via the `repos` file
 src/slam_toolbox/
 src/nav2_repo/
+src/micro_ros_agent/      # see vendor-patches/micro_ros_agent/SuperBuild.cmake.patch
 
 # editor / IDE
 .vscode/

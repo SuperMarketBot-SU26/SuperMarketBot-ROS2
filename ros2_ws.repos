@@ -29,11 +29,28 @@ repositories:
     # branch is named 'ros2'. Use 'lyrical' if you want distro-specific
     # tagging; 'ros2' tracks the latest ROS2 development.
     version: ros2
-  # micro-ROS agent — needed for real-robot mode (test_robot.sh starts this).
-  # The `rolling` branch tracks ROS 2 rolling, which the lyrical distro
-  # builds against. If the build fails with a fastcdr/foonathan mismatch,
-  # see https://github.com/micro-ROS/micro-ROS-Agent/issues/223 for the
-  # current branch for new distros.
+  # micro-ROS agent — source build ONLY (snap is broken on ROS 2 lyrical).
+  #   The snap build uses Humble-era FastDDS (CDR v1) which is incompatible
+  #   with ROS 2 lyrical FastDDS (CDR v2). Symptoms: std::bad_alloc storm,
+  #   CDR deserialization mismatches, no data delivered to subscribers.
+  #
+  #   Build:
+  #     vcs import src < ros2_ws.repos        # clones src/micro_ros_agent
+  #     cd src/micro_ros_agent
+  #     patch -p1 < ../../vendor-patches/micro_ros_agent/SuperBuild.cmake.patch
+  #     cd /home/nhatkhoa1124/ros2_ws
+  #     source /opt/ros/lyrical/setup.bash
+  #     colcon build --packages-select micro_ros_agent \
+  #       --cmake-args -DMICROROSAGENT_SUPERBUILD=ON -DCMAKE_BUILD_TYPE=Release
+  #
+  #   Binary: install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent
+  #
+  #   The SuperBuild.cmake patch (see vendor-patches/micro_ros_agent/) pins
+  #   spdlog v1.10.0 (last release with fmt::basic_runtime) and pushes the
+  #   private spdlog to the front of CMAKE_PREFIX_PATH so it wins over the
+  #   system spdlog 1.15 (fmt 10+, missing basic_runtime). See
+  #   micro-ROS/micro-ROS-Agent#255 and eProsima/Micro-XRCE-DDS-Agent#344
+  #   for the upstream issues this works around.
   micro_ros_agent:
     type: git
     url: https://github.com/micro-ROS/micro-ROS-Agent.git

@@ -1,0 +1,90 @@
+diff --git a/micro_ros_agent/cmake/SuperBuild.cmake b/micro_ros_agent/cmake/SuperBuild.cmake
+index 3761515..6f11a63 100644
+--- a/micro_ros_agent/cmake/SuperBuild.cmake
++++ b/micro_ros_agent/cmake/SuperBuild.cmake
+@@ -22,6 +22,45 @@ enable_language(CXX)
+ unset(xrceagent_DIR CACHE)
+ find_package(xrceagent 3 EXACT QUIET)
+ if(NOT xrceagent_FOUND)
++    # Build a private spdlog v1.10.0 (bundled fmt 8.1.1, last release with
++    # fmt::basic_runtime). System spdlog 1.15.x uses fmt 10+ which removed
++    # that symbol, causing compilation errors when our agent uses system
++    # spdlog's headers but the bundled fmt symbols don't exist.
++    set(_uagent_deps_prefix "${PROJECT_BINARY_DIR}/agent_deps")
++    ExternalProject_Add(spdlog_for_agent
++            GIT_REPOSITORY
++                https://github.com/gabime/spdlog.git
++            GIT_TAG
++                v1.10.0
++            PREFIX
++                ${PROJECT_BINARY_DIR}/spdlog_for_agent
++            INSTALL_DIR
++                ${_uagent_deps_prefix}
++            CMAKE_CACHE_ARGS
++                -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
++                -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
++                -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
++                -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
++                -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
++                -DBUILD_SHARED_LIBS:BOOL=OFF
++                -DSPDLOG_BUILD_EXAMPLES:BOOL=OFF
++                -DSPDLOG_BUILD_BENCH:BOOL=OFF
++                -DSPDLOG_BUILD_TESTS:BOOL=OFF
++                -DSPDLOG_INSTALL:BOOL=ON
++                -DSPDLOG_FMT_EXTERNAL:BOOL=OFF
++    )
++
++    # Outer XRCE-DDS-Agent SuperBuild. We push our private spdlog install
++    # prefix to the FRONT of CMAKE_PREFIX_PATH so its `find_package(spdlog)`
++    # resolves to ours instead of the system spdlog 1.15.
++    set(_uagent_prefix_path "${_uagent_deps_prefix}")
++    list(APPEND _uagent_prefix_path "${CMAKE_PREFIX_PATH}")
++    if(DEFINED ENV{CMAKE_PREFIX_PATH})
++        list(APPEND _uagent_prefix_path "$ENV{CMAKE_PREFIX_PATH}")
++    endif()
++    list(REMOVE_DUPLICATES _uagent_prefix_path)
++    string(REPLACE ";" "|" _uagent_prefix_path_arg "${_uagent_prefix_path}")
++
+     ExternalProject_Add(xrceagent
+             GIT_REPOSITORY
+                 https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
+@@ -31,6 +70,10 @@ if(NOT xrceagent_FOUND)
+                 ${PROJECT_BINARY_DIR}/agent
+             INSTALL_DIR
+                 ${CMAKE_INSTALL_PREFIX}
++            DEPENDS
++                spdlog_for_agent
++            LIST_SEPARATOR
++                "|"
+             CMAKE_CACHE_ARGS
+                 -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+                 -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+@@ -40,17 +83,16 @@ if(NOT xrceagent_FOUND)
+                 -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+                 -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+                 -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+-                -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+-                -DCMAKE_PREFIX_PATH:PATH=<INSTALL_DIR>
++                -DCMAKE_PREFIX_PATH:STRING=${_uagent_prefix_path_arg}
+                 -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_SYSTEM_NAME}
+                 -DUAGENT_USE_SYSTEM_FASTDDS:BOOL=ON
+                 -DUAGENT_USE_SYSTEM_FASTCDR:BOOL=ON
+-                -DUAGENT_USE_SYSTEM_LOGGER:BOOL=${UAGENT_USE_SYSTEM_LOGGER}
++                -DUAGENT_USE_SYSTEM_LOGGER:BOOL=ON
+                 -DUAGENT_CED_PROFILE:BOOL=OFF
+                 -DUAGENT_P2P_PROFILE:BOOL=OFF
+                 -DUAGENT_BUILD_EXECUTABLE:BOOL=OFF
+                 -DUAGENT_ISOLATED_INSTALL:BOOL=OFF
+-            )
++    )
+ endif()
+ 
+ # Main project.
+@@ -61,6 +103,7 @@ ExternalProject_Add(micro_ros_agent
+         ${CMAKE_CURRENT_BINARY_DIR}
+     CMAKE_CACHE_ARGS
+         -DMICROROSAGENT_SUPERBUILD:BOOL=OFF
++        -DCMAKE_PREFIX_PATH:STRING=${_uagent_prefix_path_arg}
+     INSTALL_COMMAND
+         ""
+     DEPENDS

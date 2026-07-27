@@ -1,30 +1,38 @@
 """smb_robot.launch.py — Real-robot bringup (no simulator).
 
+Usage:
+    ros2 launch smb_robot_bringup smb.launch.py mode:=robot
+
 This file assumes the ESP32 firmware (SuperMarketBot-IOT MicroRos.h) is
 ALREADY running and publishing topics via the micro-ROS agent. Verify with:
 
-  ros2 topic list              # /scan, /odom, /imu/data, /tf must be present
-  ros2 topic info /scan --verbose
+    ros2 topic list              # /scan, /odom, /imu/data must be present
+    ros2 topic info /scan --verbose
 
-If those topics don't exist, the SLAM node will sit idle.
+Hardware prerequisite:
+  The ESP32 MicroRos.h must have MICRO_ROS_AGENT_IP set to your host PC's
+  IP on the shared WiFi network. Default in firmware: 192.168.1.106.
+  Run `ip addr show` on the host to find its IP, then update the ESP32
+  firmware or set a matching static IP.
 
-This launch file does NOT start:
-  - Gazebo
-  - ros_gz_bridge
-  - any micro-ROS agent (run it separately with `ros2 run micro_ros_agent ...`)
-
-It DOES start:
-  - robot_state_publisher (URDF -> static TFs base_link -> laser_frame / imu_link)
-  - joint_state_publisher (zero-position JointState so wheels/caster appear in RViz)
+What this launch starts:
+  - micro-ROS agent (WiFi UDP, port 8888) — bridges ESP32 ↔ ROS2
+  - robot_state_publisher (URDF -> static TFs)
+  - joint_state_publisher (zero-pose fallback for RViz)
   - slam_toolbox online_async against /scan + /odom
+  - Nav2 (planner + controller + BT + behaviors + waypoint_follower)
+  - supervisor FSM (gates /cmd_vel with estop + state machine)
   - RViz2 with config/common/smb.rviz
 
 Args:
-  use_sim_time (bool): Should ALWAYS be false in robot mode. Flag exposed for testing.
-  rviz (bool):         Open RViz2 with saved config. Default true.
-  slam_params_file (str): Override the SLAM Toolbox config. Default is
+  use_sim_time (bool):  Always false in robot mode. Exposed for testing.
+  rviz (bool):           Open RViz2 with saved config. Default true.
+  use_nav2 (bool):       Bring up Nav2 stack. Default true.
+  use_supervisor (bool): Start supervisor FSM. Default true.
+  use_micro_ros (bool):  Start micro-ROS agent. Default true.
+  slam_params_file (str): Override SLAM Toolbox config. Default is
                           config/robot/slam_toolbox.yaml (loop closing enabled).
-                          Pass a custom path to use a hardware-tuned variant.
+  nav2_params_file (str): Override Nav2 params. Default is nav2_params.yaml.
 """
 
 import os
@@ -32,7 +40,7 @@ import subprocess
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -64,7 +72,9 @@ def generate_launch_description():
 
     rviz_config = PathJoinSubstitution([pkg_bringup, 'config/common/smb.rviz'])
     slam_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'slam_toolbox.yaml')
+    nav2_config_default = os.path.join(pkg_bringup, 'params', 'nav2_params_robot.yaml')
 
+    # ---- Launch arguments ----
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
         default_value='false',
@@ -75,13 +85,61 @@ def generate_launch_description():
         default_value='true',
         description='Open RViz2 with saved config.')
 
+    declare_use_nav2_cmd = DeclareLaunchArgument(
+        'use_nav2',
+        default_value='true',
+        description='Bring up Nav2 stack (planner + controller + BT). Default true.')
+
+    declare_use_supervisor_cmd = DeclareLaunchArgument(
+        'use_supervisor',
+        default_value='true',
+        description='Start supervisor FSM (gates /cmd_vel with estop + state machine). Default true.')
+
+    declare_use_micro_ros_cmd = DeclareLaunchArgument(
+        'use_micro_ros',
+        default_value='true',
+        description='Start micro-ROS agent (WiFi UDP port 8888). Default true.')
+
+    declare_use_ekf_cmd = DeclareLaunchArgument(
+        'use_ekf',
+        default_value='true',
+        description='Start robot_localization EKF to convert /odom topic into '
+                    'odom→base_link TF. slam_toolbox needs this TF to produce '
+                    'map→odom. Default true.')
+
     declare_slam_params_cmd = DeclareLaunchArgument(
         'slam_params_file',
         default_value=slam_config_default,
-        description='SLAM Toolbox params YAML. Default uses config/robot/slam_toolbox.yaml '
-                    '(loop closing enabled). Override to test a hardware-tuned variant.')
+        description='SLAM Toolbox params YAML. Default config/robot/slam_toolbox.yaml.')
 
-    # 1. robot_state_publisher (URDF -> /tf_static)
+    declare_nav2_params_cmd = DeclareLaunchArgument(
+        'nav2_params_file',
+        default_value=nav2_config_default,
+        description='Nav2 params YAML.')
+
+    ekf_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml')
+
+    # ---- Nodes ----
+
+    # 1. micro-ROS agent — bridges ESP32 WiFi UDP ↔ ROS2 topics.
+    #    Built from source against ROS 2 lyrical (snap version uses older
+    #    FastDDS / CDR v1 format incompatible with ROS 2 lyrical CDR v2).
+    #    Path defaults to ~/ros2_ws/install/micro_ros_agent/...; override
+    #    via SMB_MICRO_ROS_AGENT env var (e.g. for CI workspaces in
+    #    different locations). See ros2_ws.repos + SuperBuild.cmake patch
+    #    for build instructions.
+    micro_ros_agent_bin = os.environ.get(
+        'SMB_MICRO_ROS_AGENT',
+        os.path.expanduser(
+            '~/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent'))
+    micro_ros_agent_node = ExecuteProcess(
+        cmd=[micro_ros_agent_bin, 'udp4', '--port', '8888'],
+        condition=IfCondition(LaunchConfiguration('use_micro_ros')),
+        output='screen',
+        shell=False,
+    )
+
+    # 2. robot_state_publisher (URDF -> /tf_static)
     rsp_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -93,12 +151,8 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 2. joint_state_publisher — publishes JointState at zero positions for
-    #    the wheels/caster so RViz RobotModel can place them. In sim mode
-    #    this node is NOT needed (gz-sim-joint-state-publisher-system +
-    #    ros_gz_bridge already feed /joint_states from the actual sim wheel
-    #    rotations). In real-robot mode the ESP32 does not publish joint
-    #    state, so this gives robot_state_publisher something to consume.
+    # 3. joint_state_publisher — zero-pose fallback for RViz (ESP32 doesn't
+    #    publish joint states; without this, wheels appear at origin in RViz).
     jsp_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
@@ -107,7 +161,7 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 3. slam_toolbox online_async — assumes /scan and /odom topics exist
+    # 4. slam_toolbox online_async — assumes /scan and /odom from micro-ROS agent.
     slam_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             get_package_share_directory('slam_toolbox'),
@@ -119,7 +173,38 @@ def generate_launch_description():
         }.items(),
     )
 
-    # 4. RViz2 (gated by `rviz:=true` arg)
+    # 5. Nav2 — minimal bringup (same as smb_sim.launch.py uses).
+    #    Loaded into a single component_container process for efficiency.
+    #    use_sim_time=false because robot uses wall-clock.
+    #    Controller output /cmd_vel_nav → supervisor → /cmd_vel (contract topic).
+    nav2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            get_package_share_directory('smb_robot_bringup'),
+            '/launch/smb_nav2_minimal.launch.py',
+        ]),
+        condition=IfCondition(LaunchConfiguration('use_nav2')),
+        launch_arguments={
+            'use_sim_time': 'false',
+            'params_file': LaunchConfiguration('nav2_params_file'),
+            'autostart': 'true',
+        }.items(),
+    )
+
+    # 6. Supervisor FSM — gates /cmd_vel between Nav2 (/cmd_vel_nav) and
+    #    the contract topic /cmd_vel consumed by ESP32 via micro-ROS.
+    #    See smb_nodes/supervisor.py for FSM semantics (idle/nav/estop states).
+    supervisor_node = Node(
+        package='smb_nodes',
+        executable='supervisor',
+        name='supervisor',
+        parameters=[{
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+        }],
+        condition=IfCondition(LaunchConfiguration('use_supervisor')),
+        output='screen',
+    )
+
+    # 7. RViz2
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -130,12 +215,36 @@ def generate_launch_description():
         output='screen',
     )
 
+    # 8. robot_localization EKF — single-source (odom only) to publish
+    #    odom → base_link TF. slam_toolbox needs this TF to produce map → odom.
+    #    Phase 2 will replace this with full sensor fusion (wheel + IMU + AMCL).
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[
+            os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml'),
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+        ],
+        condition=IfCondition(LaunchConfiguration('use_ekf')),
+    )
+
     return LaunchDescription([
         declare_use_sim_time_cmd,
         declare_rviz_cmd,
+        declare_use_nav2_cmd,
+        declare_use_supervisor_cmd,
+        declare_use_micro_ros_cmd,
+        declare_use_ekf_cmd,
         declare_slam_params_cmd,
+        declare_nav2_params_cmd,
+        micro_ros_agent_node,
         rsp_node,
         jsp_node,
+        ekf_node,
         slam_launch,
+        supervisor_node,
+        nav2_launch,
         rviz_node,
     ])
