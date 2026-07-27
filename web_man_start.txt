@@ -1,0 +1,3 @@
+python3 esp32_ros2_bridge.py --ros-args -p esp32_ip:=192.168.1.178
+
+ros2 launch rosbridge_server rosbridge_websocket_launch.xml

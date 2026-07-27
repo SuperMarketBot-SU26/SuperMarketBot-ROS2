@@ -19,21 +19,27 @@ States
 
 Topic / service contract
 ------------------------
-- Subscribes: ``cmd_vel_in`` (geometry_msgs/TwistStamped — Nav2 main/rolling
-  publish this on ``/cmd_vel_nav`` per the topic contract; legacy teleop that
-  publishes ``Twist`` would need a launch arg remap). ``emergency_stop``
-  (Bool, latched).
+- Subscribes (two inputs, both write to the same cached last_cmd_vel):
+  - ``cmd_vel_in_topic`` (default ``/cmd_vel_nav``, geometry_msgs/TwistStamped)
+    — Nav2 main/rolling publish this; the type is dictated by Nav2.
+  - ``manual_cmd_vel_in_topic`` (default ``/cmd_vel``, geometry_msgs/Twist)
+    — manual teleop (WebManager, joystick, keyboard). Skipped if its name
+    equals ``cmd_vel_in_topic`` to avoid the DDS "two subs on one topic
+    with different types" rejection.
+- Subscribes: ``emergency_stop`` (Bool, latched).
 - Publishes:  ``cmd_vel`` (geometry_msgs/Twist, RELIABLE — downstream
   ros_gz_bridge and the firmware expect this type). ``supervisor/state``
   (String, latched, TRANSIENT_LOCAL).
 - Service:    ``supervisor/cmd`` (smb_msgs/SupervisorCmd).
 
-The supervisor normalizes the incoming TwistStamped down to a plain Twist
-(stamp/header discarded) so the contracted output type matches what
-ros_gz_bridge / firmware already consume. Single subscription on the
-input topic: rclpy/DDS reject two subscriptions on the same topic with
-incompatible types, so we canonicalize on TwistStamped — the type Nav2
-publishes — and document the teleop convention separately.
+Why two inputs: Nav2 publishes TwistStamped (its required type), but manual
+teleop nodes naturally emit plain Twist on the contract topic ``/cmd_vel``.
+Forcing every teleop publisher to switch to TwistStamped is needless busywork
+and breaks the contract that says ``/cmd_vel`` is plain Twist. Instead, the
+supervisor accepts both and normalizes into a single cached velocity. The
+output timer keeps republishing the cached value so a single tap on a button
+isn't a one-shot motion — the firmware keeps receiving a velocity command
+until either the upstream publishes a fresh (nonzero or zero) one.
 
 Default topics match the values in ``docs/TOPIC_CONTRACT.md`` where they
 overlap (``/cmd_vel``); the supervisor-owned topics are namespaced
@@ -85,6 +91,12 @@ class Supervisor(Node):
 
         # ---- Parameters (all overridable at launch via --ros-args -p ...) ----
         self.declare_parameter('cmd_vel_in_topic', '/cmd_vel_nav')
+        # Optional second input for manual/teleop publishers that emit
+        # geometry_msgs/Twist (not TwistStamped) on the contract topic /cmd_vel.
+        # WebManager, joystick_teleop, keyboard_teleop etc. publish here.
+        # Both inputs feed the same _last_cmd_vel cache; the output timer
+        # keeps republishing so a single tap isn't a one-shot motion.
+        self.declare_parameter('manual_cmd_vel_in_topic', '/cmd_vel')
         self.declare_parameter('cmd_vel_out_topic', '/cmd_vel')
         self.declare_parameter('state_topic', '/supervisor/state')
         self.declare_parameter('estop_topic', '/emergency_stop')
@@ -130,6 +142,15 @@ class Supervisor(Node):
         # value at state_publish_period_sec.
         self._cmd_vel_in_sub = self.create_subscription(
             TwistStamped, cmd_vel_in, self._on_cmd_vel_in_stamped, cmd_vel_qos)
+        # Manual/teleop input: plain Twist on the contract topic /cmd_vel.
+        # Created only if the topic name differs from cmd_vel_in_topic to
+        # avoid subscribing twice to the same topic with different types
+        # (DDS would reject it).
+        manual_cmd_vel_in = self.get_parameter('manual_cmd_vel_in_topic').value
+        self._manual_cmd_vel_in_sub = None
+        if manual_cmd_vel_in and manual_cmd_vel_in != cmd_vel_in:
+            self._manual_cmd_vel_in_sub = self.create_subscription(
+                Twist, manual_cmd_vel_in, self._on_cmd_vel_in_plain, cmd_vel_qos)
         self._estop_sub = self.create_subscription(
             Bool, estop_topic, self._on_estop, latched_qos)
         self._cmd_vel_out_pub = self.create_publisher(
@@ -169,6 +190,16 @@ class Supervisor(Node):
         plain.linear = msg.twist.linear
         plain.angular = msg.twist.angular
         self._last_cmd_vel = plain
+
+    def _on_cmd_vel_in_plain(self, msg: Twist) -> None:
+        """Cache the latest manual/teleop Twist command.
+
+        This is the path used by WebManager, joystick_teleop, keyboard_teleop
+        etc. that publish geometry_msgs/Twist on the contract topic /cmd_vel.
+        Both inputs share the same _last_cmd_vel cache so the output timer
+        keeps republishing until a fresh command arrives or the user releases.
+        """
+        self._last_cmd_vel = msg
 
     def _on_estop(self, msg: Bool) -> None:
         """Latched ESTOP from /emergency_stop. True forces ESTOP state."""

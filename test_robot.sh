@@ -119,6 +119,15 @@ pkill -9 -f "robot_state_publisher"  2>/dev/null || true
 pkill -9 -f "nav2_container"        2>/dev/null || true
 pkill -9 -f "rviz2"                 2>/dev/null || true
 pkill -9 -f "supervisor"             2>/dev/null || true
+pkill -9 -f "ekf_node"               2>/dev/null || true
+pkill -9 -f "lifecycle_manager"      2>/dev/null || true
+pkill -9 -f "controller_server"      2>/dev/null || true
+pkill -9 -f "planner_server"         2>/dev/null || true
+pkill -9 -f "bt_navigator"           2>/dev/null || true
+pkill -9 -f "behavior_server"        2>/dev/null || true
+pkill -9 -f "waypoint_follower"      2>/dev/null || true
+# Catch any zombie python launch wrappers left after their children died.
+pkill -9 -f "ros2 launch smb.launch.py" 2>/dev/null || true
 sleep 1
 echo "[test_robot] Cleanup done."
 
@@ -136,6 +145,14 @@ cleanup() {
     pkill -9 -f "nav2_container"        2>/dev/null || true
     pkill -9 -f "rviz2"                 2>/dev/null || true
     pkill -9 -f "supervisor"             2>/dev/null || true
+    pkill -9 -f "ekf_node"               2>/dev/null || true
+    pkill -9 -f "lifecycle_manager"      2>/dev/null || true
+    pkill -9 -f "controller_server"      2>/dev/null || true
+    pkill -9 -f "planner_server"         2>/dev/null || true
+    pkill -9 -f "bt_navigator"           2>/dev/null || true
+    pkill -9 -f "behavior_server"        2>/dev/null || true
+    pkill -9 -f "waypoint_follower"      2>/dev/null || true
+    pkill -9 -f "ros2 launch smb.launch.py" 2>/dev/null || true
     echo "[test_robot] Done."
 }
 trap cleanup INT TERM EXIT
@@ -150,6 +167,16 @@ echo
 echo "[test_robot] Tip: in another terminal:"
 echo "              ./test_teleop.sh    — drive via /cmd_vel"
 echo "              ./test_nav2_goal.sh — send NavigateToPose goals"
+echo
+echo "[test_robot] Order of operations:"
+echo "              1) Wait ~10s for ESP32 → micro-ROS handshake."
+echo "                 Verify: ros2 topic hz /scan   →  ~10 Hz"
+echo "                 Verify: ros2 topic hz /odom   →  ~50 Hz"
+echo "              2) Activate slam_toolbox:"
+echo "                 ros2 lifecycle set /slam_toolbox activate"
+echo "                 Verify: ros2 topic echo /map --once"
+echo "              3) Activate Nav2 (needs /map to exist):"
+echo "                 ros2 lifecycle set /lifecycle_manager_navigation activate"
 echo
 
 ros2 launch smb_robot_bringup smb.launch.py mode:=robot

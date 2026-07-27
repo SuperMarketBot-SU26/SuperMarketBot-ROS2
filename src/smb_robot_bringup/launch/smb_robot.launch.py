@@ -162,6 +162,11 @@ def generate_launch_description():
     )
 
     # 4. slam_toolbox online_async — assumes /scan and /odom from micro-ROS agent.
+    #    autostart=false on purpose: the ESP32 takes ~10-30s after the agent
+    #    starts to complete its XRCE handshake. If slam auto-activates
+    #    before /scan is flowing, message_filters rejects every scan with
+    #    "timestamp earlier than transform cache" and slam never produces
+    #    /map. Activate it manually once `ros2 topic hz /scan` reports ~10 Hz.
     slam_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             get_package_share_directory('slam_toolbox'),
@@ -170,6 +175,7 @@ def generate_launch_description():
         launch_arguments={
             'slam_params_file': LaunchConfiguration('slam_params_file'),
             'use_sim_time': LaunchConfiguration('use_sim_time'),
+            'autostart': 'false',
         }.items(),
     )
 
@@ -177,6 +183,10 @@ def generate_launch_description():
     #    Loaded into a single component_container process for efficiency.
     #    use_sim_time=false because robot uses wall-clock.
     #    Controller output /cmd_vel_nav → supervisor → /cmd_vel (contract topic).
+    #
+    #    autostart=false: Nav2 lifecycle waits for `base_link → map` TF which
+    #    only exists once slam_toolbox has produced /map. Wait until
+    #    `ros2 topic echo /map --once` returns before activating.
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             get_package_share_directory('smb_robot_bringup'),
@@ -186,7 +196,7 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'false',
             'params_file': LaunchConfiguration('nav2_params_file'),
-            'autostart': 'true',
+            'autostart': 'false',
         }.items(),
     )
 
@@ -201,6 +211,22 @@ def generate_launch_description():
             'use_sim_time': LaunchConfiguration('use_sim_time'),
         }],
         condition=IfCondition(LaunchConfiguration('use_supervisor')),
+        output='screen',
+    )
+
+    # 6b. /scan QoS bridge — ESP32 publishes /scan with RELIABLE QoS but
+    #     slam_toolbox subscribes with BEST_EFFORT; DDS rejects the match
+    #     and no scan ever reaches SLAM. This relay subscribes RELIABLE
+    #     on /scan and republishes BEST_EFFORT on /scan_relay. slam_toolbox
+    #     is remapped to /scan_relay via config/robot/slam_toolbox.yaml.
+    #     See smb_nodes/scan_relay.py for details.
+    scan_relay_node = Node(
+        package='smb_nodes',
+        executable='scan_relay',
+        name='scan_relay',
+        parameters=[{
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+        }],
         output='screen',
     )
 
@@ -244,6 +270,7 @@ def generate_launch_description():
         jsp_node,
         ekf_node,
         slam_launch,
+        scan_relay_node,
         supervisor_node,
         nav2_launch,
         rviz_node,
