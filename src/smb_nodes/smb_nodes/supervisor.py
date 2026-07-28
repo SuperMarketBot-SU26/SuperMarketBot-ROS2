@@ -103,7 +103,23 @@ class Supervisor(Node):
         self.declare_parameter('cmd_service', '/supervisor/cmd')
         # How often to republish the current state, even when no transition
         # happened — useful for late-joining subscribers on TRANSIENT_LOCAL.
-        self.declare_parameter('state_publish_period_sec', 1.0)
+        self.declare_parameter('state_publish_period_sec', 0.1)
+        # Cmd_vel input watchdog: if no fresh /cmd_vel within this many seconds,
+        # force _last_cmd_vel to zero on the next publish. Without this, the
+        # supervisor keeps republishing the last cached value forever — when
+        # teleop releases a key, robot keeps driving.
+        #
+        # Constraint: cmd_vel_timeout_sec MUST BE > state_publish_period_sec.
+        # Suppose teleop publishes one key-press, then stops for a few hundred
+        # ms (keyboard auto-repeat phase-out). The next supervisor republish
+        # tick happens. The cmd_vel cache age at that moment is
+        # (state_publish_period_sec - eps). If the timeout is smaller than
+        # that, the watchdog fires and the robot stops mid-drive — producing
+        # the "robot jitters in tiny steps" symptom rather than smooth motion.
+        # Default timeout is set to 2 s, well above the 100 ms republish period,
+        # so any cache age < 2 s is considered fresh and the robot drives
+        # continuously while teleop keys are held.
+        self.declare_parameter('cmd_vel_timeout_sec', 2.0)
 
         cmd_vel_in = self.get_parameter('cmd_vel_in_topic').value
         cmd_vel_out = self.get_parameter('cmd_vel_out_topic').value
@@ -111,6 +127,7 @@ class Supervisor(Node):
         estop_topic = self.get_parameter('estop_topic').value
         cmd_service = self.get_parameter('cmd_service').value
         period_sec = self.get_parameter('state_publish_period_sec').value
+        self._cmd_vel_timeout_sec = self.get_parameter('cmd_vel_timeout_sec').value
 
         # ---- State ----
         self._state = State.IDLE
@@ -119,6 +136,8 @@ class Supervisor(Node):
         # to zero on ESTOP. Without buffering, the bridge would only see
         # velocity when an upstream node publishes.
         self._last_cmd_vel = Twist()
+        # ROS2 builtin time, used by the cmd_vel watchdog.
+        self._last_cmd_vel_stamp = self.get_clock().now()
         self._estop_latched = False  # latched from /emergency_stop latched topic
 
         # ---- QoS profiles ----
@@ -190,6 +209,7 @@ class Supervisor(Node):
         plain.linear = msg.twist.linear
         plain.angular = msg.twist.angular
         self._last_cmd_vel = plain
+        self._last_cmd_vel_stamp = self.get_clock().now()
 
     def _on_cmd_vel_in_plain(self, msg: Twist) -> None:
         """Cache the latest manual/teleop Twist command.
@@ -200,6 +220,7 @@ class Supervisor(Node):
         keeps republishing until a fresh command arrives or the user releases.
         """
         self._last_cmd_vel = msg
+        self._last_cmd_vel_stamp = self.get_clock().now()
 
     def _on_estop(self, msg: Bool) -> None:
         """Latched ESTOP from /emergency_stop. True forces ESTOP state."""
@@ -307,10 +328,17 @@ class Supervisor(Node):
         In ESTOP we publish a zero Twist instead of the cached input so
         the firmware/wheels get a hard stop even if Nav2 keeps streaming.
         In IDLE/NAV we pass through; DOCK is currently identical to IDLE.
+
+        Watchdog: if no fresh _last_cmd_vel has arrived within
+        ``cmd_vel_timeout_sec``, force zero so the firmware stops even
+        when the upstream publisher has gone silent (e.g., teleop released).
         """
         out = Twist()
         if self._state is not State.ESTOP:
-            out = self._last_cmd_vel
+            age = (self.get_clock().now() - self._last_cmd_vel_stamp).nanoseconds / 1e9
+            if age <= self._cmd_vel_timeout_sec:
+                out = self._last_cmd_vel
+            # else: leave out = Twist(0,0,0)
         self._cmd_vel_out_pub.publish(out)
 
     def _publish_state(self) -> None:

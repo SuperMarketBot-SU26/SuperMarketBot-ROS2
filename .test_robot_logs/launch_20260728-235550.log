@@ -1,0 +1,547 @@
+[INFO] [launch]: All log files can be found below /home/nhatkhoa1124/.ros/log/2026-07-28-23-55-51-286314-nhatkhoa1124-GF63-Thin-11UD-607212
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [607308]
+[INFO] [robot_state_publisher-2]: process started with pid [607309]
+[INFO] [joint_state_publisher-3]: process started with pid [607310]
+[INFO] [ekf_node-4]: process started with pid [607311]
+[INFO] [async_slam_toolbox_node-5]: process started with pid [607312]
+[INFO] [scan_relay-6]: process started with pid [607313]
+[INFO] [odom_imu_relay-7]: process started with pid [607314]
+[INFO] [supervisor-8]: process started with pid [607315]
+[INFO] [component_container-9]: process started with pid [607316]
+[INFO] [rviz2-10]: process started with pid [607317]
+[micro_ros_agent-1] [35m[1785257751.731339][m info     | [34mUDPv4AgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | port: 8888
+[micro_ros_agent-1] [35m[1785257751.731467][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[robot_state_publisher-2] [WARN] [1785257751.757428026] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1785257751.757504358] [robot_state_publisher]: Robot initialized
+[component_container-9] [INFO] [1785257751.980502872] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_controller/lib/libcontroller_server_core.so
+[component_container-9] [INFO] [1785257752.021736775] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785257752.022298522] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785257752.056763677] [controller_server]: 
+[component_container-9] 	controller_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257752.063128150] [controller_server]: Creating controller server
+[component_container-9] [INFO] [1785257752.069149531] [local_costmap.local_costmap]: 
+[component_container-9] 	local_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257752.069842985] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785257752.071850696] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_planner/lib/libplanner_server_core.so
+[component_container-9] [INFO] [1785257752.073419035] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785257752.073440096] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785257752.081608893] [planner_server]: 
+[component_container-9] 	planner_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257752.084618164] [planner_server]: Creating
+[component_container-9] [INFO] [1785257752.093281715] [global_costmap.global_costmap]: 
+[component_container-9] 	global_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257752.094177396] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785257752.095969702] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_behaviors/lib/libbehavior_server_core.so
+[component_container-9] [INFO] [1785257752.098754013] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785257752.098779302] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785257752.106493724] [behavior_server]: 
+[component_container-9] 	behavior_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785257752.109799433] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_bt_navigator/lib/libbt_navigator_core.so
+[component_container-9] [INFO] [1785257752.113264102] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785257752.113285063] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785257752.120130436] [bt_navigator]: 
+[component_container-9] 	bt_navigator lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257752.121813269] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container-9] [INFO] [1785257752.123196875] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_waypoint_follower/lib/libwaypoint_follower_core.so
+[component_container-9] [INFO] [1785257752.124553250] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785257752.124573549] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785257752.131380041] [waypoint_follower]: 
+[component_container-9] 	waypoint_follower lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257752.133185274] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container-9] [INFO] [1785257752.134690052] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_lifecycle_manager/lib/libnav2_lifecycle_manager_core.so
+[component_container-9] [INFO] [1785257752.135912035] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785257752.135928531] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785257752.142255278] [lifecycle_manager_navigation]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container-9] [INFO] [1785257752.142591160] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[component_container-9] [INFO] [1785257752.143197824] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container-9] [INFO] [1785257752.149369777] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[supervisor-8] [INFO] [1785257752.243526264] [supervisor]: Supervisor started: state=idle, in=/cmd_vel_nav, out=/cmd_vel, estop=/emergency_stop, service=/supervisor/cmd
+[joint_state_publisher-3] [INFO] [1785257752.257422988] [joint_state_publisher]: Waiting for robot_description to be published on the robot_description topic...
+[scan_relay-6] [INFO] [1785257752.270527273] [scan_relay]: scan_relay started: /scan (RELIABLE) -> /scan_relay (BEST_EFFORT)
+[odom_imu_relay-7] [INFO] [1785257752.333729832] [odom_imu_relay]: odom_imu_relay started: /odom /odom -> /odom_relay, /imu /imu/data -> /imu_relay (disabled paths skipped)
+[joint_state_publisher-3] [INFO] [1785257752.347376928] [joint_state_publisher]: Got description, configuring robot
+[rviz2-10] [INFO] [1785257753.278514050] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1785257753.278601926] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[rviz2-10] [INFO] [1785257753.288692587] [rviz2]: Stereo is NOT SUPPORTED
+[scan_relay-6] [WARN] [1785257753.349671995] [scan_relay]: New subscription discovered on topic '/scan_relay', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[micro_ros_agent-1] [35m[1785257772.433326][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x27FCA631, session_id: 0x81
+[micro_ros_agent-1] [35m[1785257772.433386][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x27FCA631, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785257772.790340][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x27FCA631, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.800147][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.807244][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.811677][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785257772.821218][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.826515][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.831168][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785257772.836049][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.840766][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.856345][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785257772.862136][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.867367][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.871963][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785257772.877045][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.883614][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x27FCA631, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785257772.889000][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x27FCA631, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[async_slam_toolbox_node-5] [INFO] [1785257774.830338729] [slam_toolbox]: Configuring
+[async_slam_toolbox_node-5] [INFO] [1785257774.848204237] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[async_slam_toolbox_node-5] [INFO] [1785257776.050692857] [slam_toolbox]: Activating
+[async_slam_toolbox_node-5] [INFO] [1785257776.143720201] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257776.143 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] Info: clipped range threshold to be within minimum and maximum range!
+[async_slam_toolbox_node-5] Registering sensor: [Custom Described Lidar : laser_frame]
+[async_slam_toolbox_node-5] [INFO] [1785257778.746758870] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257778.746 for reason 'discarding message because the queue is full'
+[component_container-9] [INFO] [1785257782.770103444] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container-9] [INFO] [1785257782.770155078] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container-9] [INFO] [1785257782.770578105] [controller_server]: Configuring controller interface
+[component_container-9] [INFO] [1785257782.770603654] [local_costmap.local_costmap]: Configuring
+[component_container-9] [INFO] [1785257782.774586696] [local_costmap.local_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785257782.778095010] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785257782.779041319] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785257782.779054620] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785257782.779167288] [local_costmap.local_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785257782.779183518] [local_costmap.local_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785257782.779186503] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785257782.779271732] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785257782.799235222] [controller_server]: Controller frequency set to 10.0000Hz
+[component_container-9] [INFO] [1785257782.799266891] [controller_server]: getting progress checker plugins..
+[component_container-9] [INFO] [1785257782.799344196] [controller_server]: getting goal checker plugins..
+[component_container-9] [INFO] [1785257782.799501099] [controller_server]: getting controller plugins..
+[component_container-9] [INFO] [1785257782.799530669] [controller_server]: getting path handler plugins..
+[component_container-9] [INFO] [1785257782.800395309] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container-9] [INFO] [1785257782.800423689] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[component_container-9] [INFO] [1785257782.800963322] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container-9] [INFO] [1785257782.800984472] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container-9] [INFO] [1785257782.801675603] [controller_server]: Created path handler : PathHandler of type nav2_controller::FeasiblePathHandler
+[component_container-9] [INFO] [1785257782.801697946] [controller_server]: Controller Server has PathHandler  path handlers available.
+[component_container-9] [INFO] [1785257782.802587539] [controller_server]: Created controller : FollowPath of type nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [WARN] [1785257782.802700184] [controller_server]: Parameter 'FollowPath.desired_linear_vel' is deprecated. Use 'FollowPath.max_linear_vel' instead.
+[component_container-9] [INFO] [1785257782.807717397] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container-9] [INFO] [1785257782.817872036] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container-9] [INFO] [1785257782.818362969] [planner_server]: Configuring
+[component_container-9] [INFO] [1785257782.818394979] [global_costmap.global_costmap]: Configuring
+[component_container-9] [INFO] [1785257782.822486302] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785257782.822854036] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785257782.823381338] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785257782.823396979] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785257782.823510909] [global_costmap.global_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785257782.823522903] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785257782.823526655] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785257782.823626292] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785257782.835031171] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[component_container-9] [INFO] [1785257782.835057234] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785257782.835162103] [planner_server]: Planner Server has GridBased  planners available.
+[component_container-9] [INFO] [1785257782.845663118] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container-9] [INFO] [1785257782.845879267] [behavior_server]: Configuring
+[component_container-9] [INFO] [1785257782.847663796] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[component_container-9] [INFO] [1785257782.848643673] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[component_container-9] [INFO] [1785257782.849480866] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[component_container-9] [INFO] [1785257782.850258090] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[component_container-9] [INFO] [1785257782.853403481] [behavior_server]: Configuring spin
+[component_container-9] [INFO] [1785257782.859371095] [behavior_server]: Configuring backup
+[component_container-9] [INFO] [1785257782.865341528] [behavior_server]: Configuring drive_on_heading
+[component_container-9] [INFO] [1785257782.871711462] [behavior_server]: Configuring wait
+[component_container-9] [INFO] [1785257782.877602956] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container-9] [INFO] [1785257782.877731507] [bt_navigator]: Configuring
+[component_container-9] [INFO] [1785257782.879723163] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[component_container-9] [WARN] [1785257782.881748297] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785257782.890881012] [bt_navigator_navigate_to_pose_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_to_pose_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257782.946577123] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[component_container-9] [WARN] [1785257782.948850828] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785257782.959225204] [bt_navigator_navigate_through_poses_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_through_poses_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785257782.967897372] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785257782.968017688] [waypoint_follower]: Configuring
+[component_container-9] [INFO] [1785257782.987182209] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container-9] [INFO] [1785257782.987558091] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container-9] [INFO] [1785257782.987660931] [controller_server]: Activating
+[component_container-9] [INFO] [1785257782.987681465] [local_costmap.local_costmap]: Activating
+[component_container-9] [INFO] [1785257782.987687872] [local_costmap.local_costmap]: Checking transform
+[component_container-9] [INFO] [1785257782.987745636] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[rviz2-10] [INFO] [1785257783.040851709] [rviz2]: Message Filter dropping message: frame 'laser_frame' at time 1785257772.987 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[component_container-9] [INFO] [1785257783.487809532] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257783.987900827] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257784.487837087] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257784.987837926] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257785.487814876] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257785.987771255] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257786.060787033] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 55 X 82 at 0.050000 m/pix
+[component_container-9] [WARN] [1785257786.060820108] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[component_container-9] [INFO] [1785257786.060787062] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 55 X 82 at 0.050000 m/pix
+[component_container-9] [WARN] [1785257786.060850488] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[rviz2-10] [INFO] [1785257786.082283770] [rviz2]: Trying to create a map of size 55 x 82 using 1 swatches
+[rviz2-10] [ERROR] [1785257786.114435204] [rviz2]: rviz/glsl120/indexed_8bit_image.vert
+[rviz2-10] rviz/glsl120/indexed_8bit_image.frag
+[rviz2-10]  GLSL link result : 
+[rviz2-10] active samplers with a different type refer to the same texture image unit
+[component_container-9] [INFO] [1785257786.487848269] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257786.987827021] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257787.487837620] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257787.987801838] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257788.487796397] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257788.987811425] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257789.487801868] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257789.987783090] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257790.487793823] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257790.987802896] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257791.487810406] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257791.987853206] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257792.487786478] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257792.987804107] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257782.807290, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257793.487796630] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257783.273962, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257793.987782705] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257783.773948, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257794.487812982] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257784.340715, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257794.987813846] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257784.740726, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257795.487827297] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257785.373978, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257795.987837321] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257785.874026, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257796.487796713] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257786.340627, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257796.987931362] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257786.907291, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257797.487870593] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257787.374021, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257797.987922884] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785257781.536234 but the earliest data is at time 1785257787.873992, when looking up transform from frame [base_link] to frame [map]
+[async_slam_toolbox_node-5] [INFO] [1785257798.112321493] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257798.112 for reason 'discarding message because the queue is full'
+[component_container-9] [INFO] [1785257798.487809966] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation at time 1785257798.374052, but only time 1785257798.611714 is in the buffer, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785257798.988042785] [local_costmap.local_costmap]: start
+[component_container-9] [INFO] [1785257799.038441483] [controller_server]: Activating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785257799.039623539] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257799.301842210] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[component_container-9] [INFO] [1785257799.301895476] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[component_container-9] [INFO] [1785257799.302184568] [planner_server]: Activating
+[component_container-9] [INFO] [1785257799.302225262] [global_costmap.global_costmap]: Activating
+[component_container-9] [INFO] [1785257799.302233653] [global_costmap.global_costmap]: Checking transform
+[component_container-9] [INFO] [1785257799.302317963] [global_costmap.global_costmap]: start
+[component_container-9] [INFO] [1785257799.352556535] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785257799.359835303] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257799.621008508] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[component_container-9] [INFO] [1785257799.621104972] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785257799.621701921] [behavior_server]: Activating
+[component_container-9] [INFO] [1785257799.621762567] [behavior_server]: Activating spin
+[component_container-9] [INFO] [1785257799.621799170] [behavior_server]: Activating backup
+[component_container-9] [INFO] [1785257799.621828576] [behavior_server]: Activating drive_on_heading
+[component_container-9] [INFO] [1785257799.621857741] [behavior_server]: Activating wait
+[component_container-9] [INFO] [1785257799.621918188] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257799.880426448] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[component_container-9] [INFO] [1785257799.880461718] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785257799.880642547] [bt_navigator]: Activating
+[component_container-9] [INFO] [1785257799.906071583] [bt_navigator]: Created BT from ID: NavigateToPoseWReplanningAndRecovery
+[component_container-9] [INFO] [1785257799.932399011] [bt_navigator]: Created BT from ID: NavigateThroughPosesWReplanningAndRecovery
+[component_container-9] [INFO] [1785257799.933047710] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785257800.185817249] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[component_container-9] [INFO] [1785257800.185854473] [lifecycle_manager_navigation]: [34m[1mActivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785257800.186221704] [waypoint_follower]: Activating
+[component_container-9] [INFO] [1785257800.186252130] [waypoint_follower]: Creating bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785257800.440929659] [lifecycle_manager_navigation]: Server waypoint_follower connected with bond.
+[component_container-9] [INFO] [1785257800.441072650] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[component_container-9] [INFO] [1785257800.441176500] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[async_slam_toolbox_node-5] [INFO] [1785257802.058435613] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257802.058 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257804.747741788] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257804.747 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257807.345260223] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257807.345 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257809.852328248] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257809.851 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257812.446649778] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257812.446 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257815.034889404] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257815.034 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257817.548074306] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257817.547 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257820.144499172] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257820.144 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257822.745281346] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257822.744 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257825.347046790] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257825.347 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257827.848151553] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257827.847 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257830.543739367] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257830.543 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257833.142461180] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257833.142 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257835.742495777] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257835.742 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257838.270318950] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257838.270 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257840.842350680] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257840.842 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257843.344940606] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257843.345 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257845.944325563] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257845.944 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257848.549260451] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257848.549 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257851.144041924] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257851.144 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257853.645954100] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257853.645 for reason 'discarding message because the queue is full'
+[rviz2-10] Start navigation
+[rviz2-10] [INFO] [1785257854.110637168] [rviz_navigation_dialog_action_client]: NavigateToPose will be called using the BT Navigator's default behavior tree.
+[component_container-9] [INFO] [1785257854.112711944] [bt_navigator]: Begin navigating from current location (0.00, 0.00) to (0.48, -1.98)
+[component_container-9] [INFO] [1785257854.114628915] [planner_server]: Computing path to goal.
+[component_container-9] [INFO] [1785257854.133821258] [controller_server]: Received a goal, begin computing control effort.
+[component_container-9] [WARN] [1785257854.133856794] [controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded general_goal_checker . This warning will appear once.
+[component_container-9] [WARN] [1785257854.133883553] [controller_server]: No progress checker was specified in parameter 'current_progress_checker'. Server will use only plugin loaded progress_checker . This warning will appear once.
+[component_container-9] [WARN] [1785257854.133889808] [controller_server]: No path handler was specified in parameter 'current_path_handler'. Server will use only plugin loaded PathHandler . This warning will appear once.
+[async_slam_toolbox_node-5] [INFO] [1785257856.243347619] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257856.243 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257858.745767883] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257858.745 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257861.346209720] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257861.345 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257863.949049725] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257863.948 for reason 'discarding message because the queue is full'
+[component_container-9] [ERROR] [1785257864.134395699] [controller_server]: Failed to make progress
+[component_container-9] [WARN] [1785257864.134743525] [controller_server]: [follow_path] [ActionServer] Aborting handle. error_code:105, error_msg:'Failed to make progress'.
+[component_container-9] [INFO] [1785257864.154385313] [local_costmap.local_costmap]: Received request to clear entirely for all layers in local_costmap
+[component_container-9] [INFO] [1785257864.154508549] [local_costmap.local_costmap]: Clearing all layers in costmap: local_costmap
+[component_container-9] [INFO] [1785257864.155512784] [controller_server]: Received a goal, begin computing control effort.
+[async_slam_toolbox_node-5] [INFO] [1785257866.546840018] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257866.546 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257869.148420154] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257869.148 for reason 'discarding message because the queue is full'
+[component_container-9] [WARN] [1785257869.456025576] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[async_slam_toolbox_node-5] [INFO] [1785257871.843619272] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257871.843 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257874.445826658] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257874.445 for reason 'discarding message because the queue is full'
+[component_container-9] [WARN] [1785257875.056685409] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257875.156710184] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257875.188425899] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785257875.256094647] [RPPCollisionChecker]: The dimensions of the costmap is too small to successfully check for collisions as far ahead as requested. Proceed at your own risk, slow the robot, or increase your costmap size.
+[rviz2-10] [INFO] [1785257876.066102783] [rviz2]: Trying to create a map of size 71 x 93 using 1 swatches
+[component_container-9] [INFO] [1785257876.102566291] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 71 X 93 at 0.050000 m/pix
+[component_container-9] [WARN] [1785257876.102606274] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[component_container-9] [INFO] [1785257876.188379244] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 71 X 93 at 0.050000 m/pix
+[component_container-9] [WARN] [1785257876.188412063] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[async_slam_toolbox_node-5] [INFO] [1785257876.946471132] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257876.946 for reason 'discarding message because the queue is full'
+[component_container-9] [WARN] [1785257877.555864228] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257877.655894377] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257877.755879423] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257877.855858612] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257877.955854821] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257878.155831946] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257878.255841084] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257878.355902795] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257878.456089687] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257878.555842714] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257878.655838625] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[component_container-9] [WARN] [1785257878.756335254] [controller_server]: RegulatedPurePursuitController detected collision ahead!
+[rviz2-10] QBasicTimer::stop: Failed. Possibly trying to stop from a different thread
+[component_container-9] [ERROR] [1785257878.853449148] [bt_navigator_navigate_to_pose_rclcpp_node]: Failed to get result for follow_path in node halt!
+[component_container-9] [INFO] [1785257878.853979674] [bt_navigator]: [navigate_to_pose] [ActionServer] Client requested to cancel the goal. Cancelling.
+[component_container-9] [INFO] [1785257878.854425454] [bt_navigator]: Goal canceled
+[component_container-9] [INFO] [1785257878.855773471] [controller_server]: Cancellation was successful. Stopping the robot.
+[component_container-9] [INFO] [1785257878.855930886] [controller_server]: [follow_path] [ActionServer] Client requested to cancel the goal. Cancelling.
+[async_slam_toolbox_node-5] [INFO] [1785257879.644485396] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257879.644 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257882.145136805] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257882.144 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257884.646324719] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257884.646 for reason 'discarding message because the queue is full'
+[component_container-9] [INFO] [1785257885.081788865] [lifecycle_manager_navigation]: [34m[1mTerminating bond timer...[0m[0m
+[component_container-9] [INFO] [1785257885.081859276] [lifecycle_manager_navigation]: [34m[1mResetting managed nodes...[0m[0m
+[component_container-9] [INFO] [1785257885.081867622] [lifecycle_manager_navigation]: [34m[1mDeactivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785257885.082421360] [waypoint_follower]: Deactivating
+[component_container-9] [INFO] [1785257885.082479091] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785257885.199316047] [lifecycle_manager_navigation]: [34m[1mDeactivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785257885.202805797] [bt_navigator]: Deactivating
+[component_container-9] [INFO] [1785257885.202875133] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785257885.318518055] [lifecycle_manager_navigation]: [34m[1mDeactivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785257885.321743381] [behavior_server]: Deactivating
+[component_container-9] [INFO] [1785257885.321860125] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257885.433626148] [lifecycle_manager_navigation]: [34m[1mDeactivating planner_server[0m[0m
+[component_container-9] [INFO] [1785257885.434724501] [planner_server]: Deactivating
+[component_container-9] [INFO] [1785257885.434791506] [global_costmap.global_costmap]: Deactivating
+[component_container-9] [INFO] [1785257885.502702870] [planner_server]: Deactivating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785257885.503829962] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257885.615627126] [lifecycle_manager_navigation]: [34m[1mDeactivating controller_server[0m[0m
+[component_container-9] [INFO] [1785257885.616951742] [controller_server]: Deactivating
+[component_container-9] [INFO] [1785257885.616996713] [controller_server]: Deactivating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785257885.617023313] [local_costmap.local_costmap]: Deactivating
+[component_container-9] [INFO] [1785257885.788481920] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257885.900143957] [lifecycle_manager_navigation]: [34m[1mCleaning up waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785257885.902078278] [waypoint_follower]: Cleaning up
+[component_container-9] [INFO] [1785257885.909394008] [lifecycle_manager_navigation]: [34m[1mCleaning up bt_navigator[0m[0m
+[component_container-9] [INFO] [1785257885.909475385] [bt_navigator]: Cleaning up
+[component_container-9] [INFO] [1785257885.924769411] [bt_navigator_navigate_to_pose_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785257885.924815816] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257885.946210928] [bt_navigator_navigate_through_poses_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785257885.946251045] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257885.951753709] [bt_navigator]: Completed Cleaning up
+[component_container-9] [INFO] [1785257885.952018420] [lifecycle_manager_navigation]: [34m[1mCleaning up behavior_server[0m[0m
+[component_container-9] [INFO] [1785257885.952088303] [behavior_server]: Cleaning up
+[component_container-9] [INFO] [1785257885.961834924] [lifecycle_manager_navigation]: [34m[1mCleaning up planner_server[0m[0m
+[component_container-9] [INFO] [1785257885.961917402] [planner_server]: Cleaning up
+[component_container-9] [INFO] [1785257885.966584133] [global_costmap.global_costmap]: Cleaning up
+[component_container-9] [INFO] [1785257885.968317001] [planner_server]: Cleaning up plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785257885.968356960] [planner_server]: Destroying plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785257885.975829815] [lifecycle_manager_navigation]: [34m[1mCleaning up controller_server[0m[0m
+[component_container-9] [INFO] [1785257885.975911093] [controller_server]: Cleaning up
+[component_container-9] [INFO] [1785257885.975926341] [controller_server]: Cleaning up controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785257885.977169693] [local_costmap.local_costmap]: Cleaning up
+[component_container-9] [INFO] [1785257885.990793096] [lifecycle_manager_navigation]: [34m[1mManaged nodes have been reset[0m[0m
+[rviz2-10] [INFO] [1785257886.082778190] [rviz2]: Trying to create a map of size 101 x 102 using 1 swatches
+[async_slam_toolbox_node-5] [INFO] [1785257887.247301208] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257887.247 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257889.752514246] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257889.752 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257892.345384500] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257892.345 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257894.947385080] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257894.947 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257897.546256058] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257897.546 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257902.054422631] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257902.054 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257904.744139979] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257904.744 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257907.343894534] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257907.343 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257909.846452321] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257909.846 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257912.347412892] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257912.347 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257914.949254086] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257914.948 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785257916.069775165] [rviz2]: Trying to create a map of size 102 x 102 using 1 swatches
+[async_slam_toolbox_node-5] [INFO] [1785257917.450800628] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257917.450 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257920.146490427] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257920.146 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257922.744694237] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257922.744 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257925.348780232] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257925.348 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785257926.085782648] [rviz2]: Trying to create a map of size 108 x 102 using 1 swatches
+[async_slam_toolbox_node-5] [INFO] [1785257927.948314302] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257927.947 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257930.646224022] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257930.645 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257933.148203847] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257933.147 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257935.752053373] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257935.751 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785257936.069524939] [rviz2]: Trying to create a map of size 121 x 106 using 1 swatches
+[async_slam_toolbox_node-5] [INFO] [1785257938.342032203] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257938.341 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257940.899296155] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257940.899 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257943.546883486] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257943.546 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785257946.086496545] [rviz2]: Trying to create a map of size 121 x 108 using 1 swatches
+[async_slam_toolbox_node-5] [INFO] [1785257946.148062767] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257946.147 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257948.747737297] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257948.747 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257951.308131791] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257951.307 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257955.053907166] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257955.054 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257959.081994488] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257959.081 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257963.075536439] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257963.075 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257965.649067403] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257965.648 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785257966.084612107] [rviz2]: Trying to create a map of size 158 x 164 using 1 swatches
+[async_slam_toolbox_node-5] [INFO] [1785257968.246618655] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257968.246 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257970.746665406] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257970.746 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257973.347834084] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257973.347 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257976.031819392] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257976.031 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257978.645581532] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257978.645 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257981.246486053] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257981.246 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257983.848877830] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257983.849 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257986.443552687] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257986.443 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257988.949299520] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257988.949 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785257991.548908460] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785257991.548 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785257992.271492515] [rclcpp]: signal_handler(signum=2)
+[async_slam_toolbox_node-5] [INFO] [1785257992.271505555] [rclcpp]: signal_handler(signum=2)
+[robot_state_publisher-2] [INFO] [1785257992.271547732] [rclcpp]: signal_handler(signum=2)
+[ekf_node-4] [INFO] [1785257992.271518638] [rclcpp]: signal_handler(signum=2)
+[rviz2-10] [ERROR] [1785257992.271831508] [rviz_navigation_dialog_action_client]: Client interrupted while waiting for service to appear
+[rviz2-10] Failed to publish log message to rosout: rcl node's context is invalid, at ./src/rcl/node.c:409
+[component_container-9] [INFO] [1785257992.272582294] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785257992.272690443] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[component_container-9] [INFO] [1785257992.272793628] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257992.272828296] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[component_container-9] [INFO] [1785257992.272858573] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257992.272886434] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[component_container-9] [INFO] [1785257992.272934827] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785257992.272970570] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[component_container-9] [INFO] [1785257992.273014586] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785257992.273042977] [waypoint_follower]: Running Nav2 LifecycleNode rcl preshutdown (waypoint_follower)
+[component_container-9] [INFO] [1785257992.273095356] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785257992.273152466] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[async_slam_toolbox_node-5] Unregistering sensor: Custom Described Lidar : laser_frame
+[component_container-9] [INFO] [1785257992.300938961] [lifecycle_manager_navigation]: Destroying lifecycle_manager_navigation
+[async_slam_toolbox_node-5] [WARN] [1785257992.303909350] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(3) in destructor
+[component_container-9] [INFO] [1785257992.309205736] [waypoint_follower]: Destroying
+[component_container-9] [WARN] [1785257992.309244002] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257992.314872919] [bt_navigator]: Destroying
+[component_container-9] [WARN] [1785257992.314895875] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257992.319277395] [behavior_server]: Destroying
+[component_container-9] [WARN] [1785257992.319303419] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257992.323427081] [global_costmap.global_costmap]: Destroying
+[component_container-9] [WARN] [1785257992.323444078] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257992.327696163] [planner_server]: Destroying
+[component_container-9] [WARN] [1785257992.327723427] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257992.332618752] [local_costmap.local_costmap]: Destroying
+[component_container-9] [WARN] [1785257992.332636696] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785257992.336756153] [controller_server]: Destroying
+[component_container-9] [WARN] [1785257992.336772834] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[scan_relay-6] Traceback (most recent call last):
+[odom_imu_relay-7] Traceback (most recent call last):
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay", line 33, in <module>
+[scan_relay-6]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'scan_relay')())
+[scan_relay-6]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/scan_relay.py", line 111, in main
+[scan_relay-6]     rclpy.spin(node)
+[scan_relay-6]     ~~~~~~~~~~^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[scan_relay-6]     executor.spin_once()
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[scan_relay-6]     self._spin_once_impl(timeout_sec)
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[scan_relay-6]     handler, entity, node = self.wait_for_ready_callbacks(
+[scan_relay-6]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[scan_relay-6]         timeout_sec, None, wait_condition)
+[scan_relay-6]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[scan_relay-6]     return next(self._cb_iter)
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[scan_relay-6]     wait_set = _rclpy.WaitSet(
+[scan_relay-6]         entity_count.num_subscriptions,
+[scan_relay-6]     ...<4 lines>...
+[scan_relay-6]         entity_count.num_events,
+[scan_relay-6]         self._context.handle)
+[scan_relay-6] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay", line 33, in <module>
+[odom_imu_relay-7]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'odom_imu_relay')())
+[odom_imu_relay-7]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/odom_imu_relay.py", line 118, in main
+[odom_imu_relay-7]     rclpy.spin(node)
+[odom_imu_relay-7]     ~~~~~~~~~~^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[odom_imu_relay-7]     executor.spin_once()
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[odom_imu_relay-7]     self._spin_once_impl(timeout_sec)
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[odom_imu_relay-7]     handler, entity, node = self.wait_for_ready_callbacks(
+[odom_imu_relay-7]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[odom_imu_relay-7]         timeout_sec, None, wait_condition)
+[odom_imu_relay-7]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[odom_imu_relay-7]     return next(self._cb_iter)
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[odom_imu_relay-7]     wait_set = _rclpy.WaitSet(
+[odom_imu_relay-7]         entity_count.num_subscriptions,
+[odom_imu_relay-7]     ...<4 lines>...
+[odom_imu_relay-7]         entity_count.num_events,
+[odom_imu_relay-7]         self._context.handle)
+[odom_imu_relay-7] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 607309]
+[INFO] [ekf_node-4]: process has finished cleanly [pid 607311]
+[INFO] [rviz2-10]: process has finished cleanly [pid 607317]
+[INFO] [async_slam_toolbox_node-5]: process has finished cleanly [pid 607312]
+[INFO] [component_container-9]: process has finished cleanly [pid 607316]
+[INFO] [supervisor-8]: process has finished cleanly [pid 607315]
+[ERROR] [scan_relay-6]: process has died [pid 607313, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay --ros-args -r __node:=scan_relay --params-file /tmp/launch_params_n28a7_xb'].
+[ERROR] [odom_imu_relay-7]: process has died [pid 607314, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay --ros-args -r __node:=odom_imu_relay --params-file /tmp/launch_params_kec3wpal'].
+[joint_state_publisher-3] Traceback (most recent call last):
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher", line 33, in <module>
+[joint_state_publisher-3]     sys.exit(load_entry_point('joint-state-publisher==2.4.2', 'console_scripts', 'joint_state_publisher')())
+[joint_state_publisher-3]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/joint_state_publisher/joint_state_publisher.py", line 568, in main
+[joint_state_publisher-3]     rclpy.spin(jsp)
+[joint_state_publisher-3]     ~~~~~~~~~~^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[joint_state_publisher-3]     executor.spin_once()
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[joint_state_publisher-3]     self._spin_once_impl(timeout_sec)
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[joint_state_publisher-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[joint_state_publisher-3]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[joint_state_publisher-3]         timeout_sec, None, wait_condition)
+[joint_state_publisher-3]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[joint_state_publisher-3]     return next(self._cb_iter)
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 876, in _wait_for_ready_callbacks
+[joint_state_publisher-3]     raise ExternalShutdownException()
+[joint_state_publisher-3] rclpy.executors.ExternalShutdownException
+[ERROR] [joint_state_publisher-3]: process has died [pid 607310, exit code 1, cmd '/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher --params-file /tmp/launch_params_k8hjj37m'].
+[ERROR] [micro_ros_agent-1]: process has died [pid 607308, exit code -9, cmd '/home/nhatkhoa1124/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent udp4 --port 8888'].

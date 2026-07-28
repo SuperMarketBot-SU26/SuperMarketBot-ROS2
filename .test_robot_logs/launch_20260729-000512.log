@@ -1,0 +1,480 @@
+[INFO] [launch]: All log files can be found below /home/nhatkhoa1124/.ros/log/2026-07-29-00-05-13-303471-nhatkhoa1124-GF63-Thin-11UD-629172
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [629309]
+[INFO] [robot_state_publisher-2]: process started with pid [629310]
+[INFO] [joint_state_publisher-3]: process started with pid [629311]
+[INFO] [ekf_node-4]: process started with pid [629312]
+[INFO] [async_slam_toolbox_node-5]: process started with pid [629313]
+[INFO] [scan_relay-6]: process started with pid [629314]
+[INFO] [odom_imu_relay-7]: process started with pid [629315]
+[INFO] [supervisor-8]: process started with pid [629316]
+[INFO] [component_container-9]: process started with pid [629317]
+[INFO] [rviz2-10]: process started with pid [629318]
+[micro_ros_agent-1] [35m[1785258313.754364][m info     | [34mUDPv4AgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | port: 8888
+[micro_ros_agent-1] [35m[1785258313.754508][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[robot_state_publisher-2] [WARN] [1785258313.788984132] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1785258313.789086255] [robot_state_publisher]: Robot initialized
+[component_container-9] [INFO] [1785258314.002491409] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_controller/lib/libcontroller_server_core.so
+[component_container-9] [INFO] [1785258314.024019325] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785258314.024062968] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785258314.057056082] [controller_server]: 
+[component_container-9] 	controller_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258314.080314889] [controller_server]: Creating controller server
+[component_container-9] [INFO] [1785258314.108168731] [local_costmap.local_costmap]: 
+[component_container-9] 	local_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258314.109152362] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785258314.119872408] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_planner/lib/libplanner_server_core.so
+[component_container-9] [INFO] [1785258314.121197441] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785258314.121214179] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785258314.142677593] [planner_server]: 
+[component_container-9] 	planner_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258314.144791510] [planner_server]: Creating
+[component_container-9] [INFO] [1785258314.151731291] [global_costmap.global_costmap]: 
+[component_container-9] 	global_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258314.152307328] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785258314.153948941] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_behaviors/lib/libbehavior_server_core.so
+[component_container-9] [INFO] [1785258314.155934251] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785258314.155955019] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785258314.161461448] [behavior_server]: 
+[component_container-9] 	behavior_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785258314.164453782] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_bt_navigator/lib/libbt_navigator_core.so
+[component_container-9] [INFO] [1785258314.167584321] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785258314.167603659] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785258314.173135151] [bt_navigator]: 
+[component_container-9] 	bt_navigator lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258314.174714174] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container-9] [INFO] [1785258314.175924413] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_waypoint_follower/lib/libwaypoint_follower_core.so
+[component_container-9] [INFO] [1785258314.177124481] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785258314.177138906] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785258314.182621938] [waypoint_follower]: 
+[component_container-9] 	waypoint_follower lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258314.184294970] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container-9] [INFO] [1785258314.185580477] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_lifecycle_manager/lib/libnav2_lifecycle_manager_core.so
+[component_container-9] [INFO] [1785258314.186737195] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785258314.186752694] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785258314.191632619] [lifecycle_manager_navigation]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container-9] [INFO] [1785258314.191900048] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[component_container-9] [INFO] [1785258314.192372966] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container-9] [INFO] [1785258314.197230305] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[joint_state_publisher-3] [INFO] [1785258314.626369960] [joint_state_publisher]: Waiting for robot_description to be published on the robot_description topic...
+[supervisor-8] [INFO] [1785258314.630555848] [supervisor]: Supervisor started: state=idle, in=/cmd_vel_nav, out=/cmd_vel, estop=/emergency_stop, service=/supervisor/cmd
+[scan_relay-6] [INFO] [1785258314.661079398] [scan_relay]: scan_relay started: /scan (RELIABLE) -> /scan_relay (BEST_EFFORT)
+[odom_imu_relay-7] [INFO] [1785258314.704535097] [odom_imu_relay]: odom_imu_relay started: /odom /odom -> /odom_relay, /imu /imu/data -> /imu_relay (disabled paths skipped)
+[joint_state_publisher-3] [INFO] [1785258314.791508352] [joint_state_publisher]: Got description, configuring robot
+[rviz2-10] [INFO] [1785258314.989278308] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1785258314.989378820] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[rviz2-10] [INFO] [1785258314.999006377] [rviz2]: Stereo is NOT SUPPORTED
+[scan_relay-6] [WARN] [1785258315.065494106] [scan_relay]: New subscription discovered on topic '/scan_relay', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[micro_ros_agent-1] [35m[1785258324.791210][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x296A6185, session_id: 0x81
+[micro_ros_agent-1] [35m[1785258324.791260][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x296A6185, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785258325.489480][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x296A6185, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.500275][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.513451][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.521202][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785258325.527217][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.532908][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.541069][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785258325.546304][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.550731][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.570911][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785258325.576336][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.580686][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.585237][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785258325.590162][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.601816][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x296A6185, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785258325.613179][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x296A6185, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[async_slam_toolbox_node-5] [INFO] [1785258327.138358490] [slam_toolbox]: Configuring
+[async_slam_toolbox_node-5] [INFO] [1785258327.156427299] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[async_slam_toolbox_node-5] [INFO] [1785258329.592874785] [slam_toolbox]: Activating
+[async_slam_toolbox_node-5] [INFO] [1785258329.737776410] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258329.737 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] Info: clipped range threshold to be within minimum and maximum range!
+[async_slam_toolbox_node-5] Registering sensor: [Custom Described Lidar : laser_frame]
+[async_slam_toolbox_node-5] [INFO] [1785258332.336092208] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258332.336 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785258335.775314363] [rviz2]: Message Filter dropping message: frame 'laser_frame' at time 1785258325.693 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[component_container-9] [INFO] [1785258337.474724819] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container-9] [INFO] [1785258337.474872739] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container-9] [INFO] [1785258337.475804722] [controller_server]: Configuring controller interface
+[component_container-9] [INFO] [1785258337.475896040] [local_costmap.local_costmap]: Configuring
+[component_container-9] [INFO] [1785258337.490322901] [local_costmap.local_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785258337.494163651] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785258337.495037104] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785258337.495051756] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785258337.495184110] [local_costmap.local_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785258337.495207020] [local_costmap.local_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785258337.495210178] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785258337.495305982] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785258337.514879732] [controller_server]: Controller frequency set to 10.0000Hz
+[component_container-9] [INFO] [1785258337.514906201] [controller_server]: getting progress checker plugins..
+[component_container-9] [INFO] [1785258337.514928150] [controller_server]: getting goal checker plugins..
+[component_container-9] [INFO] [1785258337.514940029] [controller_server]: getting controller plugins..
+[component_container-9] [INFO] [1785258337.514960905] [controller_server]: getting path handler plugins..
+[component_container-9] [INFO] [1785258337.515598564] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container-9] [INFO] [1785258337.515634820] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[component_container-9] [INFO] [1785258337.516175793] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container-9] [INFO] [1785258337.516198142] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container-9] [INFO] [1785258337.516854864] [controller_server]: Created path handler : PathHandler of type nav2_controller::FeasiblePathHandler
+[component_container-9] [INFO] [1785258337.516877697] [controller_server]: Controller Server has PathHandler  path handlers available.
+[component_container-9] [INFO] [1785258337.517836459] [controller_server]: Created controller : FollowPath of type nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [WARN] [1785258337.518222603] [controller_server]: Parameter 'FollowPath.desired_linear_vel' is deprecated. Use 'FollowPath.max_linear_vel' instead.
+[component_container-9] [INFO] [1785258337.521587286] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container-9] [INFO] [1785258337.532775188] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container-9] [INFO] [1785258337.532958065] [planner_server]: Configuring
+[component_container-9] [INFO] [1785258337.532993081] [global_costmap.global_costmap]: Configuring
+[component_container-9] [INFO] [1785258337.536388601] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785258337.536833028] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785258337.537405894] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785258337.537421122] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785258337.537549976] [global_costmap.global_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785258337.537564995] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785258337.537570548] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785258337.537681001] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785258337.549190962] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[component_container-9] [INFO] [1785258337.549220434] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785258337.549307666] [planner_server]: Planner Server has GridBased  planners available.
+[component_container-9] [INFO] [1785258337.566834426] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container-9] [INFO] [1785258337.566972210] [behavior_server]: Configuring
+[component_container-9] [INFO] [1785258337.569187246] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[component_container-9] [INFO] [1785258337.570565638] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[component_container-9] [INFO] [1785258337.571739602] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[component_container-9] [INFO] [1785258337.572867674] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[component_container-9] [INFO] [1785258337.576850555] [behavior_server]: Configuring spin
+[component_container-9] [INFO] [1785258337.581936641] [behavior_server]: Configuring backup
+[component_container-9] [INFO] [1785258337.591260339] [behavior_server]: Configuring drive_on_heading
+[component_container-9] [INFO] [1785258337.598027374] [behavior_server]: Configuring wait
+[component_container-9] [INFO] [1785258337.607456612] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container-9] [INFO] [1785258337.607675173] [bt_navigator]: Configuring
+[component_container-9] [INFO] [1785258337.611176377] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[component_container-9] [WARN] [1785258337.614279174] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785258337.630863851] [bt_navigator_navigate_to_pose_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_to_pose_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258337.698465659] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[component_container-9] [WARN] [1785258337.700827862] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785258337.712147672] [bt_navigator_navigate_through_poses_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_through_poses_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785258337.720783484] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785258337.720917022] [waypoint_follower]: Configuring
+[component_container-9] [INFO] [1785258337.741506847] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container-9] [INFO] [1785258337.741895506] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container-9] [INFO] [1785258337.742010487] [controller_server]: Activating
+[component_container-9] [INFO] [1785258337.742033123] [local_costmap.local_costmap]: Activating
+[component_container-9] [INFO] [1785258337.742038922] [local_costmap.local_costmap]: Checking transform
+[component_container-9] [INFO] [1785258337.742100199] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258338.242285395] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258338.742208386] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258339.242277564] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258339.603346854] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 46 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785258339.603384358] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785258339.603346742] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 46 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785258339.603417587] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785258339.607759014] [rviz2]: Trying to create a map of size 46 x 80 using 1 swatches
+[rviz2-10] [ERROR] [1785258339.639231135] [rviz2]: rviz/glsl120/indexed_8bit_image.vert
+[rviz2-10] rviz/glsl120/indexed_8bit_image.frag
+[rviz2-10]  GLSL link result : 
+[rviz2-10] active samplers with a different type refer to the same texture image unit
+[component_container-9] [INFO] [1785258339.742128309] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258340.242211562] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258340.742208154] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258341.242209061] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258341.742163158] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258342.242134974] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258342.742215484] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258343.242138475] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258343.742193501] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258344.242222968] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258344.742173320] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258345.242219187] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258345.742165678] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258346.242221389] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258346.742155593] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258347.242153370] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258347.742148716] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258337.608860, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258348.242165370] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258338.074967, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258348.742215005] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258338.574980, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258349.242294829] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258339.174964, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258349.742165523] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258339.608232, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258350.242128185] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258340.175026, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258350.742237522] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258340.674972, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258351.242172973] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258341.141656, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258351.742209685] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258341.541548, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258352.242157795] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258342.241586, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258352.742222007] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258342.674924, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258353.242324448] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258343.141587, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258353.742165689] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258343.608283, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258354.242129912] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258344.208336, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258354.742165079] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258344.708222, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258355.242308818] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258345.175046, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258355.742129318] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258345.641678, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258356.242145642] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258346.141560, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258356.742311141] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258346.608226, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258357.242222684] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258347.074965, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258357.742172685] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258347.708214, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258358.242244613] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258348.174961, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258358.742156501] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258348.608378, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258359.242228038] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258349.075049, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258359.742258150] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258349.708225, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258360.242289498] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258350.108350, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258360.742207455] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258350.575071, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258361.242222652] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258351.108302, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258361.742283455] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258351.608311, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258362.242267215] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258352.141544, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258362.742190249] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258352.608366, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258363.242217733] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258353.108309, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258363.742275790] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258353.708217, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258364.242234058] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258354.041565, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258364.742126625] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258354.641564, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258365.242160724] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258355.174979, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258365.742239428] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258355.608308, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258366.242133952] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258356.208250, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258366.742179183] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258356.674969, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258367.242246284] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258357.041585, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258367.742146048] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258357.608247, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258368.242228327] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258358.074970, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258368.742220024] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258358.541615, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258369.242154088] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258359.141588, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258369.742203918] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258359.608288, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258370.242231925] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258360.208308, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258370.742208473] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258360.674964, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258371.242236113] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258361.174923, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258371.742327081] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258361.641718, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258372.242222471] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258362.008358, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258372.742144430] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258362.641650, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258373.242218967] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258363.141615, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258373.742213532] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258363.574946, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258374.242197256] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258364.041555, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258374.742240981] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258364.608245, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258375.242227369] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258365.208216, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258375.742231726] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258365.674996, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258376.242165724] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258366.141573, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258376.742208731] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258366.575031, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258377.242230568] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258367.141631, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258377.742224882] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258367.608235, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258378.242209568] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258368.074921, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258378.742278145] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258368.641732, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258379.242217507] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258369.208228, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258379.742247826] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258369.674923, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258380.242217083] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258370.108271, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258380.742173633] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258370.574915, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258381.242130669] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258371.208300, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258381.742207941] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258371.641689, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258382.242143959] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258372.241638, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258382.742148552] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258372.608330, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258383.242201848] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258373.075005, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258383.742232972] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258373.541591, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258384.242211123] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258374.241626, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258384.742221091] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258374.575040, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258385.242211443] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258375.108278, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258385.742235514] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258375.574966, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258386.242124256] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258376.208242, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258386.742159147] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258376.641710, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258387.242233420] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258377.041714, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258387.742147279] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258377.541596, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258388.242155369] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258378.141605, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258388.742269282] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258378.574995, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258389.242155245] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258379.108291, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258389.742300170] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258379.708257, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258390.242166672] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258380.175062, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258390.742207377] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258380.641618, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258391.242176487] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258381.141573, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258391.742123547] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258381.674965, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258392.242159242] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258382.141572, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258392.742162678] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258382.608219, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258393.242126629] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258383.174968, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258393.742196366] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258383.641661, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258394.242194954] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258384.108356, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258394.742152297] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258384.674910, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258395.242140264] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258385.141658, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258395.742212385] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258385.574953, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258396.242126557] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258386.141567, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258396.742165356] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258386.708218, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258397.242149050] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258387.174970, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785258397.742209279] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785258332.975604 but the earliest data is at time 1785258387.541582, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [ERROR] [1785258397.742256588] [local_costmap.local_costmap]: Failed to activate local_costmap because transform from base_link to map did not become available before timeout
+[component_container-9] [ERROR] [1785258397.742576048] [lifecycle_manager_navigation]: Failed to change state for node: controller_server
+[component_container-9] [ERROR] [1785258397.742599221] [lifecycle_manager_navigation]: Failed to bring up all requested nodes. Aborting bringup.
+[async_slam_toolbox_node-5] [INFO] [1785258454.946265043] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258454.946 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258457.635871213] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258457.636 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785258459.610142058] [rviz2]: Trying to create a map of size 69 x 85 using 1 swatches
+[async_slam_toolbox_node-5] [INFO] [1785258460.234788949] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258460.235 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258462.831898076] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258462.831 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258465.431574089] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258465.431 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258467.966235949] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258467.966 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258470.538727974] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258470.538 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258490.035102874] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258489.936 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258496.039810134] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258495.946 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258510.033597407] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258509.933 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258526.033960711] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258525.956 for reason 'discarding message because the queue is full'
+[async_slam_toolbox_node-5] [INFO] [1785258545.035804015] [slam_toolbox]: Message Filter dropping message: frame 'laser_frame' at time 1785258544.933 for reason 'discarding message because the queue is full'
+[rviz2-10] [INFO] [1785258719.606793557] [rviz2]: Trying to create a map of size 69 x 91 using 1 swatches
+[rviz2-10] [INFO] [1785258739.606653581] [rviz2]: Trying to create a map of size 325 x 113 using 1 swatches
+[rviz2-10] [INFO] [1785258749.622231139] [rviz2]: Trying to create a map of size 426 x 126 using 1 swatches
+[rviz2-10] [INFO] [1785258759.641781332] [rviz2]: Trying to create a map of size 427 x 126 using 1 swatches
+[rviz2-10] [INFO] [1785258779.641526191] [rviz2]: Trying to create a map of size 433 x 126 using 1 swatches
+[rviz2-10] [INFO] [1785258789.625197212] [rviz2]: Trying to create a map of size 436 x 126 using 1 swatches
+[rviz2-10] [INFO] [1785258809.623526846] [rviz2]: Trying to create a map of size 488 x 164 using 1 swatches
+[rviz2-10] [INFO] [1785259437.581401564] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785259437.581472051] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785259437.581549622] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[robot_state_publisher-2] [INFO] [1785259437.581484761] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785259437.581655078] [controller_server]: Cleaning up
+[component_container-9] [INFO] [1785259437.581667345] [controller_server]: Cleaning up controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[ekf_node-4] [INFO] [1785259437.582320256] [rclcpp]: signal_handler(signum=2)
+[async_slam_toolbox_node-5] [INFO] [1785259437.582980272] [rclcpp]: signal_handler(signum=2)
+[async_slam_toolbox_node-5] Unregistering sensor: Custom Described Lidar : laser_frame
+[component_container-9] [INFO] [1785259437.590808941] [local_costmap.local_costmap]: Cleaning up
+[async_slam_toolbox_node-5] [WARN] [1785259437.605233221] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(3) in destructor
+[component_container-9] [INFO] [1785259437.615138019] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785259437.615180656] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[component_container-9] [INFO] [1785259437.615208386] [planner_server]: Cleaning up
+[component_container-9] [INFO] [1785259437.623581729] [global_costmap.global_costmap]: Cleaning up
+[component_container-9] [INFO] [1785259437.625571965] [planner_server]: Cleaning up plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785259437.625651361] [planner_server]: Destroying plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785259437.634293727] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785259437.634339366] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[component_container-9] [INFO] [1785259437.634375064] [behavior_server]: Cleaning up
+[component_container-9] [INFO] [1785259437.635507855] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785259437.635541498] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[component_container-9] [INFO] [1785259437.635570533] [bt_navigator]: Cleaning up
+[component_container-9] [INFO] [1785259437.636727270] [bt_navigator_navigate_to_pose_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785259437.636770921] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785259437.642859619] [bt_navigator_navigate_through_poses_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785259437.642899558] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[supervisor-8] Traceback (most recent call last):
+[scan_relay-6] Traceback (most recent call last):
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay", line 33, in <module>
+[scan_relay-6]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'scan_relay')())
+[scan_relay-6]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/scan_relay.py", line 111, in main
+[scan_relay-6]     rclpy.spin(node)
+[scan_relay-6]     ~~~~~~~~~~^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[scan_relay-6]     executor.spin_once()
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[scan_relay-6]     self._spin_once_impl(timeout_sec)
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[scan_relay-6]     handler, entity, node = self.wait_for_ready_callbacks(
+[scan_relay-6]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[scan_relay-6]         timeout_sec, None, wait_condition)
+[scan_relay-6]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[scan_relay-6]     return next(self._cb_iter)
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[scan_relay-6]     wait_set = _rclpy.WaitSet(
+[scan_relay-6]         entity_count.num_subscriptions,
+[scan_relay-6]     ...<4 lines>...
+[scan_relay-6]         entity_count.num_events,
+[scan_relay-6]         self._context.handle)
+[scan_relay-6] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor", line 33, in <module>
+[supervisor-8]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'supervisor')())
+[supervisor-8]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/supervisor.py", line 354, in main
+[supervisor-8]     rclpy.spin(node)
+[supervisor-8]     ~~~~~~~~~~^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[supervisor-8]     executor.spin_once()
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[supervisor-8]     self._spin_once_impl(timeout_sec)
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[supervisor-8]     handler, entity, node = self.wait_for_ready_callbacks(
+[supervisor-8]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[supervisor-8]         timeout_sec, None, wait_condition)
+[supervisor-8]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[supervisor-8]     return next(self._cb_iter)
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[supervisor-8]     wait_set = _rclpy.WaitSet(
+[supervisor-8]         entity_count.num_subscriptions,
+[supervisor-8]     ...<4 lines>...
+[supervisor-8]         entity_count.num_events,
+[supervisor-8]         self._context.handle)
+[supervisor-8] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[component_container-9] [INFO] [1785259437.648789109] [bt_navigator]: Completed Cleaning up
+[component_container-9] [INFO] [1785259437.648859792] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785259437.648872998] [waypoint_follower]: Running Nav2 LifecycleNode rcl preshutdown (waypoint_follower)
+[component_container-9] [INFO] [1785259437.648902190] [waypoint_follower]: Cleaning up
+[component_container-9] [INFO] [1785259437.651171009] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785259437.651215598] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[component_container-9] [INFO] [1785259437.675628410] [lifecycle_manager_navigation]: Destroying lifecycle_manager_navigation
+[component_container-9] [INFO] [1785259437.681023277] [waypoint_follower]: Destroying
+[component_container-9] [WARN] [1785259437.681043307] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785259437.687345297] [bt_navigator]: Destroying
+[component_container-9] [WARN] [1785259437.687367576] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785259437.692683454] [behavior_server]: Destroying
+[component_container-9] [WARN] [1785259437.692711245] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785259437.697074247] [global_costmap.global_costmap]: Destroying
+[component_container-9] [WARN] [1785259437.697094931] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785259437.701172540] [planner_server]: Destroying
+[component_container-9] [WARN] [1785259437.701189920] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785259437.705429327] [local_costmap.local_costmap]: Destroying
+[component_container-9] [WARN] [1785259437.705447314] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[INFO] [ekf_node-4]: process has finished cleanly [pid 629312]
+[component_container-9] [INFO] [1785259437.709441987] [controller_server]: Destroying
+[component_container-9] [WARN] [1785259437.709458628] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 629310]
+[INFO] [async_slam_toolbox_node-5]: process has finished cleanly [pid 629313]
+[INFO] [odom_imu_relay-7]: process has finished cleanly [pid 629315]
+[INFO] [component_container-9]: process has finished cleanly [pid 629317]
+[ERROR] [supervisor-8]: process has died [pid 629316, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor --ros-args -r __node:=supervisor --params-file /tmp/launch_params_ew49sbr_'].
+[ERROR] [scan_relay-6]: process has died [pid 629314, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay --ros-args -r __node:=scan_relay --params-file /tmp/launch_params_8_dkaiba'].
+[joint_state_publisher-3] Traceback (most recent call last):
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher", line 33, in <module>
+[joint_state_publisher-3]     sys.exit(load_entry_point('joint-state-publisher==2.4.2', 'console_scripts', 'joint_state_publisher')())
+[joint_state_publisher-3]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/joint_state_publisher/joint_state_publisher.py", line 568, in main
+[joint_state_publisher-3]     rclpy.spin(jsp)
+[joint_state_publisher-3]     ~~~~~~~~~~^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[joint_state_publisher-3]     executor.spin_once()
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[joint_state_publisher-3]     self._spin_once_impl(timeout_sec)
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[joint_state_publisher-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[joint_state_publisher-3]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[joint_state_publisher-3]         timeout_sec, None, wait_condition)
+[joint_state_publisher-3]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[joint_state_publisher-3]     return next(self._cb_iter)
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[joint_state_publisher-3]     wait_set = _rclpy.WaitSet(
+[joint_state_publisher-3]         entity_count.num_subscriptions,
+[joint_state_publisher-3]     ...<4 lines>...
+[joint_state_publisher-3]         entity_count.num_events,
+[joint_state_publisher-3]         self._context.handle)
+[joint_state_publisher-3] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[ERROR] [joint_state_publisher-3]: process has died [pid 629311, exit code 1, cmd '/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher --params-file /tmp/launch_params_6dokyjea'].
+[ERROR] [micro_ros_agent-1]: process has died [pid 629309, exit code -9, cmd '/home/nhatkhoa1124/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent udp4 --port 8888'].
+[ERROR] [rviz2-10]: process has died [pid 629318, exit code -9, cmd '/opt/ros/lyrical/lib/rviz2/rviz2 -d /home/nhatkhoa1124/ros2_ws/install/smb_robot_bringup/share/smb_robot_bringup/config/common/smb.rviz --ros-args -r __node:=rviz2 --params-file /tmp/launch_params_ut4sg5ef'].

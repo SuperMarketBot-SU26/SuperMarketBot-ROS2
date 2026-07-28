@@ -65,7 +65,7 @@ Mọi node/launch phải tuân thủ `docs/TOPIC_CONTRACT.md`. Tóm tắt:
 | `/odometry/filtered` | nav_msgs/Odometry | `odom` | `base_link` | 30 Hz | robot_localization |
 
 **Rules:**
-- **KHÔNG đổi** tên topic, type, frame_id mà không cập nhật contract đồng thời và báo teammate.
+- **KHÔNG đổi** tên topic, type, frame_id mà không cập nhật `docs/TOPIC_CONTRACT.md` đồng thời.
 - Mọi remapping trong launch files phải dùng đúng tên chuẩn: `-r /gz_topic:=/cmd_vel`.
 - QoS: sensor data (lidar) dùng `BEST_EFFORT`; commands (cmd_vel) dùng `RELIABLE`.
 

@@ -4,23 +4,23 @@ globs: "**/*.{py,xacro,urdf,sdf,yaml,yml,md}"
 alwaysApply: false
 ---
 
-# Phased development (ROS2)
+# Phased development (ROS2 + IOT)
 
-Repo này KHÔNG tự đứng một mình. Giao tiếp với firmware qua **topic contract** (xem `docs/TOPIC_CONTRACT.md`). Thay đổi contract = thay đổi `TopIotBridge` = phải sync với teammate ở `SuperMarketBot-IOT/`.
+Repo ROS2 và repo IOT đều do bạn sở hữu. Giao tiếp giữa hai bên qua **topic contract** (`docs/TOPIC_CONTRACT.md` trong repo ROS2). Đổi contract = đổi code ở cả hai repo trong cùng một task; commit message phải ghi rõ.
 
-## Nguyên tắc phân vai
+## Nguyên tắc phân vai (một người, hai repo)
 
 | Owner | Codebase | Quyền sở hữu |
 |---|---|---|
 | Bạn | `~/ros2_ws/` (repo này) | launch, URDF, params, worlds, smb_bridge Python, smb_nodes C++/Py |
-| Teammate | `~/me/Projects/SMB/SuperMarketBot-IOT/` | ESP32 firmware, ESP32-CAM, Android hub, MicroRos.h |
-| Shared | topic contract | cả 2 đều sửa được; mọi thay đổi PHẢI thông báo bên kia |
+| Bạn | `~/me/Projects/SMB/SuperMarketBot-IOT/` | ESP32 firmware, ESP32-CAM, Android hub, MicroRos.h |
+| Shared | topic contract | cả 2 repo đều do bạn sửa; mọi thay đổi PHẢI đi kèm update contract + commit message ghi rõ |
 
 ## Hardware realities
 
-- Bạn KHÔNG có robot thật → Phase 1–3 làm 100% trên sim. Mọi launch file phải chạy được khi `mode:=sim`.
-- Teammate CÓ robot → anh ấy code + test phần cứng; bạn không cần đợi.
-- Khi có robot thật (không rõ khi nào): cùng launch file, đổi `mode:=robot` — KHÔNG cần sửa config.
+- Bạn CÓ robot thật (per user request) → có thể test cả sim lẫn thật.
+- Phase 1–3 dùng `mode:=sim` cho iteration nhanh; `mode:=robot` cho verify cuối cùng.
+- Cùng launch file, đổi `mode:=robot` — KHÔNG cần sửa config.
 
 ## Phase roadmap
 
@@ -50,11 +50,11 @@ Repo này KHÔNG tự đứng một mình. Giao tiếp với firmware qua **topi
 - [ ] Port `ros2_bridge/config/{ekf_config.yaml, mapper_params_online_async.yaml}` từ IOT repo vào `src/smb_robot_bringup/params/`.
 - [ ] Port `ros2_bridge/launch/ekf_localization.launch.py` vào `src/smb_robot_bringup/launch/`.
 - [ ] Add EKF vào sim + robot launch.
-- [ ] Báo teammate review contract.
+- [ ] Ghi chú self-review contract (đã đổi ở cả hai repo).
 
-### Phase 3 — smb_bridge (PENDING — coordinate với teammate)
+### Phase 3 — smb_bridge (PENDING)
 
-- [ ] Cùng teammate quyết: dùng WebSocket JSON bridge (cũ, đã có trong IOT) hay micro-ROS bridge (mới, đang viết).
+- [ ] Quyết: dùng WebSocket JSON bridge (cũ, đã có trong IOT) hay micro-ROS bridge (mới, đang viết).
 - [ ] Nếu WebSocket: port `ros2_bridge/esp32_ros2_bridge.py` từ IOT repo vào `src/smb_bridge/src/`, biến thành ament_python package.
 - [ ] Nếu micro-ROS: chỉ cần install/setup script — không có Python bridge.
 
@@ -63,15 +63,15 @@ Repo này KHÔNG tự đứng một mình. Giao tiếp với firmware qua **topi
 - [ ] `smb_nodes/` FSM (idle / nav / dock / estop).
 - [ ] Nav2 BT trees cho dock sequence.
 
-## Không được sửa nếu không báo trước
+## Đổi interface giữa hai repo (lưu ý khi đổi)
 
-| Item | Lý do |
+| Item | Lưu ý |
 |---|---|
-| Topic names (`/scan`, `/odom`, `/cmd_vel`, `/imu/data`) | firmware đang nhắm theo tên này; đổi = firmware phải patch lại |
-| Frame IDs (`base_link`, `odom`, `map`, `laser_frame`, `imu_link`) | EKF config cứng vào frame IDs này |
-| Message types (sensor_msgs/LaserScan, nav_msgs/Odometry, ...) | contract với firmware |
-| SLAM Toolbox param names trong YAML | team đã tuning kỹ (mapper_params_online_async.yaml) |
-| Covariance matrices trong EKF config | team đã tune cho hardware; touch chỉ khi có data mới |
+| Topic names (`/scan`, `/odom`, `/cmd_vel`, `/imu/data`) | Cập nhật ở cả ROS2 launch/config VÀ IOT MicroRos.h cùng lúc; update `docs/TOPIC_CONTRACT.md` |
+| Frame IDs (`base_link`, `odom`, `map`, `laser_frame`, `imu_link`) | Cập nhật URDF + EKF config + firmware; URDF là canonical reference |
+| Message types (sensor_msgs/LaserScan, nav_msgs/Odometry, ...) | Cập nhật struct ở cả hai repo nếu thêm field; bỏ field thì check backward compat |
+| SLAM Toolbox param names trong YAML | Tự do đổi; ghi rõ trong commit message |
+| Covariance matrices trong EKF config | Tự do đổi; re-tune trên data thật trước khi commit |
 
 ## Edge cases đặc biệt cho ROS2 "lyrical" / Ubuntu 26.04
 

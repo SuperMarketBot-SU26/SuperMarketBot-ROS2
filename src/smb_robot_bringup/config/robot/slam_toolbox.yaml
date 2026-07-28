@@ -5,11 +5,19 @@
 # so the loop-closure false-positive that triggered the snap in sim is
 # not expected here.
 #
+# v2.3 tuning (Jul 28 2026): loosened minimum_travel_*, link_scan_max_distance,
+# correlation_search_space_dimension and tightened loop_search_maximum_distance
+# to compensate for ESP32 /scan running at 1-2 Hz instead of 10 Hz (the firmware
+# is CPU-bound on WiFi + LiDAR UART + micro-ROS UDP). Without these changes,
+# scan-to-submap matching fails when the robot moves between scans, the
+# submap graph splits, and you see "the old map stays, a new one pops on top"
+# in RViz. See inline comments for the per-parameter rationale.
+#
 # When you move to a new environment:
-#   - `loop_search_maximum_distance` (3.0 m) is the search horizon for
-#     loop-closure candidates. In a small/structured office, you may want
-#     5.0-8.0 m so genuine revisits are found.
-#   - `loop_match_minimum_response_fine` (0.55) — tighten if you see
+#   - `loop_search_maximum_distance` (1.5 m) is the search horizon for
+#     loop-closure candidates. In a larger office/aisle, raise to 3-5 m so
+#     genuine revisits across rooms are found.
+#   - `loop_match_minimum_response_fine` (0.45) — tighten if you see
 #     false loops. Loosen if genuine loops aren't closing.
 #
 # Phase-2 plan: replace this file with the IOT-repo port
@@ -50,8 +58,17 @@ slam_toolbox:
     # Pose graph — slightly looser than sim to allow genuine returns in
     # a real environment (not a 10x10m box). Real robot has wheel-encoder
     # odometry that drifts a bit, so we want enough candidates.
-    minimum_travel_distance: 0.5
-    minimum_travel_heading: 0.5
+    #
+    # v2.3: minimum_travel* and link_scan_max_distance LOOSENED because the
+    # ESP32 publishes /scan at ~1-2 Hz (instead of 10 Hz) when WiFi + micro-ROS
+    # UDP backpressure + LiDAR UART parsing all compete for CPU. With sparse
+    # scans the robot can move 10-30cm between consecutive scans, which is
+    # larger than the original 0.5m / 1.5m thresholds assumed for a 10 Hz
+    # stream. Without these looser values, slam_toolbox rejects most new scans
+    # as "moved too far" → new submap spawns at the wrong location → user
+    # sees "map stays there, new map pops on top" instead of one connected map.
+    minimum_travel_distance: 0.2   # was 0.5 — register scans even after small moves
+    minimum_travel_heading: 0.2    # was 0.5 — register scans after small rotations
     skip_odometry: false
 
     # Scan matching.
@@ -70,15 +87,26 @@ slam_toolbox:
     do_loop_closing: true
     #
     # Per-step link matching — keep tighter than upstream defaults (0.1)
-    # but allow some flexibility for real-world sensor noise.
+    # but allow some flexibility for real-world sensor noise + sparse scans.
+    # v2.3: link_scan_max_distance + correlation_search_space_dimension INCREASED
+    # for the same reason as minimum_travel_* above: ESP32 ~1-2 Hz scan rate +
+    # wheel-encoder drift means consecutive scans can be 30-50cm apart and
+    # the odometry can be off by 30cm+. Need a wider search window so the
+    # scan-to-submap correlator can lock on. Otherwise it fails the match,
+    # starts a new submap, and the map "pops" instead of stitching.
     link_match_minimum_response_fine: 0.55
-    link_scan_max_distance: 1.5
-    correlation_search_space_dimension: 0.5
+    link_scan_max_distance: 5.0   # was 1.5 — match scans up to 5m apart (drift)
+    correlation_search_space_dimension: 1.5  # was 0.5 — search ±1.5m window
     correlation_search_space_resolution: 0.01
     correlation_search_space_smear_deviation: 0.1
     #
     # Loop-closure params — upstream defaults; tuned for real environment.
-    loop_search_maximum_distance: 3.0
+    # v2.3: loop_search_maximum_distance REDUCED so loop closure considers
+    # nearby submaps (within 1.5m) even when wheel-encoder drift has moved
+    # them apart by tens of cm. Combined with the wider link_scan_max_distance,
+    # this is what stitches consecutive submaps when the robot returns to
+    # a previously-mapped area after exploring.
+    loop_search_maximum_distance: 1.5   # was 3.0
     loop_match_minimum_chain_size: 10
     loop_match_minimum_response_coarse: 0.35
     loop_match_minimum_response_fine: 0.45

@@ -1,13 +1,26 @@
 # Minimal EKF for real-robot mode.
 #
-# Purpose: convert ESP32's /odom (NavMsg Odometry) into /tf (odom → base_link).
-# slam_toolbox expects this TF but the ESP32 firmware only publishes the topic,
-# not the transform. Without EKF, SLAM has no `odom → base_link` TF and
-# cannot produce `map → odom` → no map → no Nav2.
+# Purpose: convert ESP32's /odom (NavMsg Odometry) + /imu/data (sensor_msgs/Imu)
+# into /tf (odom → base_link). slam_toolbox expects this TF but the ESP32
+# firmware only publishes topics, not transforms. Without EKF, SLAM has no
+# `odom → base_link` TF and cannot produce `map → odom` → no map → no Nav2.
 #
-# This is a single-source, single-odom EKF (no IMU fusion). Full sensor
-# fusion (wheel + IMU + AMCL) is in the IOT-repo ekf_config.yaml and is the
-# target for Phase 2. For now, this minimal config unblocks SLAM.
+# Stamp note: ESP32 stamps /odom and /imu/data with millis()/1000 (year 1970),
+# which the EKF rejects. We subscribe to /odom_relay and /imu_relay
+# (re-published by smb_nodes/odom_imu_relay with host-clock stamps).
+#
+# v2.4 (2026-07-28): ADD imu0 = /imu_relay fusion (gyro_z angular velocity
+# for heading correction). The firmware-side IMU EKF (ImuFusion.h) already
+# fuses gyro + wheel at 20 Hz on the ESP32, so /imu_relay's orientation and
+# /odom_relay's heading are correlated. We consume ONLY angular_velocity.z
+# from /imu_relay (orientation ignored) to avoid double-counting heading
+# inside this EKF.
+#
+# This is a single-source-for-position + IMU-aided-heading EKF. Full sensor
+# fusion (multiple wheel+IMU+GPS at the EKF level) is in the IOT-repo
+# ekf_config.yaml and is the target for Phase 2. For now, this minimal
+# config combines /odom_relay for translation (post v2.4 firmware: signed)
+# + /imu_relay gyro for heading drift correction.
 
 ekf_filter_node:
   ros__parameters:
@@ -67,7 +80,7 @@ ekf_filter_node:
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    1e-9]
 
-    odom0: /odom
+    odom0: /odom_relay
     odom0_config: [
       true,  true,  false,
       false, false, true,
@@ -77,3 +90,26 @@ ekf_filter_node:
 
     odom0_differential: false
     odom0_relative: false
+
+    # v2.4 (2026-07-28): ADD /imu_relay fusion for gyro-Z based heading.
+    # Until now this EKF was single-source (just /odom_relay → odom→base_link TF).
+    # /imu_relay publishes the ESP32's already-EKF-fused IMU with gyro_z angular
+    # velocity at 10 Hz. Adding it as imu0 lets the EKF correct heading drift
+    # during extended runs (wheel-encoder-only odom slowly drifts on slippery
+    # surfaces), AND gives /odometry/filtered which Nav2 can consume directly.
+    #
+    # We DO NOT consume the orientation from /imu_relay here: that orientation
+    # is in imu_link frame (with the gyro-zero reference), not in base_link.
+    # Mixing heading sources in one EKF node would double-count.
+    #
+    # Config mask = [Vx Vy Vz Rroll Rpitch R yaw ax ay az] ; true = USE.
+    # We only use angular_velocity.z (yaw rate) — let the rest be ignored.
+    imu0: /imu_relay
+    imu0_config: [
+      false, false, false,
+      false, false, true,
+      false, false, false,
+      false, false, false,
+      false, false, false]
+    imu0_differential: false   # IMPORTANT: differential=true would strip offset drift
+    imu0_relative: false

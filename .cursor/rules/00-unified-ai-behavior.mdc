@@ -75,7 +75,7 @@ Cấu trúc file rule mirror theo `SuperMarketBot-BE/.cursor/rules/` để có t
 - **Long-horizon work:** tiến bộ tăng dần, vài việc một lúc thay vì tất cả cùng lúc. Hoàn thành từng component có hệ thống trước khi sang cái tiếp theo.
 - **State tracking rõ ràng** khi task lớn. Structured format cho state có cấu trúc; plain text cho progress notes. Ưu tiên hiểu và tiếp tục từ state hiện tại, không recreate context.
 - **Safety & autonomy:**
-  - Tự do với hành động cục bộ, reversible: đọc file, sửa code, chạy `colcon build`, `ros2 launch`.
+  - Tự do với hành động cục bộ, reversible: đọc file, sửa code, chạy `colcon build`, `ros2 launch`, build firmware, flash ESP32.
   - Hỏi trước khi hành động phá huỷ, khó đảo, hoặc visible cho người khác: git push, force push, xoá launch file trong repo, ghi vào `install/` hoặc `build/`.
   - Không bypass safety check, bỏ file lạ, dùng destructive action làm shortcut.
 - **Research & exploration:** tìm kiếm có hệ thống. Thu thập bằng chứng từ nhiều nguồn trước khi kết luận. Chia research lớn thành hypothesis nhỏ.
@@ -84,15 +84,16 @@ Cấu trúc file rule mirror theo `SuperMarketBot-BE/.cursor/rules/` để có t
 
 ---
 
-## Áp dụng cho SmartMarketBot ROS2
+## Áp dụng cho SmartMarketBot (ROS2 + IOT)
 
-- **Repo:** `~/ros2_ws/` (alias `SuperMarketBot-ROS2.git` trên GitHub).
-- **Stack:** ROS2 "lyrical" trên Ubuntu 26.04 Resolute, ament (C++/Python), Gazebo Sim (ros_gz), slam_toolbox, robot_localization, Nav2.
-- **Quyền sở hữu ranh giới:**
-  - Repo này (ROS2) — bạn sở hữu. Sửa launch, URDF, config, bridge, nodes.
-  - Repo `SuperMarketBot-IOT/` (ESP32 firmware + Android hub + ros_bridge Python cũ) — teammate sở hữu. Không sửa trừ khi user yêu cầu rõ.
-  - **Topic contract** (`docs/TOPIC_CONTRACT.md`) là interface giữa hai bên — sửa document này khi muốn đổi interface; báo teammate trước.
-- **Khi chỉnh sửa launch file, URDF hoặc SDF:** nhớ rằng nó được dùng cho CẢ sim lẪn real-robot. Một thay đổi có thể ảnh hưởng đến phần cứng teammate đang chạy.
-- **Trước khi commit / xong task:** `colcon build --packages-select <changed_pkg>` pass; nếu launch file đổi, chạy thử `ros2 launch ... --show-args` để verify cú pháp (không cần robot thật).
+- **Repo ROS2:** `~/ros2_ws/` (alias `SuperMarketBot-ROS2.git` trên GitHub).
+- **Repo IOT:** `~/me/Projects/SMB/SuperMarketBot-IOT/` (ESP32 firmware + Android hub + MicroRos.h + ros_bridge Python cũ).
+- **Stack ROS2:** ROS2 "lyrical" trên Ubuntu 26.04 Resolute, ament (C++/Python), Gazebo Sim (ros_gz), slam_toolbox, robot_localization, Nav2.
+- **Stack IOT:** Arduino/ESP-IDF cho ESP32-S3, PlatformIO hoặc Arduino IDE; micro-ROS-arduino; WebSocket bridge cho web UI; MQTT cho Android hub.
+- **Quyền sở hữu:** bạn sở hữu cả hai repo. Mọi thay đổi đều do bạn quyết, có thể chỉnh sửa tự do ở cả hai phía trong cùng một task. Không cần đợi review bên ngoài.
+- **Topic contract** (`docs/TOPIC_CONTRACT.md` trong repo ROS2) là interface giữa hai repo. Vì cả hai repo đều của bạn, mọi thay đổi interface phải update document này đồng thời + commit message ghi rõ "đã đổi X ở cả ROS2 và IOT".
+- **Khi chỉnh sửa launch file, URDF, SDF hoặc firmware:** một thay đổi có thể ảnh hưởng đến phần cứng đang chạy. Test kỹ trước khi flash / launch.
+- **Trước khi commit / xong task:**
+  - ROS2 đổi launch file → `colcon build --packages-select <changed_pkg>` pass + `ros2 launch ... --show-args` verify cú pháp.
+  - IOT đổi firmware → compile pass + (nếu có thể) flash + smoke test trên ESP32.
 - **Không commit lên remote** trừ khi user yêu cầu rõ.
-- **Không đổi** topic names, frame_ids, hoặc message types mà không cập nhật `docs/TOPIC_CONTRACT.md` (và báo teammate).

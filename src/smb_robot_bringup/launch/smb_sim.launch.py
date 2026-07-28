@@ -268,6 +268,25 @@ def generate_launch_description():
         output='screen',
     )
 
+    # 5c.b Stamp relay — sim mode runs in passthrough (input == output) because
+    #      Gazebo's DiffDrive plugin publishes Odometry with host-clock stamps.
+    #      The node is still launched so any test that flips to real-robot
+    #      mode at runtime keeps the same node topology. See smb_robot.launch.py
+    #      for the active (stamp-rewriting) configuration.
+    odom_imu_relay_node = Node(
+        package='smb_nodes',
+        executable='odom_imu_relay',
+        name='odom_imu_relay',
+        parameters=[{
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+            'odom_in_topic': '/odom',
+            'odom_out_topic': '/odom',
+            'imu_in_topic': '/imu/data',
+            'imu_out_topic': '/imu/data',
+        }],
+        output='screen',
+    )
+
     # 6. Teleop keyboard (gated by `teleop:=true` arg).
     #    Press Ctrl-C in this terminal to stop the whole launch; the robot
     #    will respond to /cmd_vel in another terminal that runs:
@@ -308,5 +327,6 @@ def generate_launch_description():
         slam_launch,
         rviz_node,
         supervisor_node,
+        odom_imu_relay_node,
         nav2_launch,
     ])

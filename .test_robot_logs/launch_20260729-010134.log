@@ -1,0 +1,519 @@
+[INFO] [launch]: All log files can be found below /home/nhatkhoa1124/.ros/log/2026-07-29-01-01-34-447811-nhatkhoa1124-GF63-Thin-11UD-744119
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [744185]
+[INFO] [robot_state_publisher-2]: process started with pid [744186]
+[INFO] [joint_state_publisher-3]: process started with pid [744187]
+[INFO] [ekf_node-4]: process started with pid [744188]
+[INFO] [async_slam_toolbox_node-5]: process started with pid [744189]
+[INFO] [scan_relay-6]: process started with pid [744190]
+[INFO] [odom_imu_relay-7]: process started with pid [744191]
+[INFO] [supervisor-8]: process started with pid [744192]
+[INFO] [component_container-9]: process started with pid [744193]
+[INFO] [rviz2-10]: process started with pid [744194]
+[micro_ros_agent-1] [35m[1785261694.843544][m info     | [34mUDPv4AgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | port: 8888
+[micro_ros_agent-1] [35m[1785261694.843667][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[robot_state_publisher-2] [WARN] [1785261694.872284088] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1785261694.872378015] [robot_state_publisher]: Robot initialized
+[component_container-9] [INFO] [1785261695.096539628] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_controller/lib/libcontroller_server_core.so
+[component_container-9] [INFO] [1785261695.124528127] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785261695.125100376] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785261695.139142968] [controller_server]: 
+[component_container-9] 	controller_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261695.149046979] [controller_server]: Creating controller server
+[component_container-9] [INFO] [1785261695.166321210] [local_costmap.local_costmap]: 
+[component_container-9] 	local_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261695.167534599] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785261695.173964928] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_planner/lib/libplanner_server_core.so
+[component_container-9] [INFO] [1785261695.175283806] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785261695.175301723] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785261695.197341730] [planner_server]: 
+[component_container-9] 	planner_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261695.200293767] [planner_server]: Creating
+[component_container-9] [INFO] [1785261695.214889515] [global_costmap.global_costmap]: 
+[component_container-9] 	global_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261695.215847453] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785261695.219414312] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_behaviors/lib/libbehavior_server_core.so
+[component_container-9] [INFO] [1785261695.221933209] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785261695.221961384] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785261695.245203815] [behavior_server]: 
+[component_container-9] 	behavior_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785261695.257449176] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_bt_navigator/lib/libbt_navigator_core.so
+[component_container-9] [INFO] [1785261695.262548837] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785261695.262580761] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785261695.275777438] [bt_navigator]: 
+[component_container-9] 	bt_navigator lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261695.278683716] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container-9] [INFO] [1785261695.280243924] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_waypoint_follower/lib/libwaypoint_follower_core.so
+[component_container-9] [INFO] [1785261695.282067270] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785261695.282092136] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785261695.290490153] [waypoint_follower]: 
+[component_container-9] 	waypoint_follower lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261695.293373526] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container-9] [INFO] [1785261695.295138040] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_lifecycle_manager/lib/libnav2_lifecycle_manager_core.so
+[component_container-9] [INFO] [1785261695.296830875] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785261695.296852179] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785261695.301932141] [lifecycle_manager_navigation]: Creating
+[component_container-9] [INFO] [1785261695.302235904] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[component_container-9] [INFO] [1785261695.302727084] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container-9] [INFO] [1785261695.308262492] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[supervisor-8] [INFO] [1785261695.386218217] [supervisor]: Supervisor started: state=idle, in=/cmd_vel_nav, out=/cmd_vel, estop=/emergency_stop, service=/supervisor/cmd
+[odom_imu_relay-7] [INFO] [1785261695.415146465] [odom_imu_relay]: odom_imu_relay started: /odom /odom -> /odom_relay, /imu /imu/data -> /imu_relay (disabled paths skipped)
+[joint_state_publisher-3] [INFO] [1785261695.426981570] [joint_state_publisher]: Waiting for robot_description to be published on the robot_description topic...
+[scan_relay-6] [INFO] [1785261695.448769471] [scan_relay]: scan_relay started: /scan (RELIABLE) -> /scan_relay (BEST_EFFORT)
+[joint_state_publisher-3] [INFO] [1785261695.589180996] [joint_state_publisher]: Got description, configuring robot
+[rviz2-10] [INFO] [1785261696.050790777] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1785261696.050893919] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[rviz2-10] [INFO] [1785261696.062480568] [rviz2]: Stereo is NOT SUPPORTED
+[scan_relay-6] [WARN] [1785261696.127626205] [scan_relay]: New subscription discovered on topic '/scan_relay', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[micro_ros_agent-1] [35m[1785261714.311835][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x55B039B4, session_id: 0x81
+[micro_ros_agent-1] [35m[1785261714.311954][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x55B039B4, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785261714.331399][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x55B039B4, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.336019][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.345970][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.357641][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785261714.362961][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.367429][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.372353][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785261714.382285][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.389759][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.394710][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785261714.400126][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.409024][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.415210][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785261714.419821][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.434120][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x55B039B4, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785261714.439093][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x55B039B4, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[async_slam_toolbox_node-5] [INFO] [1785261718.831417210] [slam_toolbox]: Configuring
+[async_slam_toolbox_node-5] [INFO] [1785261718.848151644] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[async_slam_toolbox_node-5] [INFO] [1785261721.379555767] [slam_toolbox]: Activating
+[rviz2-10] [INFO] [1785261725.687355106] [rviz2]: Message Filter dropping message: frame 'laser_frame' at time 1785261715.599 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[component_container-9] [INFO] [1785261729.163329832] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container-9] [INFO] [1785261729.163463476] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container-9] [INFO] [1785261729.164232580] [controller_server]: Configuring controller interface
+[component_container-9] [INFO] [1785261729.164326613] [local_costmap.local_costmap]: Configuring
+[component_container-9] [INFO] [1785261729.171624329] [local_costmap.local_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785261729.176550249] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785261729.177741091] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785261729.177755067] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785261729.177915080] [local_costmap.local_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785261729.177933953] [local_costmap.local_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785261729.177938313] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785261729.178061729] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785261729.196155937] [controller_server]: Controller frequency set to 10.0000Hz
+[component_container-9] [INFO] [1785261729.196186990] [controller_server]: getting progress checker plugins..
+[component_container-9] [INFO] [1785261729.196215204] [controller_server]: getting goal checker plugins..
+[component_container-9] [INFO] [1785261729.196234394] [controller_server]: getting controller plugins..
+[component_container-9] [INFO] [1785261729.196263945] [controller_server]: getting path handler plugins..
+[component_container-9] [INFO] [1785261729.197050526] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container-9] [INFO] [1785261729.197080856] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[component_container-9] [INFO] [1785261729.197580808] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container-9] [INFO] [1785261729.197602719] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container-9] [INFO] [1785261729.198247296] [controller_server]: Created path handler : PathHandler of type nav2_controller::FeasiblePathHandler
+[component_container-9] [INFO] [1785261729.198267174] [controller_server]: Controller Server has PathHandler  path handlers available.
+[component_container-9] [INFO] [1785261729.199204934] [controller_server]: Created controller : FollowPath of type nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [WARN] [1785261729.199294871] [controller_server]: Parameter 'FollowPath.desired_linear_vel' is deprecated. Use 'FollowPath.max_linear_vel' instead.
+[component_container-9] [INFO] [1785261729.202698839] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container-9] [INFO] [1785261729.211947044] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container-9] [INFO] [1785261729.212049517] [planner_server]: Configuring
+[component_container-9] [INFO] [1785261729.212076955] [global_costmap.global_costmap]: Configuring
+[component_container-9] [INFO] [1785261729.216351192] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785261729.216852463] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785261729.217439926] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785261729.217456958] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785261729.217588830] [global_costmap.global_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785261729.217601543] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785261729.217606185] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785261729.217709204] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785261729.231990713] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[component_container-9] [INFO] [1785261729.232022892] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785261729.232143615] [planner_server]: Planner Server has GridBased  planners available.
+[component_container-9] [INFO] [1785261729.243449976] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container-9] [INFO] [1785261729.243910597] [behavior_server]: Configuring
+[component_container-9] [INFO] [1785261729.245624795] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[component_container-9] [INFO] [1785261729.247065163] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[component_container-9] [INFO] [1785261729.248277666] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[component_container-9] [INFO] [1785261729.249435208] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[component_container-9] [INFO] [1785261729.253344999] [behavior_server]: Configuring spin
+[component_container-9] [INFO] [1785261729.259007477] [behavior_server]: Configuring backup
+[component_container-9] [INFO] [1785261729.264412800] [behavior_server]: Configuring drive_on_heading
+[component_container-9] [INFO] [1785261729.270037538] [behavior_server]: Configuring wait
+[component_container-9] [INFO] [1785261729.276112195] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container-9] [INFO] [1785261729.276268553] [bt_navigator]: Configuring
+[component_container-9] [INFO] [1785261729.278883875] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[component_container-9] [WARN] [1785261729.281999635] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785261729.293997905] [bt_navigator_navigate_to_pose_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_to_pose_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261729.352824093] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[component_container-9] [WARN] [1785261729.355710655] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785261729.367514598] [bt_navigator_navigate_through_poses_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_through_poses_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785261729.375355318] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785261729.375480194] [waypoint_follower]: Configuring
+[component_container-9] [INFO] [1785261729.393130446] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container-9] [INFO] [1785261729.393454044] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container-9] [INFO] [1785261729.393552621] [controller_server]: Activating
+[component_container-9] [INFO] [1785261729.393572789] [local_costmap.local_costmap]: Activating
+[component_container-9] [INFO] [1785261729.393578313] [local_costmap.local_costmap]: Checking transform
+[component_container-9] [INFO] [1785261729.393607746] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261729.893712825] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261730.393703913] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261730.893776125] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261731.393692824] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261731.893708651] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261732.393759315] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261732.893677296] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261733.393704648] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261733.893714725] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261734.393711266] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container-9] [INFO] [1785261734.893714390] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[async_slam_toolbox_node-5] Info: clipped range threshold to be within minimum and maximum range!
+[async_slam_toolbox_node-5] Registering sensor: [Custom Described Lidar : laser_frame]
+[component_container-9] [INFO] [1785261735.393836367] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785261735.319813 but the earliest data is at time 1785261735.478631, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785261735.893887044] [local_costmap.local_costmap]: start
+[component_container-9] [INFO] [1785261735.944312914] [controller_server]: Activating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785261735.945473447] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261736.207268687] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[component_container-9] [INFO] [1785261736.207301675] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[component_container-9] [INFO] [1785261736.207544538] [planner_server]: Activating
+[component_container-9] [INFO] [1785261736.207607543] [global_costmap.global_costmap]: Activating
+[component_container-9] [INFO] [1785261736.207616784] [global_costmap.global_costmap]: Checking transform
+[component_container-9] [INFO] [1785261736.207663741] [global_costmap.global_costmap]: start
+[component_container-9] [INFO] [1785261736.257807998] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785261736.259616631] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261736.513154887] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[component_container-9] [INFO] [1785261736.513258322] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785261736.513728403] [behavior_server]: Activating
+[component_container-9] [INFO] [1785261736.513777277] [behavior_server]: Activating spin
+[component_container-9] [INFO] [1785261736.513808942] [behavior_server]: Activating backup
+[component_container-9] [INFO] [1785261736.513830338] [behavior_server]: Activating drive_on_heading
+[component_container-9] [INFO] [1785261736.513850719] [behavior_server]: Activating wait
+[component_container-9] [INFO] [1785261736.513898962] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261736.768666942] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[component_container-9] [INFO] [1785261736.768763480] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785261736.769421325] [bt_navigator]: Activating
+[component_container-9] [INFO] [1785261736.803241144] [bt_navigator]: Created BT from ID: NavigateToPoseWReplanningAndRecovery
+[component_container-9] [INFO] [1785261736.826487141] [bt_navigator]: Created BT from ID: NavigateThroughPosesWReplanningAndRecovery
+[component_container-9] [INFO] [1785261736.827184496] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[component_container-9] [WARN] [1785261736.894338653] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [INFO] [1785261737.080048971] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[component_container-9] [INFO] [1785261737.080169389] [lifecycle_manager_navigation]: [34m[1mActivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785261737.080858557] [waypoint_follower]: Activating
+[component_container-9] [INFO] [1785261737.080972474] [waypoint_follower]: Creating bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785261737.338684314] [lifecycle_manager_navigation]: Server waypoint_follower connected with bond.
+[component_container-9] [INFO] [1785261737.338774518] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[component_container-9] [INFO] [1785261737.338852519] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[component_container-9] [WARN] [1785261737.894280195] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [WARN] [1785261738.894332811] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [WARN] [1785261739.894282196] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [WARN] [1785261740.894308159] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [INFO] [1785261741.388486644] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 51 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261741.388533134] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785261741.388486638] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 51 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261741.388590344] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785261741.402396940] [rviz2]: Trying to create a map of size 51 x 80 using 1 swatches
+[rviz2-10] [ERROR] [1785261741.439186416] [rviz2]: rviz/glsl120/indexed_8bit_image.vert
+[rviz2-10] rviz/glsl120/indexed_8bit_image.frag
+[rviz2-10]  GLSL link result : 
+[rviz2-10] active samplers with a different type refer to the same texture image unit
+[component_container-9] [INFO] [1785261751.407828953] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 81 X 86 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261751.407869164] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[rviz2-10] [INFO] [1785261751.420885170] [rviz2]: Trying to create a map of size 81 x 86 using 1 swatches
+[component_container-9] [INFO] [1785261751.494354459] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 81 X 86 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261751.494472915] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[component_container-9] [INFO] [1785261761.407871906] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 81 X 86 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261761.407902592] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[component_container-9] [INFO] [1785261761.494394886] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 81 X 86 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261761.494497264] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[component_container-9] [INFO] [1785261771.407887976] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 90 X 95 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261771.407984201] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[rviz2-10] [INFO] [1785261771.421469179] [rviz2]: Trying to create a map of size 90 x 95 using 1 swatches
+[component_container-9] [INFO] [1785261771.494386592] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 90 X 95 at 0.050000 m/pix
+[component_container-9] [WARN] [1785261771.494505644] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[component_container-9] [ERROR] [1785261812.912921752] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261802.786491, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261812.998606180] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261802.786491, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261813.216056392] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261803.053084, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261813.301685005] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261803.153134, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261813.519118598] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261803.386435, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261813.604836477] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261803.519762, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261813.922668349] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261803.886407, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261814.007288012] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261803.886407, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261814.226525503] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261804.119742, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261814.311352224] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261804.253065, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261814.530267946] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261804.386312, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261814.614370644] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261804.386312, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261814.931416436] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261804.819834, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261815.015747004] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261804.819834, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261815.236787568] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261805.053074, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261815.321475417] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261805.286539, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261815.542839962] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261805.419778, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261815.627404950] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261805.419778, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261815.942546447] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261805.786431, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261816.026242980] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261805.919674, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261816.245375937] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261806.019738, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261816.328945310] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261806.219847, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261816.549754047] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261806.453230, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261816.633969166] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261806.586478, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261816.949482910] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261806.819746, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261817.032719616] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261806.953012, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261817.253710014] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261807.153193, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261817.337628990] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261807.253205, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261817.558560190] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261807.519672, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261817.641613353] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261807.519672, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785261817.958238151] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261807.819730, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[async_slam_toolbox_node-5] [INFO] [1785261817.973591407] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785261817.973592074] [rclcpp]: signal_handler(signum=2)
+[ekf_node-4] [INFO] [1785261817.973548999] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785261817.973800310] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[component_container-9] [INFO] [1785261817.973966084] [controller_server]: Deactivating
+[rviz2-10] [INFO] [1785261817.973643177] [rclcpp]: signal_handler(signum=2)
+[robot_state_publisher-2] [INFO] [1785261817.973797166] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785261817.974084604] [controller_server]: Deactivating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785261817.974212319] [local_costmap.local_costmap]: Deactivating
+[async_slam_toolbox_node-5] Unregistering sensor: Custom Described Lidar : laser_frame
+[async_slam_toolbox_node-5] [WARN] [1785261817.999785430] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(3) in destructor
+[odom_imu_relay-7] Traceback (most recent call last):
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay", line 33, in <module>
+[odom_imu_relay-7]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'odom_imu_relay')())
+[odom_imu_relay-7]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/odom_imu_relay.py", line 118, in main
+[odom_imu_relay-7]     rclpy.spin(node)
+[odom_imu_relay-7]     ~~~~~~~~~~^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[odom_imu_relay-7]     executor.spin_once()
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[odom_imu_relay-7]     self._spin_once_impl(timeout_sec)
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[odom_imu_relay-7]     handler, entity, node = self.wait_for_ready_callbacks(
+[odom_imu_relay-7]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[odom_imu_relay-7]         timeout_sec, None, wait_condition)
+[odom_imu_relay-7]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[odom_imu_relay-7]     return next(self._cb_iter)
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[odom_imu_relay-7]     wait_set = _rclpy.WaitSet(
+[odom_imu_relay-7]         entity_count.num_subscriptions,
+[odom_imu_relay-7]     ...<4 lines>...
+[odom_imu_relay-7]         entity_count.num_events,
+[odom_imu_relay-7]         self._context.handle)
+[odom_imu_relay-7] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[supervisor-8] Traceback (most recent call last):
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor", line 33, in <module>
+[supervisor-8]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'supervisor')())
+[supervisor-8]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/supervisor.py", line 354, in main
+[supervisor-8]     rclpy.spin(node)
+[supervisor-8]     ~~~~~~~~~~^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[supervisor-8]     executor.spin_once()
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[supervisor-8]     self._spin_once_impl(timeout_sec)
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[supervisor-8]     handler, entity, node = self.wait_for_ready_callbacks(
+[supervisor-8]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[supervisor-8]         timeout_sec, None, wait_condition)
+[supervisor-8]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[supervisor-8]     return next(self._cb_iter)
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[supervisor-8]     wait_set = _rclpy.WaitSet(
+[supervisor-8]         entity_count.num_subscriptions,
+[supervisor-8]     ...<4 lines>...
+[supervisor-8]         entity_count.num_events,
+[supervisor-8]         self._context.handle)
+[supervisor-8] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[component_container-9] [ERROR] [1785261818.043707731] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261807.819730, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [INFO] [1785261818.044053445] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 744186]
+[INFO] [rviz2-10]: process has finished cleanly [pid 744194]
+[INFO] [ekf_node-4]: process has finished cleanly [pid 744188]
+[INFO] [async_slam_toolbox_node-5]: process has finished cleanly [pid 744189]
+[component_container-9] [INFO] [1785261818.139022856] [lifecycle_manager_navigation]: [34m[1mHave not received a heartbeat from controller_server.[0m[0m
+[component_container-9] [ERROR] [1785261818.139072444] [lifecycle_manager_navigation]: CRITICAL FAILURE: SERVER controller_server IS DOWN after not receiving a heartbeat for 4000 ms. Shutting down related nodes.
+[component_container-9] [INFO] [1785261818.139124057] [lifecycle_manager_navigation]: [34m[1mTerminating bond timer...[0m[0m
+[component_container-9] [INFO] [1785261818.139129480] [lifecycle_manager_navigation]: [34m[1mResetting managed nodes...[0m[0m
+[component_container-9] [INFO] [1785261818.139132933] [lifecycle_manager_navigation]: [34m[1mDeactivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785261818.139598562] [waypoint_follower]: Deactivating
+[component_container-9] [INFO] [1785261818.139649941] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.145925807] [controller_server]: Cleaning up
+[component_container-9] [INFO] [1785261818.145947906] [controller_server]: Cleaning up controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785261818.147377435] [local_costmap.local_costmap]: Cleaning up
+[INFO] [scan_relay-6]: process has finished cleanly [pid 744190]
+[component_container-9] [INFO] [1785261818.156388238] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.156413727] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[component_container-9] [INFO] [1785261818.156433741] [planner_server]: Deactivating
+[component_container-9] [INFO] [1785261818.156478124] [global_costmap.global_costmap]: Deactivating
+[ERROR] [supervisor-8]: process has died [pid 744192, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor --ros-args -r __node:=supervisor --params-file /tmp/launch_params_jp172_rn'].
+[ERROR] [odom_imu_relay-7]: process has died [pid 744191, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay --ros-args -r __node:=odom_imu_relay --params-file /tmp/launch_params_4zedyccj'].
+[component_container-9] [INFO] [1785261818.251143435] [lifecycle_manager_navigation]: [34m[1mDeactivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785261818.252253523] [bt_navigator]: Deactivating
+[component_container-9] [INFO] [1785261818.252326999] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [ERROR] [1785261818.261317678] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785261802.391383 but the earliest data is at time 1785261807.819730, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [INFO] [1785261818.261425912] [planner_server]: Deactivating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785261818.262254196] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.362433261] [planner_server]: Cleaning up
+[component_container-9] [INFO] [1785261818.363874623] [lifecycle_manager_navigation]: [34m[1mDeactivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785261818.365074033] [behavior_server]: Deactivating
+[component_container-9] [INFO] [1785261818.365172931] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.366422872] [global_costmap.global_costmap]: Cleaning up
+[component_container-9] [INFO] [1785261818.367475228] [planner_server]: Cleaning up plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785261818.367505205] [planner_server]: Destroying plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785261818.372546439] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.372565300] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[component_container-9] [INFO] [1785261818.372577691] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.372582965] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[component_container-9] [INFO] [1785261818.372597225] [bt_navigator]: Cleaning up
+[component_container-9] [INFO] [1785261818.381403075] [bt_navigator_navigate_to_pose_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785261818.381443656] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.394318879] [bt_navigator_navigate_through_poses_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785261818.394362569] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.397475404] [bt_navigator]: Completed Cleaning up
+[component_container-9] [INFO] [1785261818.397503419] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.397511538] [waypoint_follower]: Running Nav2 LifecycleNode rcl preshutdown (waypoint_follower)
+[component_container-9] [INFO] [1785261818.397534319] [waypoint_follower]: Cleaning up
+[component_container-9] [INFO] [1785261818.400742050] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785261818.400760372] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[component_container-9] [INFO] [1785261818.476525425] [lifecycle_manager_navigation]: [34m[1mDeactivating planner_server[0m[0m
+[component_container-9] [WARN] [1785261818.477191691] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [WARN] [1785261818.477201233] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [ERROR] [1785261818.477209038] [planner_server]: Unable to start transition 4 (deactivate) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785261818.477464105] [lifecycle_manager_navigation]: Failed to change state for node: planner_server
+[component_container-9] [INFO] [1785261818.477480060] [lifecycle_manager_navigation]: [34m[1mDeactivating controller_server[0m[0m
+[component_container-9] [WARN] [1785261818.477611584] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [WARN] [1785261818.477619533] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [ERROR] [1785261818.477621960] [controller_server]: Unable to start transition 4 (deactivate) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785261818.477720052] [lifecycle_manager_navigation]: Failed to change state for node: controller_server
+[component_container-9] [INFO] [1785261818.477730122] [lifecycle_manager_navigation]: [34m[1mCleaning up waypoint_follower[0m[0m
+[component_container-9] [WARN] [1785261818.477766815] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785261818.477770306] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785261818.477772497] [waypoint_follower]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785261818.477838299] [lifecycle_manager_navigation]: [34m[1mCleaning up bt_navigator[0m[0m
+[component_container-9] [WARN] [1785261818.477871680] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785261818.477874025] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785261818.477875782] [bt_navigator]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785261818.477935523] [lifecycle_manager_navigation]: [34m[1mCleaning up behavior_server[0m[0m
+[component_container-9] [INFO] [1785261818.477973875] [behavior_server]: Cleaning up
+[component_container-9] [INFO] [1785261818.484434528] [lifecycle_manager_navigation]: [34m[1mCleaning up planner_server[0m[0m
+[component_container-9] [WARN] [1785261818.484486030] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785261818.484493995] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785261818.484496894] [planner_server]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785261818.484558824] [lifecycle_manager_navigation]: [34m[1mCleaning up controller_server[0m[0m
+[component_container-9] [WARN] [1785261818.484589769] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785261818.484592463] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785261818.484594137] [controller_server]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785261818.484642582] [lifecycle_manager_navigation]: [34m[1mManaged nodes have been reset[0m[0m
+[component_container-9] [INFO] [1785261818.509387343] [lifecycle_manager_navigation]: Destroying lifecycle_manager_navigation
+[component_container-9] [INFO] [1785261818.512894381] [waypoint_follower]: Destroying
+[component_container-9] [WARN] [1785261818.512905991] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.516233458] [bt_navigator]: Destroying
+[component_container-9] [WARN] [1785261818.516243578] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.519290935] [behavior_server]: Destroying
+[component_container-9] [WARN] [1785261818.519302582] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.522287265] [global_costmap.global_costmap]: Destroying
+[component_container-9] [WARN] [1785261818.522297294] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.525377199] [planner_server]: Destroying
+[component_container-9] [WARN] [1785261818.525386771] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.528736526] [local_costmap.local_costmap]: Destroying
+[component_container-9] [WARN] [1785261818.528748130] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785261818.531778971] [controller_server]: Destroying
+[component_container-9] [WARN] [1785261818.531787450] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[INFO] [component_container-9]: process has finished cleanly [pid 744193]
+[joint_state_publisher-3] Traceback (most recent call last):
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher", line 33, in <module>
+[joint_state_publisher-3]     sys.exit(load_entry_point('joint-state-publisher==2.4.2', 'console_scripts', 'joint_state_publisher')())
+[joint_state_publisher-3]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/joint_state_publisher/joint_state_publisher.py", line 568, in main
+[joint_state_publisher-3]     rclpy.spin(jsp)
+[joint_state_publisher-3]     ~~~~~~~~~~^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[joint_state_publisher-3]     executor.spin_once()
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[joint_state_publisher-3]     self._spin_once_impl(timeout_sec)
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[joint_state_publisher-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[joint_state_publisher-3]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[joint_state_publisher-3]         timeout_sec, None, wait_condition)
+[joint_state_publisher-3]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[joint_state_publisher-3]     return next(self._cb_iter)
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[joint_state_publisher-3]     wait_set = _rclpy.WaitSet(
+[joint_state_publisher-3]         entity_count.num_subscriptions,
+[joint_state_publisher-3]     ...<4 lines>...
+[joint_state_publisher-3]         entity_count.num_events,
+[joint_state_publisher-3]         self._context.handle)
+[joint_state_publisher-3] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[ERROR] [joint_state_publisher-3]: process has died [pid 744187, exit code 1, cmd '/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher --params-file /tmp/launch_params_f3smwto_'].
+[ERROR] [micro_ros_agent-1]: process has died [pid 744185, exit code -9, cmd '/home/nhatkhoa1124/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent udp4 --port 8888'].

@@ -23,6 +23,7 @@ setup(
             'waypoint_follower = smb_nodes.waypoint_follower:main',
             'supervisor = smb_nodes.supervisor:main',
             'scan_relay = smb_nodes.scan_relay:main',
+            'odom_imu_relay = smb_nodes.odom_imu_relay:main',
         ],
     },
 )

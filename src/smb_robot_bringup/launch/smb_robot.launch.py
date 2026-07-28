@@ -230,6 +230,28 @@ def generate_launch_description():
         output='screen',
     )
 
+    # 6c. /odom + /imu/data stamp bridge — ESP32 fills header.stamp with
+    #     millis()/1000 (year 1970) because it has no RTC. EKF rejects those
+    #     stamps as "in the past", so the odom->base_link TF never gets
+    #     published and SLAM has no chain to produce /map. This relay
+    #     rewrites the stamp on the host side. Active defaults:
+    #     /odom -> /odom_relay, /imu/data -> /imu_relay. The EKF config
+    #     (config/robot/ekf_minimal.yaml) subscribes from /odom_relay.
+    #     See smb_nodes/odom_imu_relay.py for details.
+    odom_imu_relay_node = Node(
+        package='smb_nodes',
+        executable='odom_imu_relay',
+        name='odom_imu_relay',
+        parameters=[{
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+            'odom_in_topic': '/odom',
+            'odom_out_topic': '/odom_relay',
+            'imu_in_topic': '/imu/data',
+            'imu_out_topic': '/imu_relay',
+        }],
+        output='screen',
+    )
+
     # 7. RViz2
     rviz_node = Node(
         package='rviz2',
@@ -271,6 +293,7 @@ def generate_launch_description():
         ekf_node,
         slam_launch,
         scan_relay_node,
+        odom_imu_relay_node,
         supervisor_node,
         nav2_launch,
         rviz_node,

@@ -20,13 +20,16 @@ alwaysApply: true
 - **Khong luoi** — Tim root cause (vi du: launch file bi sai, build error o package nao, dependency missing); khong workaround tam thoi che warning.
 - **Tac dong toi thieu** — Khong tao side effect cho package khac trong workspace; khong vo hop dong topic/frame_id voi firmware dang chay.
 
-## Pham vi role (chi ROS2)
+## Phạm vi role
 
-- Lam viec trong `~/ros2_ws/`; khong sua `SuperMarketBot-IOT/` (ESP32 firmware) tru khi user yeu cau ro.
-- Khi doi launch file → test `ros2 launch <pkg> <file>.launch.py --show-args` (no need hardware).
-- Khi doi URDF / SDF → test `check_urdf <file>` (urdfdom) va `gz sim -s -r <world>` headless.
-- Khi doi topic / frame_id → cap nhat `docs/TOPIC_CONTRACT.md` dong thoi.
-- Khi can package moi (apt khong co cho "lyrical") → clone source, ghi ro vao `ros2_ws.repos` de teammate may khac pull lai duoc.
+- Hai repo thuộc cùng một dự án và bạn có quyền sửa cả hai:
+  - `~/ros2_ws/` — ROS2 (launch, URDF, params, worlds, nodes, bridge Python/C++).
+  - `~/me/Projects/SMB/SuperMarketBot-IOT/` — ESP32 firmware, Android hub, MicroRos.h, config, ros_bridge.
+- Khi đổi giao tiếp giữa hai bên (topic names, frame_ids, message types, message fields): cập nhật `docs/TOPIC_CONTRACT.md` đồng thời.
+- Khi đổi launch file → test `ros2 launch <pkg> <file>.launch.py --show-args` (no need hardware).
+- Khi đổi URDF / SDF → test `check_urdf <file>` (urdfdom) và `gz sim -s -r <world>` headless.
+- Khi đổi firmware `.ino` / `.h` / `.cpp`: build + flash + verify trên ESP32.
+- Khi cần package mới (apt không có cho "lyrical") → clone source, ghi rõ vào `ros2_ws.repos` de teammate may khac pull lai duoc.
 
 ## Build & verify commands
 

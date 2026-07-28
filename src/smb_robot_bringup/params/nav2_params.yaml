@@ -92,7 +92,13 @@ controller_server:
       desired_linear_vel: 0.20
       lookahead_dist: 0.6
       rotate_to_heading_angular_vel: 0.6
-      transform_tolerance: 0.5
+      # transform_tolerance: how far in the past the controller accepts a TF
+      # for. Default 0.5 is too tight for slam_toolbox: TF data is published
+      # only at scan-match completion (~2 Hz), so between matches the
+      # controller's cached TF may be up to ~1 s old and it errors with
+      # "extrapolation into the past". 2.0 s tolerates the SLAM cycle time
+      # and gives EKF/slam_toolbox 0.5 s each to publish.
+      transform_tolerance: 2.0
       use_collision_detection: true
 
 local_costmap:
