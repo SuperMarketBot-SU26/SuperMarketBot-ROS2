@@ -157,7 +157,7 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-# ----- Launch ------------------------------------------------------------------
+# ----- Launch + auto-activate SLAM + Nav2 --------------------------------------
 echo
 echo "[test_robot] Workspace : $SCRIPT_DIR"
 echo "[test_robot] ROS distro: ${ROS_DISTRO}"
@@ -168,18 +168,50 @@ echo "[test_robot] Tip: in another terminal:"
 echo "              ./test_teleop.sh    — drive via /cmd_vel"
 echo "              ./test_nav2_goal.sh — send NavigateToPose goals"
 echo
-echo "[test_robot] Order of operations:"
-echo "              1) Wait ~10s for ESP32 → micro-ROS handshake."
-echo "                 Verify: ros2 topic hz /scan   →  ~10 Hz"
-echo "                 Verify: ros2 topic hz /odom   →  ~50 Hz"
-echo "              2) Activate slam_toolbox:"
-echo "                 ros2 lifecycle set /slam_toolbox activate"
-echo "                 Verify: ros2 topic echo /map --once"
-echo "              3) Activate Nav2 (needs /map to exist):"
-echo "                 ros2 lifecycle set /lifecycle_manager_navigation activate"
+echo "[test_robot] Auto-activation: ~15s after launch, once /scan is detected,"
+echo "              SLAM + Nav2 are configured + activated automatically."
+echo "              If /scan does not appear (ESP32 handshake slow / failed),"
+echo "              the manual commands below still work."
+echo
+echo "[test_robot] Manual fallback:"
+echo "              ros2 lifecycle set /slam_toolbox configure"
+echo "              ros2 lifecycle set /slam_toolbox activate"
+echo "              ros2 service call /lifecycle_manager_navigation/manage_nodes \\"
+echo "                nav2_msgs/srv/ManageLifecycleNodes '{\"command: 0}'"
 echo
 
-ros2 launch smb_robot_bringup smb.launch.py mode:=robot
+# Run launch in background so a sibling helper can auto-activate SLAM + Nav2
+# once the ESP32 → micro-ROS handshake completes (~10-30s on WiFi UDP).
+ros2 launch smb_robot_bringup smb.launch.py mode:=robot &
+launch_pid=$!
+
+# Background helper: wait 15s, then activate SLAM + Nav2 if /scan is publishing.
+(
+  sleep 15
+  # If launch already died (Ctrl-C, crash), do nothing.
+  if ! kill -0 "$launch_pid" 2>/dev/null; then exit 0; fi
+
+  if timeout 3 ros2 topic list 2>/dev/null | grep -q "^/scan$"; then
+    echo "[test_robot] /scan detected — activating SLAM..."
+    ros2 lifecycle set /slam_toolbox configure 2>/dev/null
+    ros2 lifecycle set /slam_toolbox activate 2>/dev/null
+    echo "[test_robot] Activating Nav2..."
+    ros2 service call /lifecycle_manager_navigation/manage_nodes \
+      nav2_msgs/srv/ManageLifecycleNodes "{command: 0}" 2>/dev/null
+    echo "[test_robot] SLAM + Nav2 activated. Drive: ./test_teleop.sh"
+  else
+    echo "[test_robot] WARNING: /scan not detected after 15s — use manual fallback above."
+  fi
+) &
+activate_pid=$!
+
+# Wait for launch to exit (user Ctrl-C or process death).
+wait "$launch_pid"
 exit_code=$?
+
+# Stop the activation helper if it's still in its sleep window.
+kill "$activate_pid" 2>/dev/null || true
+wait "$activate_pid" 2>/dev/null || true
+
 cleanup
 exit "$exit_code"
