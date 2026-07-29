@@ -8,18 +8,24 @@
 #
 # What it does:
 #   1. Cleans leftover teleop processes from a previous run.
-#   2. Spawns an xterm window with teleop_twist_keyboard publishing to /cmd_vel.
-#      Teleop publishes plain geometry_msgs/Twist (not TwistStamped), so it bypasses
-#      the supervisor and goes directly to ros_gz_bridge → Gazebo.
-#      Nav2 sends TwistStamped via /cmd_vel_nav → supervisor → /cmd_vel (separate path).
+#   2. Spawns an xterm window with teleop_twist_keyboard. Teleop publishes
+#      plain geometry_msgs/Twist, which it remaps to ``/cmd_vel_manual`` —
+#      that is the manual-input topic that ``smb_nodes.supervisor``
+#      subscribes to. (We do NOT publish to ``/cmd_vel`` directly:
+#      ``/cmd_vel`` is the contract output of the supervisor and the
+#      firmware/ros_gz_bridge listens there. Publishing teleop to
+#      ``/cmd_vel`` directly would bypass the supervisor's ESTOP gate —
+#      see supervisor.py docstring.)
+#      Nav2 sends TwistStamped to ``/cmd_vel_nav`` → supervisor →
+#      ``/cmd_vel`` (separate path).
 #   3. Cleans up teleop processes on Ctrl-C / exit. Does NOT touch the sim —
 #      run test_sim.sh in parallel to get the full bringup.
 #
 # Why this is a separate script from test_sim.sh:
 #   - Decouples lifetime: Ctrl-C in this window stops the teleop only; the sim
 #     keeps running. Useful when you want to swap in Nav2 or hand-drive tests.
-#   - Reusable: same driver works against the real robot on /cmd_vel, no code
-#     change needed.
+#   - Reusable: same driver works against the real robot via the supervisor's
+#     manual input; no code change needed.
 #   - Replaceable: a future gamepad_joy/cmd_vel script can drop in cleanly.
 #
 # Requires:
@@ -139,10 +145,10 @@ fi
 # its own window so the user controls the keyboard input there; this script
 # stays in the foreground so Ctrl-C in this terminal cleanly stops the xterm.
 #
-# ros_gz_bridge maps /cmd_vel (ROS) -> /model/smb/cmd_vel (gz). Teleop
-# publishes plain Twist on /cmd_vel, bypassing the supervisor. Nav2 publishes
-# TwistStamped on /cmd_vel_nav, which the supervisor normalizes to Twist before
-# it reaches /cmd_vel. See config/ros_gz_bridge.yaml and
+# ros_gz_bridge maps /cmd_vel (ROS, supervisor output) -> /model/smb/cmd_vel
+# (gz). The supervisor gates both Nav2 (/cmd_vel_nav → /cmd_vel) and
+# teleop (/cmd_vel_manual → /cmd_vel). See config/ros_gz_bridge.yaml and
+# smb_nodes/supervisor.py for the topic contract.
 # smb_nodes/supervisor.py.
 if ! command -v xterm >/dev/null 2>&1; then
     echo "[test_teleop] ERROR: xterm is not installed."
@@ -167,8 +173,11 @@ echo
 
 # -hold: keep xterm open after the child exits, so you can see errors.
 # -e:   run the command inside the xterm.
+# Remap teleop's default cmd_vel -> /cmd_vel_manual, the supervisor's
+# manual-input topic. (Publishing teleop directly to /cmd_vel would bypass
+# the supervisor's ESTOP gate — see supervisor.py docstring.)
 # Background with `&`, capture PID so cleanup() can kill it.
-xterm -hold -e "ros2 run teleop_twist_keyboard teleop_twist_keyboard" &
+xterm -hold -e "ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/cmd_vel_manual" &
 TELEOP_XTERM_PID=$!
 
 # Block until the xterm is closed (or Ctrl-C here).

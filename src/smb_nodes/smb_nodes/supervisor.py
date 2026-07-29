@@ -12,20 +12,37 @@ States
               waypoint follower invocation here — that's a separate
               ``waypoint_follower`` executable started by a higher-level
               orchestrator when this state is entered.)
-- ``dock``   — STUB. Logged as "not implemented" and falls back to IDLE
-              semantics. Will be wired to a docking BT in a later phase.
+- ``dock``   — STUB. Logged as "not implemented" and stays in whatever
+              state the FSM was already in (we don't actually transition
+              to DOCK because that would be a lie — the service response
+              reports the *actual* current state, so the caller can detect
+              the stub and retry later). Pass-through is identical to
+              IDLE/NAV in ``_publish_cmd_vel``, so if DOCK is requested
+              from IDLE the practical effect matches "IDLE semantics".
+              If requested from NAV, the FSM stays in NAV (no transition)
+              — orchestrators reading ``supervisor/state`` will see NAV
+              and should treat that as the stub being a no-op.
 - ``estop``  — holds zero velocity. No input reaches ``cmd_vel`` until
               the supervisor leaves ESTOP via the ``reset`` command.
+              (See "Cache overwrite during ESTOP" note below — input
+              callbacks must refuse to refresh the cache in this state.)
 
 Topic / service contract
 ------------------------
 - Subscribes (two inputs, both write to the same cached last_cmd_vel):
   - ``cmd_vel_in_topic`` (default ``/cmd_vel_nav``, geometry_msgs/TwistStamped)
     — Nav2 main/rolling publish this; the type is dictated by Nav2.
-  - ``manual_cmd_vel_in_topic`` (default ``/cmd_vel``, geometry_msgs/Twist)
-    — manual teleop (WebManager, joystick, keyboard). Skipped if its name
-    equals ``cmd_vel_in_topic`` to avoid the DDS "two subs on one topic
-    with different types" rejection.
+  - ``manual_cmd_vel_in_topic`` (default ``/cmd_vel_manual``, geometry_msgs/Twist)
+    — manual teleop (WebManager, joystick, keyboard). The default is
+    intentionally **distinct** from ``cmd_vel_out_topic`` — sharing them
+    was a safety hole: the manual subscription received the supervisor's
+    own published output back as fresh input, which (a) defeated the
+    ``cmd_vel_timeout_sec`` watchdog (every republish refreshed
+    ``_last_cmd_vel_stamp``) and (b) meant any external publisher on the
+    shared topic was publishing directly to the firmware-facing topic,
+    bypassing the ESTOP gate. Skipped if its name equals either
+    ``cmd_vel_in_topic`` (DDS rejects two subs with different types) or
+    ``cmd_vel_out_topic`` (loopback — log an error and skip).
 - Subscribes: ``emergency_stop`` (Bool, latched).
 - Publishes:  ``cmd_vel`` (geometry_msgs/Twist, RELIABLE — downstream
   ros_gz_bridge and the firmware expect this type). ``supervisor/state``
@@ -33,11 +50,10 @@ Topic / service contract
 - Service:    ``supervisor/cmd`` (smb_msgs/SupervisorCmd).
 
 Why two inputs: Nav2 publishes TwistStamped (its required type), but manual
-teleop nodes naturally emit plain Twist on the contract topic ``/cmd_vel``.
-Forcing every teleop publisher to switch to TwistStamped is needless busywork
-and breaks the contract that says ``/cmd_vel`` is plain Twist. Instead, the
-supervisor accepts both and normalizes into a single cached velocity. The
-output timer keeps republishing the cached value so a single tap on a button
+teleop nodes naturally emit plain Twist. Forcing every teleop publisher to
+switch to TwistStamped is needless busywork. Instead, the supervisor
+accepts both and normalizes into a single cached velocity. The output
+timer keeps republishing the cached value so a single tap on a button
 isn't a one-shot motion — the firmware keeps receiving a velocity command
 until either the upstream publishes a fresh (nonzero or zero) one.
 
@@ -55,6 +71,17 @@ leave ESTOP. This means an Android-side "ESTOP" button + a hardware
 e-stop GPIO both reach the same node through the same topic, and the
 service interface is the only sanctioned way to leave ESTOP — there is
 no autodowngrade after the topic goes back to ``False``.
+
+Cache overwrite during ESTOP
+-----------------------------
+When ESTOP is active, the output timer publishes a zero Twist regardless
+of what's in the cache — so a fresh nonzero input from Nav2/teleop can't
+reach the wheels during ESTOP. BUT: the cache is still updated by the
+input callbacks, so the moment ``reset`` transitions back to IDLE, the
+next output tick would republish whatever stale/overwritten velocity
+happens to be cached. ``_on_cmd_vel_in_stamped`` and ``_on_cmd_vel_in_plain``
+explicitly refuse to update ``_last_cmd_vel`` while in ESTOP — the
+supervisor zero-on-entry is preserved until reset.
 """
 
 import enum
@@ -92,11 +119,18 @@ class Supervisor(Node):
         # ---- Parameters (all overridable at launch via --ros-args -p ...) ----
         self.declare_parameter('cmd_vel_in_topic', '/cmd_vel_nav')
         # Optional second input for manual/teleop publishers that emit
-        # geometry_msgs/Twist (not TwistStamped) on the contract topic /cmd_vel.
-        # WebManager, joystick_teleop, keyboard_teleop etc. publish here.
-        # Both inputs feed the same _last_cmd_vel cache; the output timer
-        # keeps republishing so a single tap isn't a one-shot motion.
-        self.declare_parameter('manual_cmd_vel_in_topic', '/cmd_vel')
+        # geometry_msgs/Twist (not TwistStamped). Default is intentionally
+        # DISTINCT from ``cmd_vel_out_topic`` — sharing the same topic
+        # created a real safety hole (see supervisor.py module docstring):
+        # the supervisor's manual subscription would receive its OWN
+        # published output back as "fresh input", which (a) defeated the
+        # ``cmd_vel_timeout_sec`` watchdog because every republish refreshed
+        # ``_last_cmd_vel_stamp`` and (b) meant any external publisher on
+        # ``/cmd_vel`` (the manual-input path) was publishing to the same
+        # topic the firmware/ros_gz_bridge subscribes to for the GATED
+        # output — bypassing the ESTOP gate. Teleop must now remap its
+        # ``cmd_vel`` output to ``/cmd_vel_manual`` (see test_teleop.sh).
+        self.declare_parameter('manual_cmd_vel_in_topic', '/cmd_vel_manual')
         self.declare_parameter('cmd_vel_out_topic', '/cmd_vel')
         self.declare_parameter('state_topic', '/supervisor/state')
         self.declare_parameter('estop_topic', '/emergency_stop')
@@ -139,6 +173,11 @@ class Supervisor(Node):
         # ROS2 builtin time, used by the cmd_vel watchdog.
         self._last_cmd_vel_stamp = self.get_clock().now()
         self._estop_latched = False  # latched from /emergency_stop latched topic
+        # Teleop override window: when teleop publishes, block Nav2 input
+        # for this many seconds. Prevents Nav2 behavior_server (spin/backup)
+        # from fighting teleop by overwriting _last_cmd_vel on every tick.
+        self._teleop_override_sec = 2.0
+        self._teleop_override_until = self.get_clock().now()
 
         # ---- QoS profiles ----
         # cmd_vel is RELIABLE per the topic contract.
@@ -161,13 +200,39 @@ class Supervisor(Node):
         # value at state_publish_period_sec.
         self._cmd_vel_in_sub = self.create_subscription(
             TwistStamped, cmd_vel_in, self._on_cmd_vel_in_stamped, cmd_vel_qos)
-        # Manual/teleop input: plain Twist on the contract topic /cmd_vel.
-        # Created only if the topic name differs from cmd_vel_in_topic to
-        # avoid subscribing twice to the same topic with different types
-        # (DDS would reject it).
+        # Manual/teleop input: plain Twist on the manual-input topic. Default
+        # is ``/cmd_vel_manual`` (distinct from ``/cmd_vel``) — see module
+        # docstring for why sharing the output topic name is a safety hole.
+        # Created only if its name differs from both ``cmd_vel_in_topic``
+        # (DDS rejects two subs on one topic with different types) and
+        # ``cmd_vel_out_topic`` (the supervisor's own loopback would
+        # refresh ``_last_cmd_vel_stamp`` every publish tick, defeating
+        # the ``cmd_vel_timeout_sec`` watchdog AND letting any external
+        # ``/cmd_vel`` publisher bypass the ESTOP gate). Either collision
+        # is logged as an error and the manual sub is skipped.
         manual_cmd_vel_in = self.get_parameter('manual_cmd_vel_in_topic').value
         self._manual_cmd_vel_in_sub = None
-        if manual_cmd_vel_in and manual_cmd_vel_in != cmd_vel_in:
+        if not manual_cmd_vel_in:
+            self.get_logger().info(
+                'manual_cmd_vel_in_topic is empty — manual/teleop input disabled.')
+        elif manual_cmd_vel_in == cmd_vel_in:
+            self.get_logger().error(
+                f'manual_cmd_vel_in_topic ({manual_cmd_vel_in!r}) equals '
+                f'cmd_vel_in_topic ({cmd_vel_in!r}); DDS would reject two '
+                'subscriptions on one topic with different types '
+                '(Twist vs TwistStamped). Manual input disabled — '
+                'publish teleop to a distinct topic, e.g. /cmd_vel_manual.')
+        elif manual_cmd_vel_in == cmd_vel_out:
+            self.get_logger().error(
+                f'manual_cmd_vel_in_topic ({manual_cmd_vel_in!r}) equals '
+                f'cmd_vel_out_topic ({cmd_vel_out!r}); this would create a '
+                'self-loopback where the supervisor receives its own '
+                'published output back as "fresh input", defeating the '
+                'cmd_vel_timeout_sec watchdog AND letting any external '
+                '/cmd_vel publisher bypass the ESTOP gate. Manual input '
+                'disabled — publish teleop to a distinct topic, e.g. '
+                '/cmd_vel_manual. (See supervisor.py docstring.)')
+        else:
             self._manual_cmd_vel_in_sub = self.create_subscription(
                 Twist, manual_cmd_vel_in, self._on_cmd_vel_in_plain, cmd_vel_qos)
         self._estop_sub = self.create_subscription(
@@ -204,23 +269,55 @@ class Supervisor(Node):
         Normalize to a plain Twist — the contract topic ``/cmd_vel`` is
         ``geometry_msgs/Twist`` and downstream (ros_gz_bridge, firmware)
         expects that type. We discard the stamp and header.
+
+        In ESTOP we ignore the input rather than refreshing the cache:
+        ``_enter_estop`` zeros ``_last_cmd_vel`` once and ``_publish_cmd_vel``
+        overrides the cache with a zero Twist every tick, so the cache is
+        irrelevant during ESTOP. But if we kept refreshing it here, the
+        moment ``reset`` transitions back to IDLE the next output tick
+        would republish whatever stale/nonzero velocity happens to be
+        cached — causing motion-on-reset without any new operator input.
+
+        Teleop override: Nav2 behavior_server (spin/backup) constantly ticks
+        nonzero angular vel on /cmd_vel_nav even with no active goal. Without
+        this guard, every Nav2 tick overwrites the teleop command cached from
+        /cmd_vel_manual, causing the robot to barely move while teleop is held.
         """
+        if self._state is State.ESTOP:
+            return
+        # Block Nav2 input if teleop was active recently
+        now = self.get_clock().now()
+        if now < self._teleop_override_until:
+            return
         plain = Twist()
         plain.linear = msg.twist.linear
         plain.angular = msg.twist.angular
         self._last_cmd_vel = plain
-        self._last_cmd_vel_stamp = self.get_clock().now()
+        self._last_cmd_vel_stamp = now
 
     def _on_cmd_vel_in_plain(self, msg: Twist) -> None:
         """Cache the latest manual/teleop Twist command.
 
         This is the path used by WebManager, joystick_teleop, keyboard_teleop
-        etc. that publish geometry_msgs/Twist on the contract topic /cmd_vel.
-        Both inputs share the same _last_cmd_vel cache so the output timer
-        keeps republishing until a fresh command arrives or the user releases.
+        etc. that publish geometry_msgs/Twist on the manual-input topic. Both
+        inputs share the same _last_cmd_vel cache so the output timer keeps
+        republishing until a fresh command arrives or the user releases.
+
+        Same ESTOP guard as ``_on_cmd_vel_in_stamped`` — see that method's
+        docstring for why refreshing the cache while estopped would leak
+        motion through the reset transition.
+
+        Teleop override: resets the 2-second window so Nav2 behavior ticks
+        can't fight the teleop command while the operator is actively driving.
         """
+        if self._state is State.ESTOP:
+            return
         self._last_cmd_vel = msg
         self._last_cmd_vel_stamp = self.get_clock().now()
+        # Extend teleop override window
+        self._teleop_override_until = (
+            self.get_clock().now() +
+            rclpy.duration.Duration(seconds=self._teleop_override_sec))
 
     def _on_estop(self, msg: Bool) -> None:
         """Latched ESTOP from /emergency_stop. True forces ESTOP state."""
@@ -298,17 +395,25 @@ class Supervisor(Node):
         self._publish_state()
 
     def _enter_dock(self, reason: str) -> None:
-        # DOCK is a stub in Phase 4: we accept the command but stay in IDLE
-        # semantics. The next phase will wire this to a docking BT.
+        # DOCK is a stub in Phase 4: we accept the command but do NOT
+        # transition to DOCK (would be a lie — there's no docking BT wired
+        # up). The service response reports the *actual* current state, so
+        # the orchestrator can detect the stub and retry later.
+        #
+        # NOTE on the docstring above: this does NOT "fall back to IDLE"
+        # semantics — it preserves the current state (IDLE or NAV) without
+        # transition. Behavior in ``_publish_cmd_vel`` is identical for
+        # IDLE/NAV (both pass through), so the practical effect matches
+        # "IDLE semantics" only if the FSM was already in IDLE. If DOCK
+        # is requested while in NAV, the robot keeps doing whatever NAV
+        # was doing — orchestrators reading ``supervisor/state`` will see
+        # NAV, not IDLE, and should treat that as the stub being a no-op.
+        # See SupervisorCmd.srv comments for the orchestrator contract.
         if self._state is State.DOCK:
             return
         self.get_logger().warning(
             f"DOCK requested ({reason}) — not implemented in Phase 4; "
             f'staying in {self._state.value}.')
-        # We don't actually transition the state to DOCK because that would
-        # be a lie. The service response reports the *actual* state (IDLE),
-        # so the caller can detect the stub and retry later.
-        # See SupervisorCmd.srv comments for the orchestrator contract.
 
     def _enter_estop(self, reason: str) -> None:
         if self._state is State.ESTOP:
