@@ -36,9 +36,8 @@ Topic / service contract
     — manual teleop (WebManager, joystick, keyboard). The default is
     intentionally **distinct** from ``cmd_vel_out_topic`` — sharing them
     was a safety hole: the manual subscription received the supervisor's
-    own published output back as fresh input, which (a) defeated the
-    ``cmd_vel_timeout_sec`` watchdog (every republish refreshed
-    ``_last_cmd_vel_stamp``) and (b) meant any external publisher on the
+    own published output back as fresh input, which (a) refreshed the
+    cache continuously and (b) meant any external publisher on the
     shared topic was publishing directly to the firmware-facing topic,
     bypassing the ESTOP gate. Skipped if its name equals either
     ``cmd_vel_in_topic`` (DDS rejects two subs with different types) or
@@ -123,9 +122,8 @@ class Supervisor(Node):
         # DISTINCT from ``cmd_vel_out_topic`` — sharing the same topic
         # created a real safety hole (see supervisor.py module docstring):
         # the supervisor's manual subscription would receive its OWN
-        # published output back as "fresh input", which (a) defeated the
-        # ``cmd_vel_timeout_sec`` watchdog because every republish refreshed
-        # ``_last_cmd_vel_stamp`` and (b) meant any external publisher on
+        # published output back as "fresh input", which (a) refreshed the
+        # cache continuously and (b) meant any external publisher on
         # ``/cmd_vel`` (the manual-input path) was publishing to the same
         # topic the firmware/ros_gz_bridge subscribes to for the GATED
         # output — bypassing the ESTOP gate. Teleop must now remap its
@@ -138,22 +136,6 @@ class Supervisor(Node):
         # How often to republish the current state, even when no transition
         # happened — useful for late-joining subscribers on TRANSIENT_LOCAL.
         self.declare_parameter('state_publish_period_sec', 0.1)
-        # Cmd_vel input watchdog: if no fresh /cmd_vel within this many seconds,
-        # force _last_cmd_vel to zero on the next publish. Without this, the
-        # supervisor keeps republishing the last cached value forever — when
-        # teleop releases a key, robot keeps driving.
-        #
-        # Constraint: cmd_vel_timeout_sec MUST BE > state_publish_period_sec.
-        # Suppose teleop publishes one key-press, then stops for a few hundred
-        # ms (keyboard auto-repeat phase-out). The next supervisor republish
-        # tick happens. The cmd_vel cache age at that moment is
-        # (state_publish_period_sec - eps). If the timeout is smaller than
-        # that, the watchdog fires and the robot stops mid-drive — producing
-        # the "robot jitters in tiny steps" symptom rather than smooth motion.
-        # Default timeout is set to 2 s, well above the 100 ms republish period,
-        # so any cache age < 2 s is considered fresh and the robot drives
-        # continuously while teleop keys are held.
-        self.declare_parameter('cmd_vel_timeout_sec', 2.0)
 
         cmd_vel_in = self.get_parameter('cmd_vel_in_topic').value
         cmd_vel_out = self.get_parameter('cmd_vel_out_topic').value
@@ -161,7 +143,6 @@ class Supervisor(Node):
         estop_topic = self.get_parameter('estop_topic').value
         cmd_service = self.get_parameter('cmd_service').value
         period_sec = self.get_parameter('state_publish_period_sec').value
-        self._cmd_vel_timeout_sec = self.get_parameter('cmd_vel_timeout_sec').value
 
         # ---- State ----
         self._state = State.IDLE
@@ -170,8 +151,6 @@ class Supervisor(Node):
         # to zero on ESTOP. Without buffering, the bridge would only see
         # velocity when an upstream node publishes.
         self._last_cmd_vel = Twist()
-        # ROS2 builtin time, used by the cmd_vel watchdog.
-        self._last_cmd_vel_stamp = self.get_clock().now()
         self._estop_latched = False  # latched from /emergency_stop latched topic
         # Teleop override window: when teleop publishes, block Nav2 input
         # for this many seconds. Prevents Nav2 behavior_server (spin/backup)
@@ -214,8 +193,7 @@ class Supervisor(Node):
         # Created only if its name differs from both ``cmd_vel_in_topic``
         # (DDS rejects two subs on one topic with different types) and
         # ``cmd_vel_out_topic`` (the supervisor's own loopback would
-        # refresh ``_last_cmd_vel_stamp`` every publish tick, defeating
-        # the ``cmd_vel_timeout_sec`` watchdog AND letting any external
+        # refresh the cache every publish tick AND letting any external
         # ``/cmd_vel`` publisher bypass the ESTOP gate). Either collision
         # is logged as an error and the manual sub is skipped.
         manual_cmd_vel_in = self.get_parameter('manual_cmd_vel_in_topic').value
@@ -235,11 +213,11 @@ class Supervisor(Node):
                 f'manual_cmd_vel_in_topic ({manual_cmd_vel_in!r}) equals '
                 f'cmd_vel_out_topic ({cmd_vel_out!r}); this would create a '
                 'self-loopback where the supervisor receives its own '
-                'published output back as "fresh input", defeating the '
-                'cmd_vel_timeout_sec watchdog AND letting any external '
-                '/cmd_vel publisher bypass the ESTOP gate. Manual input '
-                'disabled — publish teleop to a distinct topic, e.g. '
-                '/cmd_vel_manual. (See supervisor.py docstring.)')
+                'published output back as "fresh input", continuously '
+                'refreshing the cache AND letting any external /cmd_vel '
+                'publisher bypass the ESTOP gate. Manual input disabled — '
+                'publish teleop to a distinct topic, e.g. /cmd_vel_manual. '
+                '(See supervisor.py docstring.)')
         else:
             self._manual_cmd_vel_in_sub = self.create_subscription(
                 Twist, manual_cmd_vel_in, self._on_cmd_vel_in_plain, cmd_vel_qos)
@@ -301,7 +279,6 @@ class Supervisor(Node):
         plain.linear = msg.twist.linear
         plain.angular = msg.twist.angular
         self._last_cmd_vel = plain
-        self._last_cmd_vel_stamp = now
 
     def _on_cmd_vel_in_plain(self, msg: Twist) -> None:
         """Cache the latest manual/teleop Twist command.
@@ -333,7 +310,6 @@ class Supervisor(Node):
         else:
             self._stop_requested = False
         self._last_cmd_vel = msg
-        self._last_cmd_vel_stamp = self.get_clock().now()
         # Extend teleop override window
         self._teleop_override_until = (
             self.get_clock().now() +
@@ -454,10 +430,6 @@ class Supervisor(Node):
         the firmware/wheels get a hard stop even if Nav2 keeps streaming.
         In IDLE/NAV we pass through; DOCK is currently identical to IDLE.
 
-        Watchdog: if no fresh _last_cmd_vel has arrived within
-        ``cmd_vel_timeout_sec``, force zero so the firmware stops even
-        when the upstream publisher has gone silent (e.g., teleop released).
-
         Stop suppression: if _stop_requested is set (teleop sent lin=0),
         publish nothing. The ESP32's own 500ms watchdog will stop the robot.
         This prevents supervisor from republishing zeros at 10 Hz between
@@ -465,11 +437,6 @@ class Supervisor(Node):
         on every republish tick and causing micro-step jitter.
         """
         if self._state is State.ESTOP:
-            self._cmd_vel_out_pub.publish(Twist())
-            return
-        age = (self.get_clock().now() - self._last_cmd_vel_stamp).nanoseconds / 1e9
-        if age > self._cmd_vel_timeout_sec:
-            self._stop_requested = False
             self._cmd_vel_out_pub.publish(Twist())
             return
         if self._stop_requested:
