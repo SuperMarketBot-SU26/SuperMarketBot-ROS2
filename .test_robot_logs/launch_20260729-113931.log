@@ -1,0 +1,271 @@
+[INFO] [launch]: All log files can be found below /home/nhatkhoa1124/.ros/log/2026-07-29-11-39-32-153233-nhatkhoa1124-GF63-Thin-11UD-41443
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [41510]
+[INFO] [robot_state_publisher-2]: process started with pid [41511]
+[INFO] [joint_state_publisher-3]: process started with pid [41512]
+[INFO] [ekf_node-4]: process started with pid [41513]
+[INFO] [async_slam_toolbox_node-5]: process started with pid [41514]
+[INFO] [scan_relay-6]: process started with pid [41515]
+[INFO] [odom_imu_relay-7]: process started with pid [41516]
+[INFO] [supervisor-8]: process started with pid [41517]
+[INFO] [component_container-9]: process started with pid [41518]
+[INFO] [rviz2-10]: process started with pid [41519]
+[micro_ros_agent-1] [35m[1785299972.878155][m info     | [34mUDPv4AgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | port: 8888
+[micro_ros_agent-1] [35m[1785299972.878294][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[robot_state_publisher-2] [WARN] [1785299972.895908366] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1785299972.895976695] [robot_state_publisher]: Robot initialized
+[component_container-9] [INFO] [1785299973.123743262] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_controller/lib/libcontroller_server_core.so
+[component_container-9] [INFO] [1785299973.150984988] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785299973.154455782] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785299973.168600681] [controller_server]: 
+[component_container-9] 	controller_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785299973.186744632] [controller_server]: Creating controller server
+[component_container-9] [INFO] [1785299973.212463418] [local_costmap.local_costmap]: 
+[component_container-9] 	local_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785299973.213319751] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785299973.218758683] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_planner/lib/libplanner_server_core.so
+[component_container-9] [INFO] [1785299973.220087688] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785299973.220108244] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785299973.241209680] [planner_server]: 
+[component_container-9] 	planner_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785299973.249864093] [planner_server]: Creating
+[component_container-9] [INFO] [1785299973.270940545] [global_costmap.global_costmap]: 
+[component_container-9] 	global_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785299973.271717685] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785299973.274683706] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_behaviors/lib/libbehavior_server_core.so
+[component_container-9] [INFO] [1785299973.276837318] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785299973.276857396] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785299973.292087402] [behavior_server]: 
+[component_container-9] 	behavior_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785299973.294887261] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_bt_navigator/lib/libbt_navigator_core.so
+[component_container-9] [INFO] [1785299973.297861320] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785299973.297881143] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785299973.303888418] [bt_navigator]: 
+[component_container-9] 	bt_navigator lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785299973.305461375] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container-9] [INFO] [1785299973.306596357] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_waypoint_follower/lib/libwaypoint_follower_core.so
+[component_container-9] [INFO] [1785299973.307728473] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785299973.307741963] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785299973.313590041] [waypoint_follower]: 
+[component_container-9] 	waypoint_follower lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785299973.315154451] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container-9] [INFO] [1785299973.316272128] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_lifecycle_manager/lib/libnav2_lifecycle_manager_core.so
+[component_container-9] [INFO] [1785299973.317347275] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785299973.317360096] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785299973.322350369] [lifecycle_manager_navigation]: Creating
+[component_container-9] [INFO] [1785299973.322673456] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container-9] [INFO] [1785299973.323208405] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container-9] [INFO] [1785299973.328764714] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[joint_state_publisher-3] [INFO] [1785299973.732996574] [joint_state_publisher]: Waiting for robot_description to be published on the robot_description topic...
+[joint_state_publisher-3] [INFO] [1785299973.824880765] [joint_state_publisher]: Got description, configuring robot
+[odom_imu_relay-7] [INFO] [1785299974.044935811] [odom_imu_relay]: odom_imu_relay started: /odom /odom -> /odom_relay, /imu /imu/data -> /imu_relay (disabled paths skipped)
+[supervisor-8] [INFO] [1785299974.064677370] [supervisor]: Supervisor started: state=idle, in=/cmd_vel_nav, out=/cmd_vel, estop=/emergency_stop, service=/supervisor/cmd
+[rviz2-10] [INFO] [1785299974.077657156] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1785299974.077748073] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[rviz2-10] [INFO] [1785299974.087800900] [rviz2]: Stereo is NOT SUPPORTED
+[scan_relay-6] [INFO] [1785299974.431121070] [scan_relay]: scan_relay started: /scan (RELIABLE) -> /scan_relay (BEST_EFFORT)
+[micro_ros_agent-1] [35m[1785300055.173900][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x55B039B4, session_id: 0x81
+[micro_ros_agent-1] [35m[1785300055.174019][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x55B039B4, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785300055.201497][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x55B039B4, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.211804][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.216320][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.230202][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785300055.236988][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.248964][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.253629][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785300055.258829][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.263006][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.271405][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785300055.276607][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.291718][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x55B039B4, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.306347][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x55B039B4, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785300055.315079][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x55B039B4, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.333478][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x55B039B4, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300055.642303][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x55B039B4, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[rviz2-10] [INFO] [1785300065.690904226] [rviz2]: Message Filter dropping message: frame 'laser_frame' at time 1785300055.668 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[micro_ros_agent-1] [35m[1785300168.373908][m info     | [34mRoot.cpp          [m | [37mdelete_client           [m | [32mdelete[m                 | client_key: 0x55B039B4
+[micro_ros_agent-1] [35m[1785300168.373967][m info     | [34mSessionManager.hpp[m | [37mdestroy_session         [m | [32msession closed[m         | client_key: 0x55B039B4, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785300168.373988][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x27FCA631, session_id: 0x81
+[micro_ros_agent-1] [35m[1785300168.373997][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x27FCA631, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785300168.392892][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x27FCA631, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.402172][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.406468][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.728197][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785300168.736140][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.741144][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.748829][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785300168.754987][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.764715][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.769598][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785300168.774522][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.791785][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.796896][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785300168.801837][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.811869][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x27FCA631, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300168.816582][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x27FCA631, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[rviz2-10] [INFO] [1785300191.232187445] [rclcpp]: signal_handler(signum=2)
+[robot_state_publisher-2] [INFO] [1785300191.232265529] [rclcpp]: signal_handler(signum=2)
+[ekf_node-4] [INFO] [1785300191.232247246] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785300191.232450039] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785300191.232657689] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[component_container-9] [INFO] [1785300191.232807581] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785300191.232841637] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[component_container-9] [INFO] [1785300191.232887643] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785300191.232931577] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[component_container-9] [INFO] [1785300191.232973838] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785300191.233000265] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[component_container-9] [INFO] [1785300191.233040882] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785300191.233067832] [waypoint_follower]: Running Nav2 LifecycleNode rcl preshutdown (waypoint_follower)
+[component_container-9] [INFO] [1785300191.233108329] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785300191.233136006] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[async_slam_toolbox_node-5] [INFO] [1785300191.233136657] [rclcpp]: signal_handler(signum=2)
+[async_slam_toolbox_node-5] [WARN] [1785300191.240268256] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785300191.260027332] [lifecycle_manager_navigation]: Destroying lifecycle_manager_navigation
+[component_container-9] [INFO] [1785300191.270555318] [waypoint_follower]: Destroying
+[component_container-9] [WARN] [1785300191.270588215] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785300191.277766650] [bt_navigator]: Destroying
+[component_container-9] [WARN] [1785300191.277785809] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785300191.286980237] [behavior_server]: Destroying
+[component_container-9] [WARN] [1785300191.287000973] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[scan_relay-6] Traceback (most recent call last):
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay", line 33, in <module>
+[scan_relay-6]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'scan_relay')())
+[scan_relay-6]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/scan_relay.py", line 111, in main
+[scan_relay-6]     rclpy.spin(node)
+[scan_relay-6]     ~~~~~~~~~~^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[scan_relay-6]     executor.spin_once()
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[scan_relay-6]     self._spin_once_impl(timeout_sec)
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[scan_relay-6]     handler, entity, node = self.wait_for_ready_callbacks(
+[scan_relay-6]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[scan_relay-6]         timeout_sec, None, wait_condition)
+[scan_relay-6]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[scan_relay-6]     return next(self._cb_iter)
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[scan_relay-6]     wait_set = _rclpy.WaitSet(
+[scan_relay-6]         entity_count.num_subscriptions,
+[scan_relay-6]     ...<4 lines>...
+[scan_relay-6]         entity_count.num_events,
+[scan_relay-6]         self._context.handle)
+[scan_relay-6] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[component_container-9] [INFO] [1785300191.294017600] [global_costmap.global_costmap]: Destroying
+[component_container-9] [WARN] [1785300191.294041515] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[supervisor-8] Traceback (most recent call last):
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor", line 33, in <module>
+[supervisor-8]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'supervisor')())
+[supervisor-8]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/supervisor.py", line 438, in main
+[supervisor-8]     rclpy.spin(node)
+[supervisor-8]     ~~~~~~~~~~^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[supervisor-8]     executor.spin_once()
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[supervisor-8]     self._spin_once_impl(timeout_sec)
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[supervisor-8]     handler, entity, node = self.wait_for_ready_callbacks(
+[supervisor-8]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[supervisor-8]         timeout_sec, None, wait_condition)
+[supervisor-8]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[supervisor-8]     return next(self._cb_iter)
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[supervisor-8]     wait_set = _rclpy.WaitSet(
+[supervisor-8]         entity_count.num_subscriptions,
+[supervisor-8]     ...<4 lines>...
+[supervisor-8]         entity_count.num_events,
+[supervisor-8]         self._context.handle)
+[supervisor-8] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[odom_imu_relay-7] Traceback (most recent call last):
+[component_container-9] [INFO] [1785300191.303490800] [planner_server]: Destroying
+[component_container-9] [WARN] [1785300191.303514660] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay", line 33, in <module>
+[odom_imu_relay-7]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'odom_imu_relay')())
+[odom_imu_relay-7]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/odom_imu_relay.py", line 118, in main
+[odom_imu_relay-7]     rclpy.spin(node)
+[odom_imu_relay-7]     ~~~~~~~~~~^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[odom_imu_relay-7]     executor.spin_once()
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[odom_imu_relay-7]     self._spin_once_impl(timeout_sec)
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[odom_imu_relay-7]     handler, entity, node = self.wait_for_ready_callbacks(
+[odom_imu_relay-7]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[odom_imu_relay-7]         timeout_sec, None, wait_condition)
+[odom_imu_relay-7]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[odom_imu_relay-7]     return next(self._cb_iter)
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[odom_imu_relay-7]     wait_set = _rclpy.WaitSet(
+[odom_imu_relay-7]         entity_count.num_subscriptions,
+[odom_imu_relay-7]     ...<4 lines>...
+[odom_imu_relay-7]         entity_count.num_events,
+[odom_imu_relay-7]         self._context.handle)
+[odom_imu_relay-7] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[component_container-9] [INFO] [1785300191.311222161] [local_costmap.local_costmap]: Destroying
+[component_container-9] [WARN] [1785300191.311238549] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785300191.320169950] [controller_server]: Destroying
+[component_container-9] [WARN] [1785300191.320186792] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[INFO] [async_slam_toolbox_node-5]: process has finished cleanly [pid 41514]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 41511]
+[INFO] [ekf_node-4]: process has finished cleanly [pid 41513]
+[INFO] [component_container-9]: process has finished cleanly [pid 41518]
+[ERROR] [scan_relay-6]: process has died [pid 41515, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay --ros-args -r __node:=scan_relay --params-file /tmp/launch_params_lm26tvuq'].
+[ERROR] [supervisor-8]: process has died [pid 41517, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor --ros-args -r __node:=supervisor --params-file /tmp/launch_params_sddpk1ea'].
+[ERROR] [odom_imu_relay-7]: process has died [pid 41516, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay --ros-args -r __node:=odom_imu_relay --params-file /tmp/launch_params_fz4oa5vv'].
+[joint_state_publisher-3] Traceback (most recent call last):
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher", line 33, in <module>
+[joint_state_publisher-3]     sys.exit(load_entry_point('joint-state-publisher==2.4.2', 'console_scripts', 'joint_state_publisher')())
+[joint_state_publisher-3]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/joint_state_publisher/joint_state_publisher.py", line 568, in main
+[joint_state_publisher-3]     rclpy.spin(jsp)
+[joint_state_publisher-3]     ~~~~~~~~~~^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[joint_state_publisher-3]     executor.spin_once()
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[joint_state_publisher-3]     self._spin_once_impl(timeout_sec)
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[joint_state_publisher-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[joint_state_publisher-3]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[joint_state_publisher-3]         timeout_sec, None, wait_condition)
+[joint_state_publisher-3]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[joint_state_publisher-3]     return next(self._cb_iter)
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 876, in _wait_for_ready_callbacks
+[joint_state_publisher-3]     raise ExternalShutdownException()
+[joint_state_publisher-3] rclpy.executors.ExternalShutdownException
+[ERROR] [joint_state_publisher-3]: process has died [pid 41512, exit code 1, cmd '/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher --params-file /tmp/launch_params_ino052nt'].
+[ERROR] [micro_ros_agent-1]: process has died [pid 41510, exit code -9, cmd '/home/nhatkhoa1124/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent udp4 --port 8888'].
+[ERROR] [rviz2-10]: process has died [pid 41519, exit code -9, cmd '/opt/ros/lyrical/lib/rviz2/rviz2 -d /home/nhatkhoa1124/ros2_ws/install/smb_robot_bringup/share/smb_robot_bringup/config/common/smb.rviz --ros-args -r __node:=rviz2 --params-file /tmp/launch_params_utfaf0kh'].

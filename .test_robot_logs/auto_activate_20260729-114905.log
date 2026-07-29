@@ -12,7 +12,7 @@ waiting for service to become available...
 requester: making request: nav2_msgs.srv.ManageLifecycleNodes_Request(command=0)
 
 response:
-nav2_msgs.srv.ManageLifecycleNodes_Response(success=False)
+nav2_msgs.srv.ManageLifecycleNodes_Response(success=True)
 
 [test_robot] auto_activate:   Nav2 manager configured + activated.
 [test_robot] auto_activate: SLAM + Nav2 are now active. Drive: ./test_teleop.sh

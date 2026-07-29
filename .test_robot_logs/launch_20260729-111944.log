@@ -1,0 +1,392 @@
+[INFO] [launch]: All log files can be found below /home/nhatkhoa1124/.ros/log/2026-07-29-11-19-45-127761-nhatkhoa1124-GF63-Thin-11UD-31380
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [31446]
+[INFO] [robot_state_publisher-2]: process started with pid [31447]
+[INFO] [joint_state_publisher-3]: process started with pid [31448]
+[INFO] [ekf_node-4]: process started with pid [31449]
+[INFO] [async_slam_toolbox_node-5]: process started with pid [31450]
+[INFO] [scan_relay-6]: process started with pid [31451]
+[INFO] [odom_imu_relay-7]: process started with pid [31452]
+[INFO] [supervisor-8]: process started with pid [31453]
+[INFO] [component_container-9]: process started with pid [31454]
+[INFO] [rviz2-10]: process started with pid [31455]
+[micro_ros_agent-1] [35m[1785298785.511555][m info     | [34mUDPv4AgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | port: 8888
+[micro_ros_agent-1] [35m[1785298785.511703][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[robot_state_publisher-2] [WARN] [1785298785.534133399] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1785298785.534232323] [robot_state_publisher]: Robot initialized
+[component_container-9] [INFO] [1785298785.760786539] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_controller/lib/libcontroller_server_core.so
+[component_container-9] [INFO] [1785298785.784777720] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785298785.784835217] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785298785.794958655] [controller_server]: 
+[component_container-9] 	controller_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298785.806265593] [controller_server]: Creating controller server
+[component_container-9] [INFO] [1785298785.822542149] [local_costmap.local_costmap]: 
+[component_container-9] 	local_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298785.823495369] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785298785.827329980] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_planner/lib/libplanner_server_core.so
+[component_container-9] [INFO] [1785298785.829258690] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785298785.829283432] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785298785.848981775] [planner_server]: 
+[component_container-9] 	planner_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298785.852647330] [planner_server]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785298785.876747805] [global_costmap.global_costmap]: 
+[component_container-9] 	global_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298785.877661135] [global_costmap.global_costmap]: Creating Costmap
+[component_container-9] [INFO] [1785298785.880676061] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_behaviors/lib/libbehavior_server_core.so
+[component_container-9] [INFO] [1785298785.886465761] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785298785.886947385] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785298785.911959222] [behavior_server]: 
+[component_container-9] 	behavior_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785298785.917666956] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_bt_navigator/lib/libbt_navigator_core.so
+[component_container-9] [INFO] [1785298785.921081363] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785298785.921106121] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785298785.927279389] [bt_navigator]: 
+[component_container-9] 	bt_navigator lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298785.929143645] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container-9] [INFO] [1785298785.930727822] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_waypoint_follower/lib/libwaypoint_follower_core.so
+[component_container-9] [INFO] [1785298785.932037482] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785298785.932060560] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785298785.937972890] [waypoint_follower]: 
+[component_container-9] 	waypoint_follower lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298785.939766576] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container-9] [INFO] [1785298785.941226682] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_lifecycle_manager/lib/libnav2_lifecycle_manager_core.so
+[component_container-9] [INFO] [1785298785.942413184] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785298785.942431414] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785298785.947296358] [lifecycle_manager_navigation]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container-9] [INFO] [1785298785.947630567] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[component_container-9] [INFO] [1785298785.948082048] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container-9] [INFO] [1785298785.954618515] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[scan_relay-6] [INFO] [1785298786.043236105] [scan_relay]: scan_relay started: /scan (RELIABLE) -> /scan_relay (BEST_EFFORT)
+[odom_imu_relay-7] [INFO] [1785298786.080616172] [odom_imu_relay]: odom_imu_relay started: /odom /odom -> /odom_relay, /imu /imu/data -> /imu_relay (disabled paths skipped)
+[rviz2-10] [INFO] [1785298786.708728270] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1785298786.708826436] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[rviz2-10] [INFO] [1785298786.721167626] [rviz2]: Stereo is NOT SUPPORTED
+[joint_state_publisher-3] [INFO] [1785298786.737406447] [joint_state_publisher]: Waiting for robot_description to be published on the robot_description topic...
+[supervisor-8] [INFO] [1785298786.740301259] [supervisor]: Supervisor started: state=idle, in=/cmd_vel_nav, out=/cmd_vel, estop=/emergency_stop, service=/supervisor/cmd
+[joint_state_publisher-3] [INFO] [1785298786.749867328] [joint_state_publisher]: Got description, configuring robot
+[scan_relay-6] [WARN] [1785298786.786169259] [scan_relay]: New subscription discovered on topic '/scan_relay', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[micro_ros_agent-1] [35m[1785298799.960944][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x296A6185, session_id: 0x81
+[micro_ros_agent-1] [35m[1785298799.961075][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x296A6185, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785298800.325117][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x296A6185, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.336493][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.343239][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.787797][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785298800.792866][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.801258][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.806654][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785298800.813466][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.823997][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.828826][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785298800.838839][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.844137][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.849518][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785298800.854579][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.860290][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x296A6185, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785298800.868957][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x296A6185, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[async_slam_toolbox_node-5] [INFO] [1785298806.479452253] [slam_toolbox]: Configuring
+[async_slam_toolbox_node-5] [INFO] [1785298806.497496788] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[async_slam_toolbox_node-5] [INFO] [1785298808.058805172] [slam_toolbox]: Activating
+[async_slam_toolbox_node-5] Info: clipped range threshold to be within minimum and maximum range!
+[async_slam_toolbox_node-5] Registering sensor: [Custom Described Lidar : laser_frame]
+[component_container-9] [INFO] [1785298815.543414532] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container-9] [INFO] [1785298815.543563229] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container-9] [INFO] [1785298815.544463644] [controller_server]: Configuring controller interface
+[component_container-9] [INFO] [1785298815.544590520] [local_costmap.local_costmap]: Configuring
+[component_container-9] [INFO] [1785298815.559846171] [local_costmap.local_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785298815.566728744] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785298815.567762398] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785298815.567788662] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785298815.567908288] [local_costmap.local_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785298815.567925004] [local_costmap.local_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785298815.567927830] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785298815.568010632] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785298815.587931785] [controller_server]: Controller frequency set to 10.0000Hz
+[component_container-9] [INFO] [1785298815.587967770] [controller_server]: getting progress checker plugins..
+[component_container-9] [INFO] [1785298815.588016054] [controller_server]: getting goal checker plugins..
+[component_container-9] [INFO] [1785298815.588553667] [controller_server]: getting controller plugins..
+[component_container-9] [INFO] [1785298815.588678755] [controller_server]: getting path handler plugins..
+[component_container-9] [INFO] [1785298815.589559679] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container-9] [INFO] [1785298815.589586638] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[component_container-9] [INFO] [1785298815.590035234] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container-9] [INFO] [1785298815.590055374] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container-9] [INFO] [1785298815.590660061] [controller_server]: Created path handler : PathHandler of type nav2_controller::FeasiblePathHandler
+[component_container-9] [INFO] [1785298815.590683861] [controller_server]: Controller Server has PathHandler  path handlers available.
+[component_container-9] [INFO] [1785298815.591526679] [controller_server]: Created controller : FollowPath of type nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [WARN] [1785298815.591608477] [controller_server]: Parameter 'FollowPath.desired_linear_vel' is deprecated. Use 'FollowPath.max_linear_vel' instead.
+[component_container-9] [INFO] [1785298815.594109519] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container-9] [INFO] [1785298815.604408934] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container-9] [INFO] [1785298815.604557603] [planner_server]: Configuring
+[component_container-9] [INFO] [1785298815.604590096] [global_costmap.global_costmap]: Configuring
+[component_container-9] [INFO] [1785298815.607174216] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785298815.607589999] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785298815.608092423] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785298815.608108540] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785298815.608242669] [global_costmap.global_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785298815.608255572] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785298815.608260451] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785298815.608373184] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785298815.619605001] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[component_container-9] [INFO] [1785298815.619644247] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785298815.619753519] [planner_server]: Planner Server has GridBased  planners available.
+[component_container-9] [INFO] [1785298815.630303003] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container-9] [INFO] [1785298815.630408657] [behavior_server]: Configuring
+[component_container-9] [INFO] [1785298815.631587110] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[component_container-9] [INFO] [1785298815.632576977] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[component_container-9] [INFO] [1785298815.633435285] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[component_container-9] [INFO] [1785298815.634234595] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[component_container-9] [INFO] [1785298815.637323038] [behavior_server]: Configuring spin
+[component_container-9] [INFO] [1785298815.642497141] [behavior_server]: Configuring backup
+[component_container-9] [INFO] [1785298815.648273864] [behavior_server]: Configuring drive_on_heading
+[component_container-9] [INFO] [1785298815.654073723] [behavior_server]: Configuring wait
+[component_container-9] [INFO] [1785298815.659939000] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container-9] [INFO] [1785298815.660065122] [bt_navigator]: Configuring
+[component_container-9] [INFO] [1785298815.661857341] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[component_container-9] [WARN] [1785298815.663845124] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785298815.671955008] [bt_navigator_navigate_to_pose_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_to_pose_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298815.727425708] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[component_container-9] [WARN] [1785298815.729601494] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785298815.738197952] [bt_navigator_navigate_through_poses_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_through_poses_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785298815.745434962] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785298815.745547131] [waypoint_follower]: Configuring
+[component_container-9] [INFO] [1785298815.763001808] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container-9] [INFO] [1785298815.763529873] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container-9] [INFO] [1785298815.763712024] [controller_server]: Activating
+[component_container-9] [INFO] [1785298815.763738867] [local_costmap.local_costmap]: Activating
+[component_container-9] [INFO] [1785298815.763747525] [local_costmap.local_costmap]: Checking transform
+[component_container-9] [INFO] [1785298815.763820665] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785298815.750027 but the earliest data is at time 1785298815.948597, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785298816.264051998] [local_costmap.local_costmap]: start
+[component_container-9] [INFO] [1785298816.314594939] [controller_server]: Activating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785298816.315738984] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785298816.582024289] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[component_container-9] [INFO] [1785298816.582176432] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[component_container-9] [INFO] [1785298816.582718333] [planner_server]: Activating
+[component_container-9] [INFO] [1785298816.582823503] [global_costmap.global_costmap]: Activating
+[component_container-9] [INFO] [1785298816.582851630] [global_costmap.global_costmap]: Checking transform
+[component_container-9] [INFO] [1785298816.583045911] [global_costmap.global_costmap]: start
+[component_container-9] [INFO] [1785298816.633416490] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785298816.638254763] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785298816.900705698] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[component_container-9] [INFO] [1785298816.900792360] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785298816.901444883] [behavior_server]: Activating
+[component_container-9] [INFO] [1785298816.901500496] [behavior_server]: Activating spin
+[component_container-9] [INFO] [1785298816.901536316] [behavior_server]: Activating backup
+[component_container-9] [INFO] [1785298816.901569150] [behavior_server]: Activating drive_on_heading
+[component_container-9] [INFO] [1785298816.901588209] [behavior_server]: Activating wait
+[component_container-9] [INFO] [1785298816.901639145] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785298817.159789382] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[component_container-9] [INFO] [1785298817.159813797] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785298817.159996978] [bt_navigator]: Activating
+[component_container-9] [INFO] [1785298817.182870600] [bt_navigator]: Created BT from ID: NavigateToPoseWReplanningAndRecovery
+[component_container-9] [INFO] [1785298817.207001779] [bt_navigator]: Created BT from ID: NavigateThroughPosesWReplanningAndRecovery
+[component_container-9] [INFO] [1785298817.207659361] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[component_container-9] [WARN] [1785298817.264373918] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [INFO] [1785298817.460307269] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[component_container-9] [INFO] [1785298817.460408785] [lifecycle_manager_navigation]: [34m[1mActivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785298817.460922937] [waypoint_follower]: Activating
+[component_container-9] [INFO] [1785298817.461004818] [waypoint_follower]: Creating bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785298817.717247617] [lifecycle_manager_navigation]: Server waypoint_follower connected with bond.
+[component_container-9] [INFO] [1785298817.717357832] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[component_container-9] [INFO] [1785298817.717473290] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[component_container-9] [INFO] [1785298818.068544306] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 87 X 70 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298818.068672733] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785298818.068544317] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 87 X 70 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298818.068806286] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785298818.081611832] [rviz2]: Trying to create a map of size 87 x 70 using 1 swatches
+[rviz2-10] [ERROR] [1785298818.114345790] [rviz2]: rviz/glsl120/indexed_8bit_image.vert
+[rviz2-10] rviz/glsl120/indexed_8bit_image.frag
+[rviz2-10]  GLSL link result : 
+[rviz2-10] active samplers with a different type refer to the same texture image unit
+[rviz2-10] [INFO] [1785298828.094958907] [rviz2]: Trying to create a map of size 87 x 71 using 1 swatches
+[component_container-9] [INFO] [1785298828.183478294] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 87 X 71 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298828.183643952] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785298828.264385580] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 87 X 71 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298828.264433911] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785298838.083036468] [rviz2]: Trying to create a map of size 88 x 72 using 1 swatches
+[component_container-9] [INFO] [1785298838.183354327] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 88 X 72 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298838.183432452] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785298838.264380272] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 88 X 72 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298838.264415250] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785298848.098491214] [rviz2]: Trying to create a map of size 89 x 72 using 1 swatches
+[component_container-9] [INFO] [1785298848.183448419] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 89 X 72 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298848.183552581] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785298848.264445026] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 89 X 72 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298848.264538886] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785298858.079105378] [rviz2]: Trying to create a map of size 90 x 80 using 1 swatches
+[component_container-9] [INFO] [1785298858.183451754] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 90 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298858.183569456] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785298858.264461288] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 90 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298858.264553515] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785298958.082524496] [rviz2]: Trying to create a map of size 91 x 80 using 1 swatches
+[component_container-9] [INFO] [1785298958.183439024] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 91 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298958.183557627] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785298958.264562958] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 91 X 80 at 0.050000 m/pix
+[component_container-9] [WARN] [1785298958.264686255] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785299058.080842957] [rviz2]: Trying to create a map of size 91 x 102 using 1 swatches
+[component_container-9] [INFO] [1785299058.183457532] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 91 X 102 at 0.050000 m/pix
+[component_container-9] [WARN] [1785299058.183576418] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -4) | Resolution: 0
+[component_container-9] [INFO] [1785299058.264464163] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 91 X 102 at 0.050000 m/pix
+[component_container-9] [WARN] [1785299058.264494681] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -4) | Resolution: 0
+[async_slam_toolbox_node-5] [INFO] [1785299475.674553708] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785299475.674554158] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785299475.674790797] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[component_container-9] [INFO] [1785299475.674932872] [controller_server]: Deactivating
+[robot_state_publisher-2] [INFO] [1785299475.674604821] [rclcpp]: signal_handler(signum=2)
+[rviz2-10] [INFO] [1785299475.674654449] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785299475.675031814] [controller_server]: Deactivating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785299475.675116486] [local_costmap.local_costmap]: Deactivating
+[ekf_node-4] [INFO] [1785299475.675750333] [rclcpp]: signal_handler(signum=2)
+[async_slam_toolbox_node-5] Unregistering sensor: Custom Described Lidar : laser_frame
+[async_slam_toolbox_node-5] [WARN] [1785299475.694916458] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(3) in destructor
+[INFO] [async_slam_toolbox_node-5]: process has finished cleanly [pid 31450]
+[component_container-9] [INFO] [1785299475.864718110] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785299475.917687911] [lifecycle_manager_navigation]: [34m[1mHave not received a heartbeat from controller_server.[0m[0m
+[component_container-9] [ERROR] [1785299475.917723555] [lifecycle_manager_navigation]: CRITICAL FAILURE: SERVER controller_server IS DOWN after not receiving a heartbeat for 4000 ms. Shutting down related nodes.
+[component_container-9] [INFO] [1785299475.917760548] [lifecycle_manager_navigation]: [34m[1mTerminating bond timer...[0m[0m
+[component_container-9] [INFO] [1785299475.917764529] [lifecycle_manager_navigation]: [34m[1mResetting managed nodes...[0m[0m
+[component_container-9] [INFO] [1785299475.917768376] [lifecycle_manager_navigation]: [34m[1mDeactivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785299475.918096931] [waypoint_follower]: Deactivating
+[component_container-9] [INFO] [1785299475.918134041] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785299475.967062040] [controller_server]: Cleaning up
+[component_container-9] [INFO] [1785299475.967085291] [controller_server]: Cleaning up controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785299475.969686917] [local_costmap.local_costmap]: Cleaning up
+[component_container-9] [INFO] [1785299475.989770759] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785299475.989795666] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[component_container-9] [INFO] [1785299475.989814380] [planner_server]: Deactivating
+[component_container-9] [INFO] [1785299475.989851211] [global_costmap.global_costmap]: Deactivating
+[component_container-9] [INFO] [1785299476.032174685] [lifecycle_manager_navigation]: [34m[1mDeactivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785299476.034870063] [bt_navigator]: Deactivating
+[component_container-9] [INFO] [1785299476.034970021] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[supervisor-8] Traceback (most recent call last):
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor", line 33, in <module>
+[supervisor-8]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'supervisor')())
+[supervisor-8]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/supervisor.py", line 438, in main
+[supervisor-8]     rclpy.spin(node)
+[supervisor-8]     ~~~~~~~~~~^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[supervisor-8]     executor.spin_once()
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[supervisor-8]     self._spin_once_impl(timeout_sec)
+[supervisor-8]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[supervisor-8]     handler, entity, node = self.wait_for_ready_callbacks(
+[supervisor-8]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[supervisor-8]         timeout_sec, None, wait_condition)
+[supervisor-8]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[supervisor-8]     return next(self._cb_iter)
+[supervisor-8]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[supervisor-8]     wait_set = _rclpy.WaitSet(
+[supervisor-8]         entity_count.num_subscriptions,
+[supervisor-8]     ...<4 lines>...
+[supervisor-8]         entity_count.num_events,
+[supervisor-8]         self._context.handle)
+[supervisor-8] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 31447]
+[INFO] [ekf_node-4]: process has finished cleanly [pid 31449]
+[component_container-9] [INFO] [1785299476.147833593] [lifecycle_manager_navigation]: [34m[1mDeactivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785299476.149557226] [behavior_server]: Deactivating
+[component_container-9] [INFO] [1785299476.149636218] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785299476.183563507] [planner_server]: Deactivating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785299476.184733085] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[INFO] [scan_relay-6]: process has finished cleanly [pid 31451]
+[INFO] [odom_imu_relay-7]: process has finished cleanly [pid 31452]
+[ERROR] [supervisor-8]: process has died [pid 31453, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/supervisor --ros-args -r __node:=supervisor --params-file /tmp/launch_params_sxzz81y6'].
+[component_container-9] [INFO] [1785299476.261576377] [lifecycle_manager_navigation]: [34m[1mDeactivating planner_server[0m[0m
+[component_container-9] [WARN] [1785299476.263307275] [rcl_lifecycle]: No transition matching 4 found for current state deactivating
+[component_container-9] [WARN] [1785299476.263320611] [rcl_lifecycle]: No transition matching 4 found for current state deactivating
+[component_container-9] [ERROR] [1785299476.263332448] [planner_server]: Unable to start transition 4 (deactivate) from current state deactivating: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785299476.263587058] [lifecycle_manager_navigation]: Failed to change state for node: planner_server
+[component_container-9] [INFO] [1785299476.263644024] [lifecycle_manager_navigation]: [34m[1mDeactivating controller_server[0m[0m
+[component_container-9] [WARN] [1785299476.263722646] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [WARN] [1785299476.263727605] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [ERROR] [1785299476.263729788] [controller_server]: Unable to start transition 4 (deactivate) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785299476.263827800] [lifecycle_manager_navigation]: Failed to change state for node: controller_server
+[component_container-9] [INFO] [1785299476.263838922] [lifecycle_manager_navigation]: [34m[1mCleaning up waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785299476.263901513] [waypoint_follower]: Cleaning up
+[component_container-9] [INFO] [1785299476.273017765] [lifecycle_manager_navigation]: [34m[1mCleaning up bt_navigator[0m[0m
+[component_container-9] [INFO] [1785299476.273104725] [bt_navigator]: Cleaning up
+[component_container-9] [INFO] [1785299476.286503976] [planner_server]: Cleaning up
+[component_container-9] [INFO] [1785299476.297276651] [global_costmap.global_costmap]: Cleaning up
+[component_container-9] [INFO] [1785299476.301650175] [planner_server]: Cleaning up plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785299476.301702638] [planner_server]: Destroying plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785299476.302479589] [bt_navigator_navigate_to_pose_rclcpp_node]: Destroying
+[component_container-9] [INFO] [1785299476.313138433] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785299476.313175715] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[component_container-9] [INFO] [1785299476.313201161] [behavior_server]: Cleaning up
+[component_container-9] [INFO] [1785299476.326110752] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785299476.326135239] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[component_container-9] [INFO] [1785299476.326146431] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785299476.326151399] [waypoint_follower]: Running Nav2 LifecycleNode rcl preshutdown (waypoint_follower)
+[component_container-9] [INFO] [1785299476.326159504] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785299476.326165454] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[joint_state_publisher-3] Traceback (most recent call last):
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher", line 33, in <module>
+[joint_state_publisher-3]     sys.exit(load_entry_point('joint-state-publisher==2.4.2', 'console_scripts', 'joint_state_publisher')())
+[joint_state_publisher-3]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/joint_state_publisher/joint_state_publisher.py", line 568, in main
+[joint_state_publisher-3]     rclpy.spin(jsp)
+[joint_state_publisher-3]     ~~~~~~~~~~^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[joint_state_publisher-3]     executor.spin_once()
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[joint_state_publisher-3]     self._spin_once_impl(timeout_sec)
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[joint_state_publisher-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[joint_state_publisher-3]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[joint_state_publisher-3]         timeout_sec, None, wait_condition)
+[joint_state_publisher-3]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[joint_state_publisher-3]     return next(self._cb_iter)
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 876, in _wait_for_ready_callbacks
+[joint_state_publisher-3]     raise ExternalShutdownException()
+[joint_state_publisher-3] rclpy.executors.ExternalShutdownException
+[ERROR] [joint_state_publisher-3]: process has died [pid 31448, exit code 1, cmd '/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher --params-file /tmp/launch_params_m0nxgqky'].
+[ERROR] [micro_ros_agent-1]: process has died [pid 31446, exit code -9, cmd '/home/nhatkhoa1124/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent udp4 --port 8888'].
+[ERROR] [component_container-9]: process has died [pid 31454, exit code -9, cmd '/opt/ros/lyrical/lib/rclcpp_components/component_container --ros-args -r __node:=nav2_container -r __ns:=/'].
+[ERROR] [rviz2-10]: process has died [pid 31455, exit code -9, cmd '/opt/ros/lyrical/lib/rviz2/rviz2 -d /home/nhatkhoa1124/ros2_ws/install/smb_robot_bringup/share/smb_robot_bringup/config/common/smb.rviz --ros-args -r __node:=rviz2 --params-file /tmp/launch_params_k95jymah'].

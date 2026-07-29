@@ -1,0 +1,595 @@
+[INFO] [launch]: All log files can be found below /home/nhatkhoa1124/.ros/log/2026-07-29-11-49-05-624541-nhatkhoa1124-GF63-Thin-11UD-46037
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [46103]
+[INFO] [robot_state_publisher-2]: process started with pid [46104]
+[INFO] [joint_state_publisher-3]: process started with pid [46105]
+[INFO] [ekf_node-4]: process started with pid [46106]
+[INFO] [async_slam_toolbox_node-5]: process started with pid [46107]
+[INFO] [scan_relay-6]: process started with pid [46108]
+[INFO] [odom_imu_relay-7]: process started with pid [46109]
+[INFO] [supervisor-8]: process started with pid [46110]
+[INFO] [component_container-9]: process started with pid [46111]
+[INFO] [rviz2-10]: process started with pid [46112]
+[micro_ros_agent-1] [35m[1785300546.042794][m info     | [34mUDPv4AgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | port: 8888
+[micro_ros_agent-1] [35m[1785300546.042903][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[robot_state_publisher-2] [WARN] [1785300546.063581531] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1785300546.063652249] [robot_state_publisher]: Robot initialized
+[component_container-9] [INFO] [1785300546.291805833] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_controller/lib/libcontroller_server_core.so
+[component_container-9] [INFO] [1785300546.318541813] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785300546.318589155] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785300546.355201225] [controller_server]: 
+[component_container-9] 	controller_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300546.366424950] [controller_server]: Creating controller server
+[component_container-9] [INFO] [1785300546.375470463] [local_costmap.local_costmap]: 
+[component_container-9] 	local_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300546.376049239] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785300546.377482216] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_planner/lib/libplanner_server_core.so
+[component_container-9] [INFO] [1785300546.378460748] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785300546.378476092] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785300546.383315730] [planner_server]: 
+[component_container-9] 	planner_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300546.384881621] [planner_server]: Creating
+[component_container-9] [INFO] [1785300546.389834395] [global_costmap.global_costmap]: 
+[component_container-9] 	global_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300546.390347919] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785300546.391635262] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_behaviors/lib/libbehavior_server_core.so
+[component_container-9] [INFO] [1785300546.393342360] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785300546.393355341] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785300546.398078278] [behavior_server]: 
+[component_container-9] 	behavior_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785300546.400877744] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_bt_navigator/lib/libbt_navigator_core.so
+[component_container-9] [INFO] [1785300546.403804298] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785300546.403821064] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785300546.409006761] [bt_navigator]: 
+[component_container-9] 	bt_navigator lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300546.410572530] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container-9] [INFO] [1785300546.411763236] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_waypoint_follower/lib/libwaypoint_follower_core.so
+[component_container-9] [INFO] [1785300546.412922090] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785300546.412936499] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785300546.418720753] [waypoint_follower]: 
+[component_container-9] 	waypoint_follower lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300546.420285639] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container-9] [INFO] [1785300546.421419785] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_lifecycle_manager/lib/libnav2_lifecycle_manager_core.so
+[component_container-9] [INFO] [1785300546.422521111] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785300546.422535090] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785300546.427446600] [lifecycle_manager_navigation]: Creating
+[component_container-9] [INFO] [1785300546.427744302] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container-9] [INFO] [1785300546.428216554] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container-9] [INFO] [1785300546.432825948] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[joint_state_publisher-3] [INFO] [1785300547.151188512] [joint_state_publisher]: Waiting for robot_description to be published on the robot_description topic...
+[supervisor-8] [INFO] [1785300547.155966329] [supervisor]: Supervisor started: state=idle, in=/cmd_vel_nav, out=/cmd_vel, estop=/emergency_stop, service=/supervisor/cmd
+[scan_relay-6] [INFO] [1785300547.187775206] [scan_relay]: scan_relay started: /scan (RELIABLE) -> /scan_relay (BEST_EFFORT)
+[rviz2-10] [INFO] [1785300547.237026554] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1785300547.237167585] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[odom_imu_relay-7] [INFO] [1785300547.245999304] [odom_imu_relay]: odom_imu_relay started: /odom /odom -> /odom_relay, /imu /imu/data -> /imu_relay (disabled paths skipped)
+[rviz2-10] [INFO] [1785300547.247777162] [rviz2]: Stereo is NOT SUPPORTED
+[scan_relay-6] [WARN] [1785300547.310464494] [scan_relay]: New subscription discovered on topic '/scan_relay', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[joint_state_publisher-3] [INFO] [1785300547.314226603] [joint_state_publisher]: Got description, configuring robot
+[micro_ros_agent-1] [35m[1785300565.349646][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x27FCA631, session_id: 0x81
+[micro_ros_agent-1] [35m[1785300565.349684][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x27FCA631, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785300565.426434][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x27FCA631, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.445456][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.485457][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.498536][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785300565.518832][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.545656][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.861881][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785300565.875843][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.907388][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.941247][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785300565.957208][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.984401][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300565.996305][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785300566.012204][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300566.065169][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x27FCA631, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300566.116270][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x27FCA631, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[async_slam_toolbox_node-5] [INFO] [1785300569.522089682] [slam_toolbox]: Configuring
+[async_slam_toolbox_node-5] [INFO] [1785300569.540472744] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[async_slam_toolbox_node-5] [INFO] [1785300572.664110169] [slam_toolbox]: Activating
+[async_slam_toolbox_node-5] Info: clipped range threshold to be within minimum and maximum range!
+[async_slam_toolbox_node-5] Registering sensor: [Custom Described Lidar : laser_frame]
+[rviz2-10] [INFO] [1785300577.056073732] [rviz2]: Message Filter dropping message: frame 'laser_frame' at time 1785300567.030 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[component_container-9] [INFO] [1785300579.068875835] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container-9] [INFO] [1785300579.068931424] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container-9] [INFO] [1785300579.069194753] [controller_server]: Configuring controller interface
+[component_container-9] [INFO] [1785300579.069217854] [local_costmap.local_costmap]: Configuring
+[component_container-9] [INFO] [1785300579.074182630] [local_costmap.local_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785300579.078814689] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785300579.080108352] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785300579.080127788] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785300579.080302758] [local_costmap.local_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785300579.080329097] [local_costmap.local_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785300579.080335043] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785300579.080489210] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785300579.099358143] [controller_server]: Controller frequency set to 10.0000Hz
+[component_container-9] [INFO] [1785300579.099396673] [controller_server]: getting progress checker plugins..
+[component_container-9] [INFO] [1785300579.099482998] [controller_server]: getting goal checker plugins..
+[component_container-9] [INFO] [1785300579.099502952] [controller_server]: getting controller plugins..
+[component_container-9] [INFO] [1785300579.099658145] [controller_server]: getting path handler plugins..
+[component_container-9] [INFO] [1785300579.100495750] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container-9] [INFO] [1785300579.100526878] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[component_container-9] [INFO] [1785300579.101061660] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container-9] [INFO] [1785300579.101082283] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container-9] [INFO] [1785300579.101787051] [controller_server]: Created path handler : PathHandler of type nav2_controller::FeasiblePathHandler
+[component_container-9] [INFO] [1785300579.101808223] [controller_server]: Controller Server has PathHandler  path handlers available.
+[component_container-9] [INFO] [1785300579.102829992] [controller_server]: Created controller : FollowPath of type nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [WARN] [1785300579.102904575] [controller_server]: Parameter 'FollowPath.desired_linear_vel' is deprecated. Use 'FollowPath.max_linear_vel' instead.
+[component_container-9] [INFO] [1785300579.107248919] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container-9] [INFO] [1785300579.117249206] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container-9] [INFO] [1785300579.117385227] [planner_server]: Configuring
+[component_container-9] [INFO] [1785300579.117416406] [global_costmap.global_costmap]: Configuring
+[component_container-9] [INFO] [1785300579.120511490] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785300579.120876337] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785300579.121306247] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785300579.121318277] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785300579.121415355] [global_costmap.global_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785300579.121424277] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785300579.121427408] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785300579.121492582] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785300579.132147535] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[component_container-9] [INFO] [1785300579.132171510] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785300579.132269747] [planner_server]: Planner Server has GridBased  planners available.
+[component_container-9] [INFO] [1785300579.143270990] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container-9] [INFO] [1785300579.143383907] [behavior_server]: Configuring
+[component_container-9] [INFO] [1785300579.144544563] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[component_container-9] [INFO] [1785300579.145508351] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[component_container-9] [INFO] [1785300579.146314585] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[component_container-9] [INFO] [1785300579.147090232] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[component_container-9] [INFO] [1785300579.149812771] [behavior_server]: Configuring spin
+[component_container-9] [INFO] [1785300579.155643482] [behavior_server]: Configuring backup
+[component_container-9] [INFO] [1785300579.161081039] [behavior_server]: Configuring drive_on_heading
+[component_container-9] [INFO] [1785300579.165993567] [behavior_server]: Configuring wait
+[component_container-9] [INFO] [1785300579.172016329] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container-9] [INFO] [1785300579.172118128] [bt_navigator]: Configuring
+[component_container-9] [INFO] [1785300579.173962638] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[component_container-9] [WARN] [1785300579.176075946] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785300579.184227687] [bt_navigator_navigate_to_pose_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_to_pose_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300579.238377468] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[component_container-9] [WARN] [1785300579.240412343] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785300579.249578295] [bt_navigator_navigate_through_poses_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_through_poses_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785300579.256272078] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785300579.256387229] [waypoint_follower]: Configuring
+[component_container-9] [INFO] [1785300579.273804330] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container-9] [INFO] [1785300579.274175650] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container-9] [INFO] [1785300579.274273796] [controller_server]: Activating
+[component_container-9] [INFO] [1785300579.274291890] [local_costmap.local_costmap]: Activating
+[component_container-9] [INFO] [1785300579.274297678] [local_costmap.local_costmap]: Checking transform
+[component_container-9] [INFO] [1785300579.274353637] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785300579.085640 but the earliest data is at time 1785300579.155205, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785300579.774565275] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Lookup would require extrapolation into the past.  Requested time 1785300579.085640 but the earliest data is at time 1785300579.155205, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] [INFO] [1785300580.274711056] [local_costmap.local_costmap]: start
+[component_container-9] [INFO] [1785300580.325103249] [controller_server]: Activating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785300580.326470424] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785300580.592455277] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[component_container-9] [INFO] [1785300580.592550066] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[component_container-9] [INFO] [1785300580.593117350] [planner_server]: Activating
+[component_container-9] [INFO] [1785300580.593210000] [global_costmap.global_costmap]: Activating
+[component_container-9] [INFO] [1785300580.593231662] [global_costmap.global_costmap]: Checking transform
+[component_container-9] [INFO] [1785300580.593466195] [global_costmap.global_costmap]: start
+[component_container-9] [INFO] [1785300580.643699260] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785300580.649043920] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785300580.902607973] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[component_container-9] [INFO] [1785300580.902722497] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785300580.903343059] [behavior_server]: Activating
+[component_container-9] [INFO] [1785300580.903405400] [behavior_server]: Activating spin
+[component_container-9] [INFO] [1785300580.903439188] [behavior_server]: Activating backup
+[component_container-9] [INFO] [1785300580.903460388] [behavior_server]: Activating drive_on_heading
+[component_container-9] [INFO] [1785300580.903480831] [behavior_server]: Activating wait
+[component_container-9] [INFO] [1785300580.903528318] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785300581.163813892] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[component_container-9] [INFO] [1785300581.163898118] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785300581.164323178] [bt_navigator]: Activating
+[component_container-9] [INFO] [1785300581.202236678] [bt_navigator]: Created BT from ID: NavigateToPoseWReplanningAndRecovery
+[component_container-9] [INFO] [1785300581.225873109] [bt_navigator]: Created BT from ID: NavigateThroughPosesWReplanningAndRecovery
+[component_container-9] [INFO] [1785300581.226529379] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[component_container-9] [WARN] [1785300581.275106733] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [INFO] [1785300581.479425487] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[component_container-9] [INFO] [1785300581.479469228] [lifecycle_manager_navigation]: [34m[1mActivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785300581.479657060] [waypoint_follower]: Activating
+[component_container-9] [INFO] [1785300581.479677245] [waypoint_follower]: Creating bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785300581.734327268] [lifecycle_manager_navigation]: Server waypoint_follower connected with bond.
+[component_container-9] [INFO] [1785300581.734467175] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[component_container-9] [INFO] [1785300581.734554259] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[component_container-9] [WARN] [1785300582.275292736] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [INFO] [1785300582.686371198] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 63 X 86 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300582.686582486] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[component_container-9] [INFO] [1785300582.686371189] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 63 X 86 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300582.686715784] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -3) | Resolution: 0
+[rviz2-10] [INFO] [1785300582.701188842] [rviz2]: Trying to create a map of size 63 x 86 using 1 swatches
+[rviz2-10] [ERROR] [1785300582.733888747] [rviz2]: rviz/glsl120/indexed_8bit_image.vert
+[rviz2-10] rviz/glsl120/indexed_8bit_image.frag
+[rviz2-10]  GLSL link result : 
+[rviz2-10] active samplers with a different type refer to the same texture image unit
+[rviz2-10] [INFO] [1785300602.701920116] [rviz2]: Trying to create a map of size 81 x 91 using 1 swatches
+[component_container-9] [INFO] [1785300602.793908838] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 81 X 91 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300602.794072793] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-3, -3) | Resolution: 0
+[component_container-9] [INFO] [1785300602.875131886] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 81 X 91 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300602.875187540] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-3, -3) | Resolution: 0
+[rviz2-10] [INFO] [1785300832.717757205] [rviz2]: Trying to create a map of size 86 x 91 using 1 swatches
+[component_container-9] [INFO] [1785300832.793826844] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 86 X 91 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300832.793927019] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-3, -3) | Resolution: 0
+[component_container-9] [INFO] [1785300832.875232319] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 86 X 91 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300832.875339528] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-3, -3) | Resolution: 0
+[component_container-9] [ERROR] [1785300921.498750995] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300911.455294, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300921.580002070] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300911.455294, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300921.802213272] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300911.721961, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300921.882726034] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300911.721961, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300922.105536380] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300911.988640, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300922.185276119] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300912.121945, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300922.507933445] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300912.388531, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300922.587940081] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300912.488532, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300922.813251410] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300912.588542, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300922.893551196] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300912.721869, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300923.118789512] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300912.955304, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300923.198661294] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300913.088521, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300923.518059892] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300913.488652, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300923.598929396] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300913.488652, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300923.823358499] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300913.755203, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300923.904530723] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300913.888539, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300924.128533674] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300914.021916, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300924.210208962] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300914.021916, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300924.527982623] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300914.355255, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300924.609317062] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300914.455329, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300924.833035019] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300914.821955, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300924.914872069] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300914.821955, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300925.138460012] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300914.955201, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300925.220297132] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300915.055292, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300925.538574220] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300915.421883, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300925.620778074] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300915.421883, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300925.844269162] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300915.721964, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300925.926304633] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300915.855240, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300926.149601955] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300916.088621, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300926.231359690] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300916.221953, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300926.549640234] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300916.321986, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300926.631217555] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300916.455228, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300926.854790608] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300916.688563, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300926.937226855] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300916.821892, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300927.159966286] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300917.121962, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300927.243050613] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300917.121962, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300927.560117807] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300917.488608, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300927.642289815] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300917.488608, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300927.865638440] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300917.688618, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300927.947330756] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300917.921949, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300928.171226615] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300918.022028, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300928.252726305] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300918.022028, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300928.571346785] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300918.421942, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300928.652944316] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300918.555346, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300928.877076137] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300918.688622, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300928.958436839] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300918.821980, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300929.182437845] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300919.055292, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300929.263892817] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300919.055292, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300929.583205782] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300919.488703, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300929.664790396] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300919.488703, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300929.888231105] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300919.755352, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300929.969970475] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300919.755352, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300930.193799602] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300920.055379, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300930.276496565] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300920.188644, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300930.593456023] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300920.422057, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300930.674716891] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300920.555359, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300930.898013506] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300920.821942, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300930.978570183] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300920.821942, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300931.200593945] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300921.022031, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300931.281280415] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300921.122039, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300931.600850760] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300921.488605, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300931.681927257] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300921.621893, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300931.906153559] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300921.855288, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300931.987436229] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300921.855288, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300932.210521944] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300922.055328, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300932.291378469] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300922.155346, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300932.611041992] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300922.555364, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300932.692376928] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300922.688644, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300932.916037651] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300922.688644, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300932.996733063] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300922.821982, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300933.219259324] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300923.055286, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300933.300332588] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300923.155338, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300933.618708351] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300923.388619, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300933.700045958] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300923.621988, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300933.921404551] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300923.755323, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300934.003685939] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300923.888621, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300934.225608787] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300924.121956, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300934.308333984] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300924.121956, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300934.626639829] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300924.455321, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300934.708952063] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300924.588641, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300934.931838028] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300924.721941, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300935.014804854] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300924.921955, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300935.237862309] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300925.155401, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300935.319799457] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300925.155401, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300935.637369432] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300925.521967, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300935.720204276] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300925.622025, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300935.943108358] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300925.888619, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300936.025338775] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300925.888619, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300936.246641544] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300926.088624, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300936.349823131] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300926.188658, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300936.646459608] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300926.422016, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300936.749378559] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300926.555300, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300936.949126862] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300926.788646, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300937.052158571] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300926.888669, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300937.252685643] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300927.021964, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300937.356334301] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300927.288645, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300937.653900675] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300927.555408, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300937.756008666] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300927.688605, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300937.958863782] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300927.788675, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300938.059798090] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300927.921959, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300938.261569781] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300928.155295, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300938.362446721] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300928.288613, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300938.654649][m info     | [34mRoot.cpp          [m | [37mdelete_client           [m | [32mdelete[m                 | client_key: 0x27FCA631
+[micro_ros_agent-1] [35m[1785300938.654671][m info     | [34mSessionManager.hpp[m | [37mdestroy_session         [m | [32msession closed[m         | client_key: 0x27FCA631, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785300938.654677][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x296A6185, session_id: 0x81
+[micro_ros_agent-1] [35m[1785300938.654679][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x296A6185, address: 192.168.1.178:47138
+[component_container-9] [ERROR] [1785300938.661627816] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300928.488681, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300938.705142][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x296A6185, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300938.748516][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x000(2), participant_id: 0x000(1)
+[component_container-9] [ERROR] [1785300938.762521259] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300928.622017, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300938.776032][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x000(3), participant_id: 0x000(1)
+[component_container-9] [ERROR] [1785300938.965541133] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300928.888682, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300939.041063][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[component_container-9] [ERROR] [1785300939.066461948] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300929.021956, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300939.142351][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300939.166510][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x001(3), participant_id: 0x000(1)
+[component_container-9] [ERROR] [1785300939.268482801] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300929.155313, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300939.369360964] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300929.155313, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300939.488471][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785300939.499606][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300939.572388][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300939.661334][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[component_container-9] [ERROR] [1785300939.668482074] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300929.488636, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300939.681385][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300939.722506][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x296A6185, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300939.746955][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x296A6185, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[component_container-9] [ERROR] [1785300939.769376635] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300929.721995, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[micro_ros_agent-1] [35m[1785300939.818227][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x296A6185, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300939.880832][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x296A6185, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785300939.908284][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x296A6185, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[component_container-9] [ERROR] [1785300939.971932430] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300929.855353, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300940.072760295] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300929.855353, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300940.275665158] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300910.986524 but the earliest data is at time 1785300930.121970, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785300940.776009913] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785300940.688637 but the earliest data is at time 1785300940.758782, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[rviz2-10] [INFO] [1785300942.701680622] [rviz2]: Trying to create a map of size 103 x 99 using 1 swatches
+[component_container-9] [INFO] [1785300942.772144793] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 103 X 99 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300942.772257968] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-3, -3) | Resolution: 0
+[component_container-9] [INFO] [1785300942.872905227] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 103 X 99 at 0.050000 m/pix
+[component_container-9] [WARN] [1785300942.872953062] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-3, -3) | Resolution: 0
+[component_container-9] [INFO] [1785301194.649538289] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785301194.649640653] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[async_slam_toolbox_node-5] [INFO] [1785301194.649544527] [rclcpp]: signal_handler(signum=2)
+[robot_state_publisher-2] [INFO] [1785301194.649541611] [rclcpp]: signal_handler(signum=2)
+[ekf_node-4] [INFO] [1785301194.649618918] [rclcpp]: signal_handler(signum=2)
+[rviz2-10] [INFO] [1785301194.649633702] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785301194.649736638] [controller_server]: Deactivating
+[component_container-9] [INFO] [1785301194.649782968] [controller_server]: Deactivating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785301194.649821226] [local_costmap.local_costmap]: Deactivating
+[async_slam_toolbox_node-5] Unregistering sensor: Custom Described Lidar : laser_frame
+[async_slam_toolbox_node-5] [WARN] [1785301194.662676458] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(3) in destructor
+[component_container-9] [INFO] [1785301194.673162354] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[INFO] [rviz2-10]: process has finished cleanly [pid 46112]
+[component_container-9] [INFO] [1785301194.734718650] [lifecycle_manager_navigation]: [34m[1mHave not received a heartbeat from controller_server.[0m[0m
+[component_container-9] [ERROR] [1785301194.734766456] [lifecycle_manager_navigation]: CRITICAL FAILURE: SERVER controller_server IS DOWN after not receiving a heartbeat for 4000 ms. Shutting down related nodes.
+[component_container-9] [INFO] [1785301194.734817502] [lifecycle_manager_navigation]: [34m[1mTerminating bond timer...[0m[0m
+[component_container-9] [INFO] [1785301194.734822135] [lifecycle_manager_navigation]: [34m[1mResetting managed nodes...[0m[0m
+[component_container-9] [INFO] [1785301194.734825310] [lifecycle_manager_navigation]: [34m[1mDeactivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785301194.735096118] [waypoint_follower]: Deactivating
+[component_container-9] [INFO] [1785301194.735179563] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785301194.775304307] [controller_server]: Cleaning up
+[component_container-9] [INFO] [1785301194.775331989] [controller_server]: Cleaning up controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[INFO] [ekf_node-4]: process has finished cleanly [pid 46106]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 46104]
+[component_container-9] [INFO] [1785301194.776792393] [local_costmap.local_costmap]: Cleaning up
+[INFO] [async_slam_toolbox_node-5]: process has finished cleanly [pid 46107]
+[component_container-9] [INFO] [1785301194.787457775] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785301194.787490886] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[component_container-9] [INFO] [1785301194.787519495] [planner_server]: Deactivating
+[component_container-9] [INFO] [1785301194.787598741] [global_costmap.global_costmap]: Deactivating
+[INFO] [scan_relay-6]: process has finished cleanly [pid 46108]
+[component_container-9] [INFO] [1785301194.847205842] [lifecycle_manager_navigation]: [34m[1mDeactivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785301194.848345129] [bt_navigator]: Deactivating
+[component_container-9] [INFO] [1785301194.848407670] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[INFO] [supervisor-8]: process has finished cleanly [pid 46110]
+[INFO] [odom_imu_relay-7]: process has finished cleanly [pid 46109]
+[component_container-9] [INFO] [1785301194.959949066] [lifecycle_manager_navigation]: [34m[1mDeactivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785301194.961126689] [behavior_server]: Deactivating
+[component_container-9] [INFO] [1785301194.961201027] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785301194.972326957] [planner_server]: Deactivating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785301194.973130477] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785301195.072608275] [lifecycle_manager_navigation]: [34m[1mDeactivating planner_server[0m[0m
+[component_container-9] [WARN] [1785301195.073952297] [rcl_lifecycle]: No transition matching 4 found for current state deactivating
+[component_container-9] [WARN] [1785301195.073965859] [rcl_lifecycle]: No transition matching 4 found for current state deactivating
+[component_container-9] [ERROR] [1785301195.073981371] [planner_server]: Unable to start transition 4 (deactivate) from current state deactivating: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785301195.074245079] [lifecycle_manager_navigation]: Failed to change state for node: planner_server
+[component_container-9] [INFO] [1785301195.074266371] [lifecycle_manager_navigation]: [34m[1mDeactivating controller_server[0m[0m
+[component_container-9] [INFO] [1785301195.074257951] [planner_server]: Cleaning up
+[component_container-9] [WARN] [1785301195.074327986] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [WARN] [1785301195.074333172] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [ERROR] [1785301195.074337850] [controller_server]: Unable to start transition 4 (deactivate) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785301195.074453562] [lifecycle_manager_navigation]: Failed to change state for node: controller_server
+[component_container-9] [INFO] [1785301195.074462949] [lifecycle_manager_navigation]: [34m[1mCleaning up waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785301195.074532583] [waypoint_follower]: Cleaning up
+[component_container-9] [INFO] [1785301195.079189545] [global_costmap.global_costmap]: Cleaning up
+[component_container-9] [INFO] [1785301195.081187431] [planner_server]: Cleaning up plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785301195.081225256] [planner_server]: Destroying plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785301195.081810438] [lifecycle_manager_navigation]: [34m[1mCleaning up bt_navigator[0m[0m
+[component_container-9] [INFO] [1785301195.081879325] [bt_navigator]: Cleaning up
+[component_container-9] [INFO] [1785301195.090732725] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785301195.090765778] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[component_container-9] [INFO] [1785301195.090801805] [behavior_server]: Cleaning up
+[component_container-9] [INFO] [1785301195.099481209] [bt_navigator_navigate_to_pose_rclcpp_node]: Destroying
+[component_container-9] [INFO] [1785301195.100990588] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785301195.101012138] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[component_container-9] [INFO] [1785301195.101025946] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785301195.101033399] [waypoint_follower]: Running Nav2 LifecycleNode rcl preshutdown (waypoint_follower)
+[component_container-9] [INFO] [1785301195.101043499] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785301195.101050252] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[joint_state_publisher-3] Traceback (most recent call last):
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher", line 33, in <module>
+[joint_state_publisher-3]     sys.exit(load_entry_point('joint-state-publisher==2.4.2', 'console_scripts', 'joint_state_publisher')())
+[joint_state_publisher-3]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/joint_state_publisher/joint_state_publisher.py", line 568, in main
+[joint_state_publisher-3]     rclpy.spin(jsp)
+[joint_state_publisher-3]     ~~~~~~~~~~^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[joint_state_publisher-3]     executor.spin_once()
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[joint_state_publisher-3]     self._spin_once_impl(timeout_sec)
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[joint_state_publisher-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[joint_state_publisher-3]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[joint_state_publisher-3]         timeout_sec, None, wait_condition)
+[joint_state_publisher-3]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[joint_state_publisher-3]     return next(self._cb_iter)
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 876, in _wait_for_ready_callbacks
+[joint_state_publisher-3]     raise ExternalShutdownException()
+[joint_state_publisher-3] rclpy.executors.ExternalShutdownException
+[ERROR] [joint_state_publisher-3]: process has died [pid 46105, exit code 1, cmd '/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher --params-file /tmp/launch_params_bswjqdee'].
+[ERROR] [micro_ros_agent-1]: process has died [pid 46103, exit code -9, cmd '/home/nhatkhoa1124/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent udp4 --port 8888'].
+[ERROR] [component_container-9]: process has died [pid 46111, exit code -9, cmd '/opt/ros/lyrical/lib/rclcpp_components/component_container --ros-args -r __node:=nav2_container -r __ns:=/'].

@@ -1,0 +1,723 @@
+[INFO] [launch]: All log files can be found below /home/nhatkhoa1124/.ros/log/2026-07-29-10-53-12-032833-nhatkhoa1124-GF63-Thin-11UD-18657
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [18723]
+[INFO] [robot_state_publisher-2]: process started with pid [18724]
+[INFO] [joint_state_publisher-3]: process started with pid [18725]
+[INFO] [ekf_node-4]: process started with pid [18726]
+[INFO] [async_slam_toolbox_node-5]: process started with pid [18727]
+[INFO] [scan_relay-6]: process started with pid [18728]
+[INFO] [odom_imu_relay-7]: process started with pid [18729]
+[INFO] [supervisor-8]: process started with pid [18730]
+[INFO] [component_container-9]: process started with pid [18731]
+[INFO] [rviz2-10]: process started with pid [18732]
+[micro_ros_agent-1] [35m[1785297192.422653][m info     | [34mUDPv4AgentLinux.cpp[m | [37minit                    [m | [32mrunning...[m             | port: 8888
+[micro_ros_agent-1] [35m[1785297192.422798][m info     | [34mRoot.cpp          [m | [37mset_verbose_level       [m | [32mlogger setup[m           | verbose_level: 4
+[robot_state_publisher-2] [WARN] [1785297192.458161328] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1785297192.458240197] [robot_state_publisher]: Robot initialized
+[component_container-9] [INFO] [1785297192.680434676] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_controller/lib/libcontroller_server_core.so
+[component_container-9] [INFO] [1785297192.708034797] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785297192.708097698] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container-9] [INFO] [1785297192.733603600] [controller_server]: 
+[component_container-9] 	controller_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297192.756589523] [controller_server]: Creating controller server
+[component_container-9] [INFO] [1785297192.778354214] [local_costmap.local_costmap]: 
+[component_container-9] 	local_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297192.779308643] [local_costmap.local_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785297192.787297824] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_planner/lib/libplanner_server_core.so
+[component_container-9] [INFO] [1785297192.788600915] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785297192.788620040] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container-9] [INFO] [1785297192.800740902] [planner_server]: 
+[component_container-9] 	planner_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297192.802527046] [planner_server]: Creating
+[component_container-9] [INFO] [1785297192.807977861] [global_costmap.global_costmap]: 
+[component_container-9] 	global_costmap lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297192.808549575] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785297192.810082002] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_behaviors/lib/libbehavior_server_core.so
+[component_container-9] [INFO] [1785297192.812001919] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785297192.812018934] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container-9] [INFO] [1785297192.817495546] [behavior_server]: 
+[component_container-9] 	behavior_server lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container-9] [INFO] [1785297192.820670812] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_bt_navigator/lib/libbt_navigator_core.so
+[component_container-9] [INFO] [1785297192.823771042] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785297192.823788888] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container-9] [INFO] [1785297192.829090143] [bt_navigator]: 
+[component_container-9] 	bt_navigator lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297192.830690787] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container-9] [INFO] [1785297192.832020466] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_waypoint_follower/lib/libwaypoint_follower_core.so
+[component_container-9] [INFO] [1785297192.833187184] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785297192.833201213] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container-9] [INFO] [1785297192.838498408] [waypoint_follower]: 
+[component_container-9] 	waypoint_follower lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297192.840140442] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container-9] [INFO] [1785297192.841495615] [nav2_container]: Load Library: /home/nhatkhoa1124/ros2_ws/install/nav2_lifecycle_manager/lib/libnav2_lifecycle_manager_core.so
+[component_container-9] [INFO] [1785297192.842621260] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785297192.842635274] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container-9] [INFO] [1785297192.847176083] [lifecycle_manager_navigation]: Creating
+[component_container-9] [INFO] [1785297192.847491797] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[component_container-9] [INFO] [1785297192.847967703] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container-9] [INFO] [1785297192.852985102] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[scan_relay-6] [INFO] [1785297192.931006471] [scan_relay]: scan_relay started: /scan (RELIABLE) -> /scan_relay (BEST_EFFORT)
+[joint_state_publisher-3] [INFO] [1785297192.935659907] [joint_state_publisher]: Waiting for robot_description to be published on the robot_description topic...
+[supervisor-8] [INFO] [1785297192.946364193] [supervisor]: Supervisor started: state=idle, in=/cmd_vel_nav, out=/cmd_vel, estop=/emergency_stop, service=/supervisor/cmd
+[odom_imu_relay-7] [INFO] [1785297193.321896596] [odom_imu_relay]: odom_imu_relay started: /odom /odom -> /odom_relay, /imu /imu/data -> /imu_relay (disabled paths skipped)
+[joint_state_publisher-3] [INFO] [1785297193.398887614] [joint_state_publisher]: Got description, configuring robot
+[rviz2-10] [INFO] [1785297193.624332057] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1785297193.624473609] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[rviz2-10] [INFO] [1785297193.636512528] [rviz2]: Stereo is NOT SUPPORTED
+[scan_relay-6] [WARN] [1785297193.896076288] [scan_relay]: New subscription discovered on topic '/scan_relay', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[micro_ros_agent-1] [35m[1785297206.495325][m info     | [34mRoot.cpp          [m | [37mcreate_client           [m | [32mcreate[m                 | client_key: 0x27FCA631, session_id: 0x81
+[micro_ros_agent-1] [35m[1785297206.495470][m info     | [34mSessionManager.hpp[m | [37mestablish_session       [m | [32msession established[m    | client_key: 0x27FCA631, address: 192.168.1.178:47138
+[micro_ros_agent-1] [35m[1785297206.523496][m info     | [34mProxyClient.cpp   [m | [37mcreate_participant      [m | [32mparticipant created[m    | client_key: 0x27FCA631, participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.531976][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x000(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.541324][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x000(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.848601][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x000(5), publisher_id: 0x000(3)
+[micro_ros_agent-1] [35m[1785297206.860927][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x001(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.865475][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x001(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.870724][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x001(5), publisher_id: 0x001(3)
+[micro_ros_agent-1] [35m[1785297206.876055][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x002(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.882902][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x002(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.888913][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x002(5), publisher_id: 0x002(3)
+[micro_ros_agent-1] [35m[1785297206.893568][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x003(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.897914][m info     | [34mProxyClient.cpp   [m | [37mcreate_publisher        [m | [32mpublisher created[m      | client_key: 0x27FCA631, publisher_id: 0x003(3), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.902493][m info     | [34mProxyClient.cpp   [m | [37mcreate_datawriter       [m | [32mdatawriter created[m     | client_key: 0x27FCA631, datawriter_id: 0x003(5), publisher_id: 0x003(3)
+[micro_ros_agent-1] [35m[1785297206.918751][m info     | [34mProxyClient.cpp   [m | [37mcreate_topic            [m | [32mtopic created[m          | client_key: 0x27FCA631, topic_id: 0x004(2), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.923597][m info     | [34mProxyClient.cpp   [m | [37mcreate_subscriber       [m | [32msubscriber created[m     | client_key: 0x27FCA631, subscriber_id: 0x000(4), participant_id: 0x000(1)
+[micro_ros_agent-1] [35m[1785297206.930918][m info     | [34mProxyClient.cpp   [m | [37mcreate_datareader       [m | [32mdatareader created[m     | client_key: 0x27FCA631, datareader_id: 0x000(6), subscriber_id: 0x000(4)
+[async_slam_toolbox_node-5] [INFO] [1785297208.885115724] [slam_toolbox]: Configuring
+[async_slam_toolbox_node-5] [INFO] [1785297208.901062451] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[async_slam_toolbox_node-5] [INFO] [1785297210.776997099] [slam_toolbox]: Activating
+[async_slam_toolbox_node-5] Info: clipped range threshold to be within minimum and maximum range!
+[async_slam_toolbox_node-5] Registering sensor: [Custom Described Lidar : laser_frame]
+[component_container-9] [INFO] [1785297218.149413478] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container-9] [INFO] [1785297218.149538113] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container-9] [INFO] [1785297218.150332407] [controller_server]: Configuring controller interface
+[component_container-9] [INFO] [1785297218.150462403] [local_costmap.local_costmap]: Configuring
+[component_container-9] [INFO] [1785297218.157160932] [local_costmap.local_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785297218.160677439] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785297218.161473726] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785297218.161496918] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785297218.161618599] [local_costmap.local_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785297218.161633987] [local_costmap.local_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785297218.161636655] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785297218.161736726] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785297218.179578099] [controller_server]: Controller frequency set to 10.0000Hz
+[component_container-9] [INFO] [1785297218.179603888] [controller_server]: getting progress checker plugins..
+[component_container-9] [INFO] [1785297218.179637888] [controller_server]: getting goal checker plugins..
+[component_container-9] [INFO] [1785297218.179656833] [controller_server]: getting controller plugins..
+[component_container-9] [INFO] [1785297218.179678661] [controller_server]: getting path handler plugins..
+[component_container-9] [INFO] [1785297218.180225599] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container-9] [INFO] [1785297218.180248445] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[component_container-9] [INFO] [1785297218.180733065] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container-9] [INFO] [1785297218.180755487] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container-9] [INFO] [1785297218.181503585] [controller_server]: Created path handler : PathHandler of type nav2_controller::FeasiblePathHandler
+[component_container-9] [INFO] [1785297218.181527253] [controller_server]: Controller Server has PathHandler  path handlers available.
+[component_container-9] [INFO] [1785297218.182456532] [controller_server]: Created controller : FollowPath of type nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [WARN] [1785297218.182585300] [controller_server]: Parameter 'FollowPath.desired_linear_vel' is deprecated. Use 'FollowPath.max_linear_vel' instead.
+[component_container-9] [INFO] [1785297218.186742606] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container-9] [INFO] [1785297218.196684412] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container-9] [INFO] [1785297218.196795998] [planner_server]: Configuring
+[component_container-9] [INFO] [1785297218.196821775] [global_costmap.global_costmap]: Configuring
+[component_container-9] [INFO] [1785297218.199601942] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container-9] [INFO] [1785297218.199924246] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container-9] [INFO] [1785297218.200323656] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container-9] [INFO] [1785297218.200335974] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container-9] [INFO] [1785297218.200424204] [global_costmap.global_costmap]: Subscribed to Topics: 
+[component_container-9] [INFO] [1785297218.200436607] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container-9] [INFO] [1785297218.200439436] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container-9] [INFO] [1785297218.200504534] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container-9] [INFO] [1785297218.210810842] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[component_container-9] [INFO] [1785297218.210839795] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785297218.210923229] [planner_server]: Planner Server has GridBased  planners available.
+[component_container-9] [INFO] [1785297218.220763686] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container-9] [INFO] [1785297218.220862601] [behavior_server]: Configuring
+[component_container-9] [INFO] [1785297218.222119348] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[component_container-9] [INFO] [1785297218.223076386] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[component_container-9] [INFO] [1785297218.223894441] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[component_container-9] [INFO] [1785297218.224667261] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[component_container-9] [INFO] [1785297218.227457795] [behavior_server]: Configuring spin
+[component_container-9] [INFO] [1785297218.232975521] [behavior_server]: Configuring backup
+[component_container-9] [INFO] [1785297218.237893177] [behavior_server]: Configuring drive_on_heading
+[component_container-9] [INFO] [1785297218.243556759] [behavior_server]: Configuring wait
+[component_container-9] [INFO] [1785297218.248254645] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container-9] [INFO] [1785297218.248420329] [bt_navigator]: Configuring
+[component_container-9] [INFO] [1785297218.250120559] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[component_container-9] [WARN] [1785297218.252153522] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785297218.259777393] [bt_navigator_navigate_to_pose_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_to_pose_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297218.313463894] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[component_container-9] [WARN] [1785297218.315623270] [bt_navigator]: error_code_name_prefixes parameters were not set. Using default values of: assisted_teleop backup compute_path dock_robot drive_on_heading follow_object follow_path nav_thru_poses nav_to_pose spin undock_robot wait
+[component_container-9] Make sure these match your BT and there are not other sources of error codes youreported to your application
+[component_container-9] [INFO] [1785297218.323726506] [bt_navigator_navigate_through_poses_rclcpp_node]: 
+[component_container-9] 	bt_navigator_navigate_through_poses_rclcpp_node lifecycle node launched. 
+[component_container-9] 	Waiting on external lifecycle transitions to activate
+[component_container-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container-9] [INFO] [1785297218.330391875] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785297218.330538320] [waypoint_follower]: Configuring
+[component_container-9] [INFO] [1785297218.350517197] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container-9] [INFO] [1785297218.350891646] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container-9] [INFO] [1785297218.350987589] [controller_server]: Activating
+[component_container-9] [INFO] [1785297218.351008049] [local_costmap.local_costmap]: Activating
+[component_container-9] [INFO] [1785297218.351014116] [local_costmap.local_costmap]: Checking transform
+[component_container-9] [INFO] [1785297218.351121526] [local_costmap.local_costmap]: start
+[component_container-9] [INFO] [1785297218.401254489] [controller_server]: Activating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785297218.401635167] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785297218.656289067] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[component_container-9] [INFO] [1785297218.656437287] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[component_container-9] [INFO] [1785297218.657043829] [planner_server]: Activating
+[component_container-9] [INFO] [1785297218.657135820] [global_costmap.global_costmap]: Activating
+[component_container-9] [INFO] [1785297218.657155153] [global_costmap.global_costmap]: Checking transform
+[component_container-9] [INFO] [1785297218.657414607] [global_costmap.global_costmap]: start
+[component_container-9] [INFO] [1785297218.707827877] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785297218.714069289] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785297218.975566307] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[component_container-9] [INFO] [1785297218.975677407] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785297218.976244166] [behavior_server]: Activating
+[component_container-9] [INFO] [1785297218.976298304] [behavior_server]: Activating spin
+[component_container-9] [INFO] [1785297218.976338829] [behavior_server]: Activating backup
+[component_container-9] [INFO] [1785297218.976368055] [behavior_server]: Activating drive_on_heading
+[component_container-9] [INFO] [1785297218.976419948] [behavior_server]: Activating wait
+[component_container-9] [INFO] [1785297218.976487282] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785297219.237369243] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[component_container-9] [INFO] [1785297219.237482512] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785297219.238091827] [bt_navigator]: Activating
+[component_container-9] [INFO] [1785297219.277490087] [bt_navigator]: Created BT from ID: NavigateToPoseWReplanningAndRecovery
+[component_container-9] [INFO] [1785297219.300801608] [bt_navigator]: Created BT from ID: NavigateThroughPosesWReplanningAndRecovery
+[component_container-9] [INFO] [1785297219.301402256] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[component_container-9] [WARN] [1785297219.351337330] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [INFO] [1785297219.553845047] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[component_container-9] [INFO] [1785297219.553880491] [lifecycle_manager_navigation]: [34m[1mActivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785297219.554144081] [waypoint_follower]: Activating
+[component_container-9] [INFO] [1785297219.554166636] [waypoint_follower]: Creating bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785297219.808167247] [lifecycle_manager_navigation]: Server waypoint_follower connected with bond.
+[component_container-9] [INFO] [1785297219.808272739] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[component_container-9] [INFO] [1785297219.808355530] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[component_container-9] [WARN] [1785297220.351375317] [local_costmap.local_costmap]: Can't update static costmap layer, no map received
+[component_container-9] [INFO] [1785297220.787289860] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 70 X 78 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297220.787423885] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297220.787294009] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 70 X 78 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297220.787646278] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785297220.802465684] [rviz2]: Trying to create a map of size 70 x 78 using 1 swatches
+[rviz2-10] [ERROR] [1785297220.833616743] [rviz2]: rviz/glsl120/indexed_8bit_image.vert
+[rviz2-10] rviz/glsl120/indexed_8bit_image.frag
+[rviz2-10]  GLSL link result : 
+[rviz2-10] active samplers with a different type refer to the same texture image unit
+[rviz2-10] [INFO] [1785297230.817857015] [rviz2]: Trying to create a map of size 75 x 87 using 1 swatches
+[component_container-9] [INFO] [1785297230.857804931] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 75 X 87 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297230.857940694] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297230.951343821] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 75 X 87 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297230.951489469] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785297240.802458325] [rviz2]: Trying to create a map of size 79 x 96 using 1 swatches
+[component_container-9] [INFO] [1785297240.857826508] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 79 X 96 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297240.857940690] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297240.951326889] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 79 X 96 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297240.951440762] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785297250.818251107] [rviz2]: Trying to create a map of size 111 x 98 using 1 swatches
+[component_container-9] [INFO] [1785297250.857792614] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 111 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297250.857882821] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297250.951331023] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 111 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297250.951452980] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297260.857948642] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 111 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297260.858069244] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297260.951361291] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 111 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297260.951489733] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297270.857790952] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 111 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297270.857882130] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297270.951290384] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 111 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297270.951319818] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[rviz2-10] [INFO] [1785297280.802500104] [rviz2]: Trying to create a map of size 112 x 98 using 1 swatches
+[component_container-9] [INFO] [1785297280.857832663] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 112 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297280.857953164] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [INFO] [1785297280.951371749] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 112 X 98 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297280.951503417] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-2, -2) | Resolution: 0
+[component_container-9] [WARN] [1785297288.351377833] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297290.818038833] [rviz2]: Trying to create a map of size 180 x 115 using 1 swatches
+[component_container-9] [INFO] [1785297290.857800906] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 180 X 115 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297290.857931850] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-6, -3) | Resolution: 0
+[component_container-9] [INFO] [1785297290.951337166] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 180 X 115 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297290.951451868] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-6, -3) | Resolution: 0
+[component_container-9] [WARN] [1785297294.657726588] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297299.657795700] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297300.802439624] [rviz2]: Trying to create a map of size 262 x 138 using 1 swatches
+[component_container-9] [INFO] [1785297300.857834928] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 262 X 138 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297300.857949702] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-10, -4) | Resolution: 0
+[component_container-9] [INFO] [1785297300.951333637] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 262 X 138 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297300.951458633] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-10, -4) | Resolution: 0
+[component_container-9] [WARN] [1785297304.657854382] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297309.751374039] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297310.817080590] [rviz2]: Trying to create a map of size 368 x 142 using 1 swatches
+[component_container-9] [INFO] [1785297310.857812424] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 368 X 142 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297310.857903382] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-15, -5) | Resolution: 0
+[component_container-9] [INFO] [1785297310.951341035] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 368 X 142 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297310.951456829] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-15, -5) | Resolution: 0
+[component_container-9] [WARN] [1785297314.857816537] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297319.857828379] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297320.801273341] [rviz2]: Trying to create a map of size 415 x 201 using 1 swatches
+[component_container-9] [INFO] [1785297320.857836876] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 415 X 201 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297320.857954802] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -5) | Resolution: 0
+[component_container-9] [INFO] [1785297320.951376358] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 415 X 201 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297320.951508831] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -5) | Resolution: 0
+[component_container-9] [WARN] [1785297324.857915437] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297329.951335481] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297330.814872064] [rviz2]: Trying to create a map of size 415 x 277 using 1 swatches
+[component_container-9] [INFO] [1785297330.857734375] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 415 X 277 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297330.857765007] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -5) | Resolution: 0
+[component_container-9] [INFO] [1785297330.951291590] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 415 X 277 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297330.951321921] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -5) | Resolution: 0
+[rviz2-10] [INFO] [1785297340.833944634] [rviz2]: Trying to create a map of size 415 x 302 using 1 swatches
+[component_container-9] [INFO] [1785297340.857885620] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 415 X 302 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297340.858008607] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -5) | Resolution: 0
+[component_container-9] [INFO] [1785297340.951342957] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 415 X 302 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297340.951472824] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -5) | Resolution: 0
+[component_container-9] [WARN] [1785297363.351432315] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297368.457819035] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297370.814560993] [rviz2]: Trying to create a map of size 415 x 352 using 1 swatches
+[component_container-9] [INFO] [1785297370.857747864] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 415 X 352 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297370.857776263] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -7) | Resolution: 0
+[component_container-9] [INFO] [1785297370.951327844] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 415 X 352 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297370.951358694] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -7) | Resolution: 0
+[rviz2-10] [INFO] [1785297380.833380754] [rviz2]: Trying to create a map of size 415 x 356 using 1 swatches
+[component_container-9] [INFO] [1785297380.857815424] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 415 X 356 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297380.857989821] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -7) | Resolution: 0
+[component_container-9] [INFO] [1785297380.951371696] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 415 X 356 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297380.951495046] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-17, -7) | Resolution: 0
+[component_container-9] [WARN] [1785297389.257861846] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297390.815562918] [rviz2]: Trying to create a map of size 438 x 356 using 1 swatches
+[component_container-9] [INFO] [1785297390.857751560] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 438 X 356 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297390.857795244] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-19, -7) | Resolution: 0
+[component_container-9] [INFO] [1785297390.951307177] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 438 X 356 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297390.951345840] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-19, -7) | Resolution: 0
+[rviz2-10] [INFO] [1785297400.833536379] [rviz2]: Trying to create a map of size 461 x 356 using 1 swatches
+[component_container-9] [INFO] [1785297400.857817390] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 356 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297400.857976709] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -7) | Resolution: 0
+[component_container-9] [INFO] [1785297400.951362547] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 356 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297400.951542320] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -7) | Resolution: 0
+[component_container-9] [WARN] [1785297407.351280040] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297410.814579519] [rviz2]: Trying to create a map of size 461 x 411 using 1 swatches
+[component_container-9] [INFO] [1785297410.857782102] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 411 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297410.857811175] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -7) | Resolution: 0
+[component_container-9] [INFO] [1785297410.951293369] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 411 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297410.951328317] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -7) | Resolution: 0
+[rviz2-10] [INFO] [1785297420.800588536] [rviz2]: Trying to create a map of size 461 x 433 using 1 swatches
+[component_container-9] [INFO] [1785297420.857734179] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 433 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297420.857761748] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -7) | Resolution: 0
+[component_container-9] [INFO] [1785297420.951286886] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 433 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297420.951317110] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -7) | Resolution: 0
+[component_container-9] [WARN] [1785297466.057729765] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297470.814185073] [rviz2]: Trying to create a map of size 461 x 465 using 1 swatches
+[component_container-9] [INFO] [1785297470.857727800] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 465 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297470.857759983] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -9) | Resolution: 0
+[component_container-9] [INFO] [1785297470.951288836] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 465 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297470.951322610] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -9) | Resolution: 0
+[component_container-9] [WARN] [1785297471.351411921] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297476.457859486] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297480.798519633] [rviz2]: Trying to create a map of size 461 x 580 using 1 swatches
+[component_container-9] [INFO] [1785297480.857764792] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 580 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297480.857793299] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -15) | Resolution: 0
+[component_container-9] [INFO] [1785297480.951256779] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 580 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297480.951288283] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -15) | Resolution: 0
+[component_container-9] [WARN] [1785297481.551289298] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297486.657758448] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297490.815662082] [rviz2]: Trying to create a map of size 461 x 652 using 1 swatches
+[component_container-9] [INFO] [1785297490.857828714] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 652 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297490.857948659] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -18) | Resolution: 0
+[component_container-9] [INFO] [1785297490.951302094] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 652 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297490.951338107] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -18) | Resolution: 0
+[component_container-9] [WARN] [1785297493.351352520] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297498.457756131] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297500.832154215] [rviz2]: Trying to create a map of size 461 x 702 using 1 swatches
+[component_container-9] [INFO] [1785297500.857738672] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 702 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297500.857766882] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -21) | Resolution: 0
+[component_container-9] [INFO] [1785297500.951292696] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 702 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297500.951325105] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -21) | Resolution: 0
+[component_container-9] [WARN] [1785297503.551291233] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[component_container-9] [WARN] [1785297508.551331806] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297510.815179725] [rviz2]: Trying to create a map of size 461 x 765 using 1 swatches
+[component_container-9] [INFO] [1785297510.857734817] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 765 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297510.857779080] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -24) | Resolution: 0
+[component_container-9] [INFO] [1785297510.951258330] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 765 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297510.951288495] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -24) | Resolution: 0
+[rviz2-10] [INFO] [1785297520.799138282] [rviz2]: Trying to create a map of size 461 x 780 using 1 swatches
+[component_container-9] [INFO] [1785297520.857737482] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 780 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297520.857765391] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -25) | Resolution: 0
+[component_container-9] [INFO] [1785297520.952446287] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 780 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297520.952511016] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -25) | Resolution: 0
+[component_container-9] [WARN] [1785297530.351326190] [nav2_costmap_2d]: Robot is out of bounds of the costmap
+[rviz2-10] [INFO] [1785297530.815611997] [rviz2]: Trying to create a map of size 461 x 800 using 1 swatches
+[component_container-9] [INFO] [1785297530.857719828] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 800 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297530.857749725] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[component_container-9] [INFO] [1785297530.951297311] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 800 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297530.951331744] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[component_container-9] [INFO] [1785297540.857715830] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 800 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297540.857742900] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[component_container-9] [INFO] [1785297540.951294433] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 800 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297540.951350829] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[rviz2-10] [INFO] [1785297550.814755366] [rviz2]: Trying to create a map of size 461 x 802 using 1 swatches
+[component_container-9] [INFO] [1785297550.857842221] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 802 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297550.858007070] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[component_container-9] [INFO] [1785297550.951340857] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 802 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297550.951465571] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[rviz2-10] [INFO] [1785297560.831348419] [rviz2]: Trying to create a map of size 461 x 805 using 1 swatches
+[component_container-9] [INFO] [1785297560.857709238] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 805 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297560.857735364] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[component_container-9] [INFO] [1785297560.951283305] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 805 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297560.951314847] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[rviz2-10] [INFO] [1785297570.814943398] [rviz2]: Trying to create a map of size 461 x 808 using 1 swatches
+[component_container-9] [INFO] [1785297570.857804361] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 808 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297570.857842043] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[component_container-9] [INFO] [1785297570.951283754] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 808 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297570.951322236] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[rviz2-10] [INFO] [1785297580.799107797] [rviz2]: Trying to create a map of size 461 x 809 using 1 swatches
+[component_container-9] [INFO] [1785297580.857708394] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 809 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297580.857734045] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[component_container-9] [INFO] [1785297580.951290115] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 809 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297580.951322358] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -26) | Resolution: 0
+[rviz2-10] [INFO] [1785297590.815500548] [rviz2]: Trying to create a map of size 461 x 820 using 1 swatches
+[component_container-9] [INFO] [1785297590.857790041] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 820 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297590.857877398] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -27) | Resolution: 0
+[component_container-9] [INFO] [1785297590.951342906] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 820 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297590.951460167] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -27) | Resolution: 0
+[rviz2-10] [INFO] [1785297610.815988164] [rviz2]: Trying to create a map of size 461 x 884 using 1 swatches
+[component_container-9] [INFO] [1785297610.857791200] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 884 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297610.857906241] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -30) | Resolution: 0
+[component_container-9] [INFO] [1785297610.951335562] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 884 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297610.951451714] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -30) | Resolution: 0
+[rviz2-10] [INFO] [1785297620.832842268] [rviz2]: Trying to create a map of size 461 x 887 using 1 swatches
+[component_container-9] [INFO] [1785297620.857811168] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 887 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297620.857904511] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -30) | Resolution: 0
+[component_container-9] [INFO] [1785297620.951434855] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 887 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297620.951538816] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -30) | Resolution: 0
+[component_container-9] [INFO] [1785297660.857837243] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 461 X 887 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297660.857958952] [global_costmap.global_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -30) | Resolution: 0
+[component_container-9] [INFO] [1785297660.951402721] [local_costmap.local_costmap]: StaticLayer: Resizing costmap to 461 X 887 at 0.050000 m/pix
+[component_container-9] [WARN] [1785297660.951530623] [local_costmap.local_costmap]: StaticLayer: Costmap origin coordinates are not perfectly aligned with the resolution. This may cause misalignment aliasing between rolling and non-rolling costmaps.
+[component_container-9] Map origin: (-20, -30) | Resolution: 0
+[component_container-9] [ERROR] [1785297740.163603747] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297730.127509, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297740.255334333] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297730.127509, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297740.466936172] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297730.360908, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297740.558622332] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297730.360908, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297740.770212088] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297730.627515, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297740.862236965] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297730.760855, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297741.171785798] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297730.994160, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297741.263066256] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297731.094179, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297741.475646528] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297731.327507, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297741.566896764] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297731.427521, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297741.781007784] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297731.694168, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297741.871893634] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297731.694168, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297742.179932530] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297732.027521, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297742.271318830] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297732.160778, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297742.484991108] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297732.260846, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297742.576044135] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297732.394201, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297742.790773006] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297732.760857, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297742.882050278] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297732.760857, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297743.190657081] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297733.027547, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297743.282230795] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297733.160864, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297743.496719062] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297733.294054, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297743.588345680] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297733.394208, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297743.802925280] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297733.627561, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [ERROR] [1785297743.894735513] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297733.760849, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[async_slam_toolbox_node-5] [INFO] [1785297743.962717792] [rclcpp]: signal_handler(signum=2)
+[rviz2-10] [INFO] [1785297743.962750868] [rclcpp]: signal_handler(signum=2)
+[ekf_node-4] [INFO] [1785297743.962786964] [rclcpp]: signal_handler(signum=2)
+[robot_state_publisher-2] [INFO] [1785297743.963716571] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785297743.964375503] [rclcpp]: signal_handler(signum=2)
+[component_container-9] [INFO] [1785297743.964559638] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[component_container-9] [INFO] [1785297743.964691935] [controller_server]: Deactivating
+[component_container-9] [INFO] [1785297743.964778182] [controller_server]: Deactivating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785297743.964863678] [local_costmap.local_costmap]: Deactivating
+[async_slam_toolbox_node-5] Unregistering sensor: Custom Described Lidar : laser_frame
+[component_container-9] [INFO] [1785297743.988825265] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[async_slam_toolbox_node-5] [WARN] [1785297743.999871806] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(3) in destructor
+[component_container-9] [INFO] [1785297744.008565904] [lifecycle_manager_navigation]: [34m[1mHave not received a heartbeat from controller_server.[0m[0m
+[component_container-9] [ERROR] [1785297744.008637729] [lifecycle_manager_navigation]: CRITICAL FAILURE: SERVER controller_server IS DOWN after not receiving a heartbeat for 4000 ms. Shutting down related nodes.
+[component_container-9] [INFO] [1785297744.008716412] [lifecycle_manager_navigation]: [34m[1mTerminating bond timer...[0m[0m
+[component_container-9] [INFO] [1785297744.008725137] [lifecycle_manager_navigation]: [34m[1mResetting managed nodes...[0m[0m
+[component_container-9] [INFO] [1785297744.008731204] [lifecycle_manager_navigation]: [34m[1mDeactivating waypoint_follower[0m[0m
+[component_container-9] [INFO] [1785297744.009606547] [waypoint_follower]: Deactivating
+[component_container-9] [INFO] [1785297744.009728986] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[INFO] [rviz2-10]: process has finished cleanly [pid 18732]
+[scan_relay-6] Traceback (most recent call last):
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay", line 33, in <module>
+[scan_relay-6]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'scan_relay')())
+[scan_relay-6]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/scan_relay.py", line 111, in main
+[scan_relay-6]     rclpy.spin(node)
+[scan_relay-6]     ~~~~~~~~~~^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[scan_relay-6]     executor.spin_once()
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[scan_relay-6]     self._spin_once_impl(timeout_sec)
+[scan_relay-6]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[scan_relay-6]     handler, entity, node = self.wait_for_ready_callbacks(
+[scan_relay-6]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[scan_relay-6]         timeout_sec, None, wait_condition)
+[scan_relay-6]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[scan_relay-6]     return next(self._cb_iter)
+[scan_relay-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[scan_relay-6]     wait_set = _rclpy.WaitSet(
+[scan_relay-6]         entity_count.num_subscriptions,
+[scan_relay-6]     ...<4 lines>...
+[scan_relay-6]         entity_count.num_events,
+[scan_relay-6]         self._context.handle)
+[scan_relay-6] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[odom_imu_relay-7] Traceback (most recent call last):
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay", line 33, in <module>
+[odom_imu_relay-7]     sys.exit(load_entry_point('smb-nodes', 'console_scripts', 'odom_imu_relay')())
+[odom_imu_relay-7]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/home/nhatkhoa1124/ros2_ws/build/smb_nodes/smb_nodes/odom_imu_relay.py", line 118, in main
+[odom_imu_relay-7]     rclpy.spin(node)
+[odom_imu_relay-7]     ~~~~~~~~~~^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[odom_imu_relay-7]     executor.spin_once()
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[odom_imu_relay-7]     self._spin_once_impl(timeout_sec)
+[odom_imu_relay-7]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[odom_imu_relay-7]     handler, entity, node = self.wait_for_ready_callbacks(
+[odom_imu_relay-7]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[odom_imu_relay-7]         timeout_sec, None, wait_condition)
+[odom_imu_relay-7]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[odom_imu_relay-7]     return next(self._cb_iter)
+[odom_imu_relay-7]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[odom_imu_relay-7]     wait_set = _rclpy.WaitSet(
+[odom_imu_relay-7]         entity_count.num_subscriptions,
+[odom_imu_relay-7]     ...<4 lines>...
+[odom_imu_relay-7]         entity_count.num_events,
+[odom_imu_relay-7]         self._context.handle)
+[odom_imu_relay-7] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[component_container-9] [INFO] [1785297744.090961027] [controller_server]: Cleaning up
+[component_container-9] [INFO] [1785297744.090990833] [controller_server]: Cleaning up controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[component_container-9] [INFO] [1785297744.092645693] [local_costmap.local_costmap]: Cleaning up
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 18724]
+[INFO] [ekf_node-4]: process has finished cleanly [pid 18726]
+[component_container-9] [INFO] [1785297744.103063789] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[component_container-9] [INFO] [1785297744.103087316] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[component_container-9] [INFO] [1785297744.103103528] [planner_server]: Deactivating
+[component_container-9] [INFO] [1785297744.103140439] [global_costmap.global_costmap]: Deactivating
+[INFO] [async_slam_toolbox_node-5]: process has finished cleanly [pid 18727]
+[component_container-9] [INFO] [1785297744.120925976] [lifecycle_manager_navigation]: [34m[1mDeactivating bt_navigator[0m[0m
+[component_container-9] [INFO] [1785297744.121912343] [bt_navigator]: Deactivating
+[component_container-9] [INFO] [1785297744.121966434] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[INFO] [supervisor-8]: process has finished cleanly [pid 18730]
+[ERROR] [scan_relay-6]: process has died [pid 18728, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/scan_relay --ros-args -r __node:=scan_relay --params-file /tmp/launch_params_frpzbl0a'].
+[component_container-9] [ERROR] [1785297744.200852851] [transformPoseInTargetFrame]: Extrapolation Error looking up target frame: Lookup would require extrapolation into the past.  Requested time 1785297729.753698 but the earliest data is at time 1785297733.860856, when looking up transform from frame [base_link] to frame [map]
+[component_container-9] 
+[component_container-9] [INFO] [1785297744.201006721] [planner_server]: Deactivating plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785297744.201813897] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[ERROR] [odom_imu_relay-7]: process has died [pid 18729, exit code 1, cmd '/home/nhatkhoa1124/ros2_ws/install/smb_nodes/lib/smb_nodes/odom_imu_relay --ros-args -r __node:=odom_imu_relay --params-file /tmp/launch_params_ma3i4h4z'].
+[component_container-9] [INFO] [1785297744.233461583] [lifecycle_manager_navigation]: [34m[1mDeactivating behavior_server[0m[0m
+[component_container-9] [INFO] [1785297744.234240720] [behavior_server]: Deactivating
+[component_container-9] [INFO] [1785297744.234310755] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785297744.302970894] [planner_server]: Cleaning up
+[component_container-9] [INFO] [1785297744.306263508] [global_costmap.global_costmap]: Cleaning up
+[component_container-9] [INFO] [1785297744.307639980] [planner_server]: Cleaning up plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785297744.307672597] [planner_server]: Destroying plugin GridBased of type NavfnPlanner
+[component_container-9] [INFO] [1785297744.312423811] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[component_container-9] [INFO] [1785297744.312441698] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[component_container-9] [INFO] [1785297744.312453502] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[component_container-9] [INFO] [1785297744.312489299] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[component_container-9] [INFO] [1785297744.312502534] [bt_navigator]: Cleaning up
+[component_container-9] [INFO] [1785297744.321237211] [bt_navigator_navigate_to_pose_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785297744.321270489] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.334554264] [bt_navigator_navigate_through_poses_rclcpp_node]: Destroying
+[component_container-9] [WARN] [1785297744.334586118] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.338347302] [bt_navigator]: Completed Cleaning up
+[component_container-9] [INFO] [1785297744.338368351] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[component_container-9] [INFO] [1785297744.338375190] [waypoint_follower]: Running Nav2 LifecycleNode rcl preshutdown (waypoint_follower)
+[component_container-9] [INFO] [1785297744.338396999] [waypoint_follower]: Cleaning up
+[component_container-9] [INFO] [1785297744.339790284] [waypoint_follower]: Destroying bond (waypoint_follower) to lifecycle manager.
+[component_container-9] [INFO] [1785297744.339804725] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[component_container-9] [INFO] [1785297744.345588720] [lifecycle_manager_navigation]: [34m[1mDeactivating planner_server[0m[0m
+[component_container-9] [WARN] [1785297744.348286374] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [WARN] [1785297744.348294790] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [ERROR] [1785297744.348303525] [planner_server]: Unable to start transition 4 (deactivate) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785297744.348446202] [lifecycle_manager_navigation]: Failed to change state for node: planner_server
+[component_container-9] [INFO] [1785297744.348467294] [lifecycle_manager_navigation]: [34m[1mDeactivating controller_server[0m[0m
+[component_container-9] [WARN] [1785297744.348523876] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [WARN] [1785297744.348531412] [rcl_lifecycle]: No transition matching 4 found for current state unconfigured
+[component_container-9] [ERROR] [1785297744.348535363] [controller_server]: Unable to start transition 4 (deactivate) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [ERROR] [1785297744.348616213] [lifecycle_manager_navigation]: Failed to change state for node: controller_server
+[component_container-9] [INFO] [1785297744.348626674] [lifecycle_manager_navigation]: [34m[1mCleaning up waypoint_follower[0m[0m
+[component_container-9] [WARN] [1785297744.348680168] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785297744.348686150] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785297744.348689212] [waypoint_follower]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785297744.348762668] [lifecycle_manager_navigation]: [34m[1mCleaning up bt_navigator[0m[0m
+[component_container-9] [WARN] [1785297744.348827094] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785297744.348832931] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785297744.348836012] [bt_navigator]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785297744.348900218] [lifecycle_manager_navigation]: [34m[1mCleaning up behavior_server[0m[0m
+[component_container-9] [INFO] [1785297744.348970882] [behavior_server]: Cleaning up
+[component_container-9] [INFO] [1785297744.355777292] [lifecycle_manager_navigation]: [34m[1mCleaning up planner_server[0m[0m
+[component_container-9] [WARN] [1785297744.355827262] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785297744.355835827] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785297744.355839407] [planner_server]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785297744.355903028] [lifecycle_manager_navigation]: [34m[1mCleaning up controller_server[0m[0m
+[component_container-9] [WARN] [1785297744.355944094] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [WARN] [1785297744.355949722] [rcl_lifecycle]: No transition matching 2 found for current state unconfigured
+[component_container-9] [ERROR] [1785297744.355953084] [controller_server]: Unable to start transition 2 (cleanup) from current state unconfigured: Transition is not registered., at ./src/rcl_lifecycle.c:377
+[component_container-9] [INFO] [1785297744.356030577] [lifecycle_manager_navigation]: [34m[1mManaged nodes have been reset[0m[0m
+[component_container-9] [INFO] [1785297744.380701289] [lifecycle_manager_navigation]: Destroying lifecycle_manager_navigation
+[component_container-9] [INFO] [1785297744.384947511] [waypoint_follower]: Destroying
+[component_container-9] [WARN] [1785297744.384963021] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.388149035] [bt_navigator]: Destroying
+[component_container-9] [WARN] [1785297744.388159112] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.390941791] [behavior_server]: Destroying
+[component_container-9] [WARN] [1785297744.390953670] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.393769974] [global_costmap.global_costmap]: Destroying
+[component_container-9] [WARN] [1785297744.393779152] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.396483476] [planner_server]: Destroying
+[component_container-9] [WARN] [1785297744.396492190] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.399488276] [local_costmap.local_costmap]: Destroying
+[component_container-9] [WARN] [1785297744.399495668] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[component_container-9] [INFO] [1785297744.402145407] [controller_server]: Destroying
+[component_container-9] [WARN] [1785297744.402152376] [rclcpp_lifecycle]: LifecycleNode is not shut down: Node still in state(1) in destructor
+[INFO] [component_container-9]: process has finished cleanly [pid 18731]
+[joint_state_publisher-3] Traceback (most recent call last):
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher", line 33, in <module>
+[joint_state_publisher-3]     sys.exit(load_entry_point('joint-state-publisher==2.4.2', 'console_scripts', 'joint_state_publisher')())
+[joint_state_publisher-3]              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/joint_state_publisher/joint_state_publisher.py", line 568, in main
+[joint_state_publisher-3]     rclpy.spin(jsp)
+[joint_state_publisher-3]     ~~~~~~~~~~^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[joint_state_publisher-3]     executor.spin_once()
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+[joint_state_publisher-3]     self._spin_once_impl(timeout_sec)
+[joint_state_publisher-3]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1000, in _spin_once_impl
+[joint_state_publisher-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[joint_state_publisher-3]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[joint_state_publisher-3]         timeout_sec, None, wait_condition)
+[joint_state_publisher-3]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 970, in wait_for_ready_callbacks
+[joint_state_publisher-3]     return next(self._cb_iter)
+[joint_state_publisher-3]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 848, in _wait_for_ready_callbacks
+[joint_state_publisher-3]     wait_set = _rclpy.WaitSet(
+[joint_state_publisher-3]         entity_count.num_subscriptions,
+[joint_state_publisher-3]     ...<4 lines>...
+[joint_state_publisher-3]         entity_count.num_events,
+[joint_state_publisher-3]         self._context.handle)
+[joint_state_publisher-3] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+[ERROR] [joint_state_publisher-3]: process has died [pid 18725, exit code 1, cmd '/opt/ros/lyrical/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher --params-file /tmp/launch_params_iy1vlkwc'].
+[ERROR] [micro_ros_agent-1]: process has died [pid 18723, exit code -9, cmd '/home/nhatkhoa1124/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent udp4 --port 8888'].
