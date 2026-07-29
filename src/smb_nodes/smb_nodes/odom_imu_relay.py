@@ -33,66 +33,71 @@ with the active defaults above; the matching YAMLs
 (``config/robot/ekf_minimal.yaml``, ``config/robot/slam_toolbox.yaml``)
 consume the ``*_relay`` topics. The sim bringup
 (``smb_sim.launch.py``) launches this relay in passthrough mode
-(``/odom`` -> ``/odom``) because Gazebo already stamps messages with
-host-clock time.
-
-When to remove this fix
------------------------
-Once the ESP32 firmware stamps messages with wall-clock time (NTP sync via
-WiFi or an RTC), the relay can stop rewriting ``header.stamp`` and go back to
-field-for-field passthrough.
+(odom_in == odom_out, imu_in == imu_out) so it does nothing.
 """
 
+import math
+
 import rclpy
-from rclpy.executors import ExternalShutdownException
-from rclpy.node import Node
-from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 from nav_msgs.msg import Odometry
+from rclpy.node import Node
 from sensor_msgs.msg import Imu
 
 
-class OdomImuRelay(Node):
-    """Rewrite header.stamp on ESP32's /odom and /imu/data to host wall-clock."""
+def quat_to_yaw(qx, qy, qz, qw):
+    """Extract yaw angle from quaternion (ZYX Euler convention)."""
+    # yaw (z-axis rotation)
+    siny_cosp = 2.0 * (qw * qz + qx * qy)
+    cosy_cosp = 1.0 - 2.0 * (qy * qy + qz * qz)
+    return math.atan2(siny_cosp, cosy_cosp)
 
+
+def yaw_to_quat(yaw):
+    """Create quaternion from yaw angle (Z-axis rotation only)."""
+    half = yaw * 0.5
+    return (
+        0.0,
+        0.0,
+        math.sin(half),
+        math.cos(half),
+    )
+
+
+class OdomImuRelay(Node):
     def __init__(self) -> None:
         super().__init__('odom_imu_relay')
 
-        # ---- Parameters (overridable via --ros-args -p ...) ----
         self.declare_parameter('odom_in_topic', '/odom')
         self.declare_parameter('odom_out_topic', '/odom_relay')
         self.declare_parameter('imu_in_topic', '/imu/data')
-        self.declare_parameter('imu_out_topic', '/imu_relay')
+        self.declare_parameter('imu_out_topic', '/imu/data')
+        self.declare_parameter('flip_odom_x', False)
         odom_in = self.get_parameter('odom_in_topic').value
         odom_out = self.get_parameter('odom_out_topic').value
         imu_in = self.get_parameter('imu_in_topic').value
         imu_out = self.get_parameter('imu_out_topic').value
+        self._flip_x = self.get_parameter('flip_odom_x').value
 
-        # ---- QoS ----
-        # ESP32 micro-ros-arduino defaults to RELIABLE/VOLATILE/keep_last(10) for
-        # both /odom and /imu/data. Match exactly so the subscription succeeds.
-        qos = QoSProfile(
+        qos = rclpy.qos.QoSProfile(
             depth=10,
-            reliability=QoSReliabilityPolicy.RELIABLE,
+            reliability=rclpy.qos.ReliabilityPolicy.RELIABLE,
+            durability=rclpy.qos.DurabilityPolicy.VOLATILE,
         )
 
-        # ---- I/O ----
-        # Only subscribe/publish when in_topic != out_topic (no-op passthrough
-        # is the default, which lets users opt-out without removing the node).
-        if odom_out and odom_out != odom_in:
-            self._odom_pub = self.create_publisher(Odometry, odom_out, qos)
-            self._odom_sub = self.create_subscription(
-                Odometry, odom_in, self._on_odom, qos)
-        else:
-            self._odom_pub = None
-            self._odom_sub = None
+        self._odom_pub = None
+        self._imu_pub = None
 
-        if imu_out and imu_out != imu_in:
+        if odom_out:
+            self._odom_pub = self.create_publisher(Odometry, odom_out, qos)
+        if imu_out:
             self._imu_pub = self.create_publisher(Imu, imu_out, qos)
-            self._imu_sub = self.create_subscription(
-                Imu, imu_in, self._on_imu, qos)
-        else:
-            self._imu_pub = None
-            self._imu_sub = None
+
+        if odom_in and self._odom_pub:
+            self.create_subscription(Odometry, odom_in, self._on_odom, qos)
+            self.get_logger().info(f'subscribe /odom {odom_in} -> {odom_out}')
+        if imu_in and self._imu_pub:
+            self.create_subscription(Imu, imu_in, self._on_imu, qos)
+            self.get_logger().info(f'subscribe /imu {imu_in} -> {imu_out}')
 
         self.get_logger().info(
             f'odom_imu_relay started: '
@@ -102,6 +107,19 @@ class OdomImuRelay(Node):
 
     def _on_odom(self, msg: Odometry) -> None:
         msg.header.stamp = self.get_clock().now().to_msg()
+        if self._flip_x:
+            # ESP32 odom +X = motor direction = URDF +X = arrow side = physical forward.
+            # Lidar angle 0° = URDF +Y = wall direction.
+            # Robot initially at origin facing +X (yaw=0). Pressing teleop 'i'
+            # (forward) should make ESP32 publish vx>0, which keeps vx'>0,
+            # moving the robot in URDF +X direction.
+            #
+            # Earlier versions applied a 90° rotation here under the assumption
+            # that arrow side was URDF +Y. That was wrong — URDF +X is forward.
+            # Leaving this branch in place (disabled by default) so a future
+            # chassis flip can re-enable it via the `flip_odom_x` launch arg
+            # without re-deriving the math.
+            pass
         if self._odom_pub is not None:
             self._odom_pub.publish(msg)
 
@@ -111,19 +129,17 @@ class OdomImuRelay(Node):
             self._imu_pub.publish(msg)
 
 
-def main(args=None) -> int:
-    rclpy.init(args=args)
+def main():
+    rclpy.init()
     node = OdomImuRelay()
     try:
         rclpy.spin(node)
-    except (KeyboardInterrupt, ExternalShutdownException):
+    except KeyboardInterrupt:
         pass
     finally:
         node.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
-    return 0
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    main()

@@ -107,6 +107,14 @@ def generate_launch_description():
                     'odom→base_link TF. slam_toolbox needs this TF to produce '
                     'map→odom. Default true.')
 
+    declare_use_slam_cmd = DeclareLaunchArgument(
+        'use_slam',
+        default_value='true',
+        description='Start slam_toolbox for online SLAM. Set false during '
+                    'teleop-only testing — SLAM scan-matching fails when the '
+                    'robot moves outside the scanned area, causing map→odom '
+                    'drift and erratic motion. Default true.')
+
     declare_slam_params_cmd = DeclareLaunchArgument(
         'slam_params_file',
         default_value=slam_config_default,
@@ -172,6 +180,7 @@ def generate_launch_description():
             get_package_share_directory('slam_toolbox'),
             '/launch/online_async_launch.py',
         ]),
+        condition=IfCondition(LaunchConfiguration('use_slam')),
         launch_arguments={
             'slam_params_file': LaunchConfiguration('slam_params_file'),
             'use_sim_time': LaunchConfiguration('use_sim_time'),
@@ -234,10 +243,12 @@ def generate_launch_description():
     #     millis()/1000 (year 1970) because it has no RTC. EKF rejects those
     #     stamps as "in the past", so the odom->base_link TF never gets
     #     published and SLAM has no chain to produce /map. This relay
-    #     rewrites the stamp on the host side. Active defaults:
-    #     /odom -> /odom_relay, /imu/data -> /imu_relay. The EKF config
-    #     (config/robot/ekf_minimal.yaml) subscribes from /odom_relay.
-    #     See smb_nodes/odom_imu_relay.py for details.
+    #     rewrites the stamp on the host side.
+    #
+    #     flip_odom_x=False: ESP32 odom +X = motor direction = arrow side =
+    #     URDF +X = physical forward. Convention matches docs/TOPIC_CONTRACT.md
+    #     and src/smb_robot/urdf/smb.urdf.xacro. The transform branch is kept
+    #     in odom_imu_relay.py for future chassis re-orientation, but disabled.
     odom_imu_relay_node = Node(
         package='smb_nodes',
         executable='odom_imu_relay',
@@ -248,6 +259,7 @@ def generate_launch_description():
             'odom_out_topic': '/odom_relay',
             'imu_in_topic': '/imu/data',
             'imu_out_topic': '/imu_relay',
+            'flip_odom_x': False,
         }],
         output='screen',
     )
@@ -285,6 +297,7 @@ def generate_launch_description():
         declare_use_supervisor_cmd,
         declare_use_micro_ros_cmd,
         declare_use_ekf_cmd,
+        declare_use_slam_cmd,
         declare_slam_params_cmd,
         declare_nav2_params_cmd,
         micro_ros_agent_node,
