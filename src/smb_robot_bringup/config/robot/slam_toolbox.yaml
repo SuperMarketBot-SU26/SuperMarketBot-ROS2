@@ -123,6 +123,14 @@ slam_toolbox:
     transform_publish_period: 0.05   # 20 Hz TF
     tf_buffer_duration: 60.0   # 60s: tolerate late ESP32 handshake (was 30s,
                                # but with autostart=false this is mostly belt-and-suspenders)
+    # v2.4 (Jul 29 2026): Added for ESP32 1-2 Hz scan rate.
+    # scan_queue_size: increase buffer so late-arriving scans at 2 Hz don't get
+    # dropped. slam_toolbox processes one scan per call; with a 2 Hz input the
+    # default queue of 5 means ~2.5s buffer — enough for typical timing jitter.
+    scan_queue_size: 20
+    # transform_tolerance: how far in the past a TF lookup can be.
+    # At 1 Hz scans the scan-to-pose transform might lag. 0.5s gives margin.
+    transform_tolerance: 0.5
     throttle_scans: 1
     publish_occupancy_grid: true
     publish_tf: true

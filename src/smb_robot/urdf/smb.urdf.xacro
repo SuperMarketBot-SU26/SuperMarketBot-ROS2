@@ -24,12 +24,16 @@
   <xacro:property name="wheel_radius"   value="0.04"/>
   <xacro:property name="wheel_thickness" value="0.02"/>
   <xacro:property name="track"          value="0.22"/>
-  <!-- Drive wheels at the REAR of the chassis (x = -0.05), driven by motors with
-       encoders — matches the real robot layout. Single ball caster at the front
-       (x = +0.05) for free-rolling turns. Ball joint is critical: the front caster
-       must roll freely during rotation so DiffDrive odometry stays accurate. -->
-  <xacro:property name="wheel_offset_x" value="-0.05"/>
-  <xacro:property name="caster_offset_x" value="+0.05"/>
+  <!-- Drive wheels at the FRONT of the chassis (x = +0.05) — driven by motors with
+       encoders. Single ball caster at the BACK (x = -0.05) for free-rolling turns.
+
+       Convention: URDF +X = physical forward = arrow/ESP32 side = motor direction.
+       ESP32 odom +X = motor direction = URDF +X. No odom flip needed.
+       Scan data: lidar on back (-X) with 180° rotation so angle 0° faces backward
+       (toward wall = physical front). -->
+
+  <xacro:property name="wheel_offset_x" value="0.05"/>
+  <xacro:property name="caster_offset_x" value="-0.05"/>
   <!-- Caster uses the same radius as the drive wheels so all three contact
        points lie on the same ground plane. The wheel_radius property above
        is reused for the caster sphere. -->
@@ -184,11 +188,15 @@
     </collision>
   </link>
 
-  <!-- Laser frame: top of chassis, +z by lidar_offset_z. Yaw = 0 (forward-facing). -->
+  <!-- Laser frame: mounted on the LEFT side of chassis (x = -0.05, y = 0),
+       with -90° yaw so lidar angle_min=0 points along URDF +Y = physical forward (wall).
+       Scan data: wall at ~315-340° = URDF +Y direction. ESP32 publishes angle 0°
+       in the chassis +Y direction, so rpy=0 0 -1.5708 makes lidar +X align with chassis +Y. -->
+  <xacro:property name="lidar_offset_x" value="-0.05"/>
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="laser_frame"/>
-    <origin xyz="0 0 ${lidar_offset_z}" rpy="0 0 0"/>
+    <origin xyz="${lidar_offset_x} 0 ${lidar_offset_z}" rpy="0 0 -1.5707"/>
   </joint>
   <link name="laser_frame">
     <inertial>

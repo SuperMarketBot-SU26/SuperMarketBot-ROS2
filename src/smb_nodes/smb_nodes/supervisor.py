@@ -178,6 +178,14 @@ class Supervisor(Node):
         # from fighting teleop by overwriting _last_cmd_vel on every tick.
         self._teleop_override_sec = 2.0
         self._teleop_override_until = self.get_clock().now()
+        # Explicit stop flag: when teleop sends lin=0 (key released), we set
+        # this flag and stop publishing *any* cmd_vel (not just zero). The
+        # ESP32's own 500 ms watchdog will stop the robot if teleop disappears.
+        # Without this flag, supervisor republishes lin=0 at 10 Hz between
+        # teleop key presses — triggering botStop() on every republish tick
+        # and causing the robot to take micro-steps instead of smooth motion.
+        # Clear this flag on the next non-zero command.
+        self._stop_requested = False
 
         # ---- QoS profiles ----
         # cmd_vel is RELIABLE per the topic contract.
@@ -309,9 +317,21 @@ class Supervisor(Node):
 
         Teleop override: resets the 2-second window so Nav2 behavior ticks
         can't fight the teleop command while the operator is actively driving.
+
+        Stop suppression: when teleop sends lin=0 (key released), set the
+        _stop_requested flag so _publish_cmd_vel stops publishing entirely.
+        The ESP32's own 500ms watchdog handles stopping the robot. This
+        prevents supervisor from flooding /cmd_vel with zeros between teleop
+        key presses, which was causing micro-step jitter on ESP32.
         """
         if self._state is State.ESTOP:
             return
+        # Detect stop (key released)
+        is_stop = (abs(msg.linear.x) < 0.001 and abs(msg.angular.z) < 0.001)
+        if is_stop:
+            self._stop_requested = True
+        else:
+            self._stop_requested = False
         self._last_cmd_vel = msg
         self._last_cmd_vel_stamp = self.get_clock().now()
         # Extend teleop override window
@@ -437,14 +457,24 @@ class Supervisor(Node):
         Watchdog: if no fresh _last_cmd_vel has arrived within
         ``cmd_vel_timeout_sec``, force zero so the firmware stops even
         when the upstream publisher has gone silent (e.g., teleop released).
+
+        Stop suppression: if _stop_requested is set (teleop sent lin=0),
+        publish nothing. The ESP32's own 500ms watchdog will stop the robot.
+        This prevents supervisor from republishing zeros at 10 Hz between
+        teleop key presses, which was triggering botStop() on the ESP32
+        on every republish tick and causing micro-step jitter.
         """
-        out = Twist()
-        if self._state is not State.ESTOP:
-            age = (self.get_clock().now() - self._last_cmd_vel_stamp).nanoseconds / 1e9
-            if age <= self._cmd_vel_timeout_sec:
-                out = self._last_cmd_vel
-            # else: leave out = Twist(0,0,0)
-        self._cmd_vel_out_pub.publish(out)
+        if self._state is State.ESTOP:
+            self._cmd_vel_out_pub.publish(Twist())
+            return
+        age = (self.get_clock().now() - self._last_cmd_vel_stamp).nanoseconds / 1e9
+        if age > self._cmd_vel_timeout_sec:
+            self._stop_requested = False
+            self._cmd_vel_out_pub.publish(Twist())
+            return
+        if self._stop_requested:
+            return
+        self._cmd_vel_out_pub.publish(self._last_cmd_vel)
 
     def _publish_state(self) -> None:
         msg = String()

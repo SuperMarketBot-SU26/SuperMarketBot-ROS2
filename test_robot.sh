@@ -46,9 +46,12 @@ opt="${1:-}"
 
 if [[ "$opt" == "--check" ]]; then
     do_check_only=1
+elif [[ "$opt" == "--no-nav2" ]]; then
+    do_no_nav2=1
 elif [[ -n "$opt" && "$opt" != "--check" ]]; then
     echo "Usage: $0 [--check]"
-    echo "       --check   verify deps + launch syntax only"
+    echo "       $0 --no-nav2   (run without Nav2 — use for teleop-only testing)"
+    echo "       --check        verify deps + launch syntax only"
     exit 1
 fi
 
@@ -171,6 +174,7 @@ echo
 echo "[test_robot] Tip: in another terminal:"
 echo "              ./test_teleop.sh    — drive via /cmd_vel"
 echo "              ./test_nav2_goal.sh — send NavigateToPose goals"
+echo "              --no-nav2 flag skips Nav2 entirely (Nav2 interferes with teleop)"
 echo
 echo "[test_robot] Auto-activation: ~15s after launch, once /scan is detected,"
 echo "              SLAM + Nav2 are configured + activated automatically."
@@ -196,6 +200,7 @@ LAUNCH_LOG="$LOG_DIR/launch_${SESSION_TS}.log"
 HELPER_LOG="$LOG_DIR/auto_activate_${SESSION_TS}.log"
 
 ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
+  ${do_no_nav2:+use_nav2:=false use_slam:=false} \
   > >(tee "$LAUNCH_LOG") 2>&1 &
 launch_pid=$!
 echo "[test_robot] launch output: $LAUNCH_LOG"
@@ -320,41 +325,45 @@ PY
   fi
   echo "[test_robot] auto_activate:   /scan_relay has data."
 
-  # --- Stage 2: SLAM lifecycle ----------------------------------------------
-  echo "[test_robot] auto_activate: activating SLAM (stage 2 / 3)..."
-  if ros2 lifecycle set /slam_toolbox configure 2>/dev/null \
-     && ros2 lifecycle set /slam_toolbox activate 2>/dev/null; then
-    echo "[test_robot] auto_activate:   SLAM configured + activated."
+  # --- Stage 2: SLAM lifecycle (skip if use_slam:=false) ------------------
+  # Check if slam_toolbox node exists before attempting lifecycle operations.
+  if ! ros2 node list 2>/dev/null | grep -q '/slam_toolbox'; then
+    echo "[test_robot] auto_activate: SLAM not running (use_slam:=false). Skipping."
   else
-    echo "[test_robot] auto_activate:   SLAM lifecycle FAILED. Run manually."
-    exit 0
+    echo "[test_robot] auto_activate: activating SLAM (stage 2 / 3)..."
+    if ros2 lifecycle set /slam_toolbox configure 2>/dev/null \
+       && ros2 lifecycle set /slam_toolbox activate 2>/dev/null; then
+      echo "[test_robot] auto_activate:   SLAM configured + activated."
+    else
+      echo "[test_robot] auto_activate:   SLAM lifecycle FAILED. Run manually."
+      exit 0
+    fi
+
+    # --- Stage 3: Wait for /map publisher + extra TF warmup --------------------
+    echo "[test_robot] auto_activate: waiting for SLAM /map (stage 3 / 3)..."
+    if ! wait_topic_pub /map 60; then
+      echo "[test_robot] auto_activate:   /map never got a publisher. SLAM may be unhealthy."
+      echo "[test_robot] auto_activate:   Skipping Nav2 activation. Use manual fallback."
+      exit 0
+    fi
+    echo "[test_robot] auto_activate:   /map has a publisher."
+    # SLAM's first TF publish (map → odom) trails /map by ~1s.
+    echo "[test_robot] auto_activate: TF warm-up 5s..."
+    sleep 5
   fi
 
-  # --- Stage 3: Wait for /map publisher + extra TF warmup --------------------
-  # SLAM's first /map publish typically trails the lifecycle activation by
-  # 2-15 seconds (first scan match has to land). Without this wait,
-  # global_costmap's first tick faults with "frame map does not exist".
-  echo "[test_robot] auto_activate: waiting for SLAM /map (stage 3 / 3)..."
-  if ! wait_topic_pub /map 60; then
-    echo "[test_robot] auto_activate:   /map never got a publisher. SLAM may be unhealthy."
-    echo "[test_robot] auto_activate:   Skipping Nav2 activation. Use manual fallback."
-    exit 0
-  fi
-  echo "[test_robot] auto_activate:   /map has a publisher."
-  # SLAM's first TF publish (map → odom) trails /map by ~1s. The
-  # global_costmap's tf_buffer needs at least one transform sample in the
-  # buffer before its first update can succeed. 5s gives that with margin.
-  echo "[test_robot] auto_activate: TF warm-up 5s..."
-  sleep 5
-
-  # --- Stage 4: Nav2 lifecycle manager --------------------------------------
-  echo "[test_robot] auto_activate: activating Nav2..."
-  if ros2 service call /lifecycle_manager_navigation/manage_nodes \
-       nav2_msgs/srv/ManageLifecycleNodes "{command: 0}" 2>/dev/null; then
-    echo "[test_robot] auto_activate:   Nav2 manager configured + activated."
+  # --- Stage 4: Nav2 lifecycle manager (skip if use_nav2:=false) ------------
+  if ! ros2 node list 2>/dev/null | grep -q '/controller_server'; then
+    echo "[test_robot] auto_activate: Nav2 not running (use_nav2:=false). Skipping."
   else
-    echo "[test_robot] auto_activate:   Nav2 manager FAILED. Run manually."
-    exit 0
+    echo "[test_robot] auto_activate: activating Nav2..."
+    if ros2 service call /lifecycle_manager_navigation/manage_nodes \
+         nav2_msgs/srv/ManageLifecycleNodes "{command: 0}" 2>/dev/null; then
+      echo "[test_robot] auto_activate:   Nav2 manager configured + activated."
+    else
+      echo "[test_robot] auto_activate:   Nav2 manager FAILED. Run manually."
+      exit 0
+    fi
   fi
 
   echo "[test_robot] auto_activate: SLAM + Nav2 are now active. Drive: ./test_teleop.sh"
