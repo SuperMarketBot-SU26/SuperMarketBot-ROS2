@@ -22,3 +22,10 @@ Thumbs.db
 # one-off debug exports
 *.pdf
 *.gv
+
+# Python bytecode (any package)
+__pycache__/
+*.pyc
+
+# test_robot runtime logs (regenerated every session)
+.test_robot_logs/
