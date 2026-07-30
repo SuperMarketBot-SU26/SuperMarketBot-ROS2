@@ -48,9 +48,12 @@ if [[ "$opt" == "--check" ]]; then
     do_check_only=1
 elif [[ "$opt" == "--no-nav2" ]]; then
     do_no_nav2=1
+elif [[ "$opt" == "--no-slam" ]]; then
+    do_no_slam=1
 elif [[ -n "$opt" && "$opt" != "--check" ]]; then
     echo "Usage: $0 [--check]"
     echo "       $0 --no-nav2   (run without Nav2 — use for teleop-only testing)"
+    echo "       $0 --no-slam   (run without SLAM — teleop without map drift)"
     echo "       --check        verify deps + launch syntax only"
     exit 1
 fi
@@ -200,7 +203,8 @@ LAUNCH_LOG="$LOG_DIR/launch_${SESSION_TS}.log"
 HELPER_LOG="$LOG_DIR/auto_activate_${SESSION_TS}.log"
 
 ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
-  ${do_no_nav2:+use_nav2:=false use_slam:=false} \
+  ${do_no_nav2:+use_nav2:=false} \
+  ${do_no_slam:+use_slam:=false} \
   > >(tee "$LAUNCH_LOG") 2>&1 &
 launch_pid=$!
 echo "[test_robot] launch output: $LAUNCH_LOG"
