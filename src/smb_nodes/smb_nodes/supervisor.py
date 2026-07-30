@@ -157,14 +157,24 @@ class Supervisor(Node):
         # from fighting teleop by overwriting _last_cmd_vel on every tick.
         self._teleop_override_sec = 2.0
         self._teleop_override_until = self.get_clock().now()
-        # Explicit stop flag: when teleop sends lin=0 (key released), we set
-        # this flag and stop publishing *any* cmd_vel (not just zero). The
-        # ESP32's own 500 ms watchdog will stop the robot if teleop disappears.
-        # Without this flag, supervisor republishes lin=0 at 10 Hz between
-        # teleop key presses — triggering botStop() on every republish tick
-        # and causing the robot to take micro-steps instead of smooth motion.
-        # Clear this flag on the next non-zero command.
-        self._stop_requested = False
+        # v2.6 DIAGNOSTIC (2026-07-30): manual/forward tap "refuses to move"
+        # after time/distance. Track last-input wallclock + last-published
+        # wallclock so we can correlate the symptom with timing in logs.
+        self._last_manual_input_at = None
+        self._last_publish_at = None
+        self._diag_seq = 0
+        # Teleop/zero-twist passthrough: a teleop lin=0 (e.g. ``k`` on
+        # teleop_twist_keyboard) is now forwarded to the firmware as a real
+        # zero Twist. cmd_vel_callback's else branch already calls botStop()
+        # when both |lin| and |ang| are below 0.05 m/s, and the spin()
+        # watchdog fires at 500 ms. Earlier we tried to suppress republishing
+        # zeros here, but that interacted badly with teleop_twist_keyboard's
+        # one-shot per-tap semantics (each key tap publishes exactly one
+        # message) and the timer's 100 ms republish cadence — the resulting
+        # silent window after ``k`` caused the next forward command to be
+        # delayed or partially emitted, manifesting as "smidges then stops".
+        # Forwarding the zero is correct: the firmware is authoritative for
+        # stop semantics.
 
         # ---- QoS profiles ----
         # cmd_vel is RELIABLE per the topic contract.
@@ -295,24 +305,28 @@ class Supervisor(Node):
         Teleop override: resets the 2-second window so Nav2 behavior ticks
         can't fight the teleop command while the operator is actively driving.
 
-        Stop suppression: when teleop sends lin=0 (key released), set the
-        _stop_requested flag so _publish_cmd_vel stops publishing entirely.
-        The ESP32's own 500ms watchdog handles stopping the robot. This
-        prevents supervisor from flooding /cmd_vel with zeros between teleop
-        key presses, which was causing micro-step jitter on ESP32.
+        Zero passthrough: a teleop ``(0, 0)`` (e.g. ``k`` on
+        teleop_twist_keyboard) is forwarded to the firmware as a real zero
+        Twist. The firmware's cmd_vel_callback handles it by calling
+        botStop() directly, and the spin() watchdog catches teleop
+        disappearance at 500 ms. We no longer try to suppress republishing
+        zeros here — that interacted badly with teleop_twist_keyboard's
+        one-shot per-tap semantics and the 100 ms republish cadence (the
+        silent window after a stop key caused the next forward command to be
+        delayed or partially emitted).
         """
         if self._state is State.ESTOP:
             return
-        # Detect stop (key released)
-        is_stop = (abs(msg.linear.x) < 0.001 and abs(msg.angular.z) < 0.001)
-        if is_stop:
-            self._stop_requested = True
-        else:
-            self._stop_requested = False
+        now = self.get_clock().now()
+        self._diag_seq += 1
+        self.get_logger().info(
+            f'[MANUAL-IN #{self._diag_seq}] lin={msg.linear.x:+.3f} '
+            f'ang={msg.angular.z:+.3f} (cache_overwrite)')
+        self._last_manual_input_at = now
         self._last_cmd_vel = msg
         # Extend teleop override window
         self._teleop_override_until = (
-            self.get_clock().now() +
+            now +
             rclpy.duration.Duration(seconds=self._teleop_override_sec))
 
     def _on_estop(self, msg: Bool) -> None:
@@ -430,18 +444,34 @@ class Supervisor(Node):
         the firmware/wheels get a hard stop even if Nav2 keeps streaming.
         In IDLE/NAV we pass through; DOCK is currently identical to IDLE.
 
-        Stop suppression: if _stop_requested is set (teleop sent lin=0),
-        publish nothing. The ESP32's own 500ms watchdog will stop the robot.
-        This prevents supervisor from republishing zeros at 10 Hz between
-        teleop key presses, which was triggering botStop() on the ESP32
-        on every republish tick and causing micro-step jitter.
+        The cache is always forwarded as-is — including zero twists from
+        teleop ``k``. The firmware's cmd_vel_callback handles a zero Twist
+        by calling botStop() directly, and the spin() watchdog fires at
+        500 ms if teleop disappears. Suppressing republishing here used to
+        interact badly with teleop_twist_keyboard's one-shot per-tap
+        semantics (the silent window after a stop key caused the next
+        forward command to be delayed or partially emitted).
         """
         if self._state is State.ESTOP:
+            self.get_logger().info(
+                f'[PUB] state=ESTOP → publishing zero Twist')
             self._cmd_vel_out_pub.publish(Twist())
+            self._last_publish_at = self.get_clock().now()
             return
-        if self._stop_requested:
-            return
+        now = self.get_clock().now()
+        # v2.6 DIAGNOSTIC (2026-07-30): log every publish tick with cache +
+        # age since last manual input. Helps correlate "robot refuses to
+        # move" with timing of supervisor-to-firmware path.
+        age_ms = (
+            (now - self._last_manual_input_at).nanoseconds / 1_000_000
+            if self._last_manual_input_at is not None else -1)
+        self.get_logger().info(
+            f'[PUB] state={self._state.value} '
+            f'cache=lin={self._last_cmd_vel.linear.x:+.3f} '
+            f'ang={self._last_cmd_vel.angular.z:+.3f} '
+            f'age_since_manual_input={age_ms:.0f}ms')
         self._cmd_vel_out_pub.publish(self._last_cmd_vel)
+        self._last_publish_at = now
 
     def _publish_state(self) -> None:
         msg = String()
