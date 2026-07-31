@@ -197,7 +197,7 @@
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="laser_frame"/>
-    <origin xyz="${lidar_offset_x} 0 ${lidar_offset_z}" rpy="0 0 0"/>
+    <origin xyz="${lidar_offset_x} 0 ${lidar_offset_z}" rpy="0 0 -1.5707"/>
   </joint>
   <link name="laser_frame">
     <inertial>
