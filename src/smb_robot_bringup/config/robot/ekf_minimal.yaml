@@ -32,7 +32,11 @@ ekf_filter_node:
 
     # Frequency
     frequency: 30.0
-    sensor_timeout: 0.1
+    # v2.5 (Jul 31 2026): increased from 0.1 to 0.5 to tolerate WiFi UDP
+    # jitter. At 0.1s the EKF skips cycles when /odom_relay arrives late
+    # (WiFi + micro-ROS + relay scheduling), dropping odom→base_link TF
+    # from 30 Hz to ~10 Hz. This starves slam_toolbox's map→odom TF.
+    sensor_timeout: 0.5
     two_d_mode: true           # planar robot, ignore Z / roll / pitch
     publish_tf: true           # publish odom → base_link TF
     print_diagnostics: false
@@ -49,7 +53,7 @@ ekf_filter_node:
       0.0,    0.0,    0.06, 0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.03, 0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.03, 0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-      0.0,    0.0,    0.0,    0.0,    0.0,    0.06, 0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+      0.0,    0.0,    0.0,    0.0,    0.0,    0.015, 0.0,    0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.025, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.025, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.04, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -82,34 +86,22 @@ ekf_filter_node:
 
     odom0: /odom_relay
     odom0_config: [
-      true,  true,  false,
-      true,  true,  false,
-      false, false, false,
-      false, false, false,
-      false, false, false]
+      true,  true,  false,  # X Y Z — position (linear, used)
+      false, false, true,   # R P Y — absolute orientation: fuse yaw from ESP32 EKF heading (heading correction)
+      false, false, false,  # Vx Vy Vz — linear velocity (unused; rely on position integration)
+      false, false, false,  # Vroll Vpitch Vyaw — angular velocity (DISABLED: same wheel source as yaw above)
+      false, false, false]  # Ax Ay Az — linear acceleration
 
     odom0_differential: false
     odom0_relative: false
 
-    # v2.4 (2026-07-28): ADD /imu_relay fusion for gyro-Z based heading.
-    # Until now this EKF was single-source (just /odom_relay → odom→base_link TF).
-    # /imu_relay publishes the ESP32's already-EKF-fused IMU with gyro_z angular
-    # velocity at 10 Hz. Adding it as imu0 lets the EKF correct heading drift
-    # during extended runs (wheel-encoder-only odom slowly drifts on slippery
-    # surfaces), AND gives /odometry/filtered which Nav2 can consume directly.
-    #
-    # We DO NOT consume the orientation from /imu_relay here: that orientation
-    # is in imu_link frame (with the gyro-zero reference), not in base_link.
-    # Mixing heading sources in one EKF node would double-count.
-    #
-    # Config mask = [Vx Vy Vz Rroll Rpitch R yaw ax ay az] ; true = USE.
-    # We only use angular_velocity.z (yaw rate) — let the rest be ignored.
     imu0: /imu_relay
     imu0_config: [
-      false, false, false,
-      false, false, true,
-      false, false, false,
-      false, false, false,
-      false, false, false]
-    imu0_differential: false   # IMPORTANT: differential=true would strip offset drift
+      false, false, false,   # X Y Z — position
+      false, false, false,  # roll pitch yaw — absolute orientation (frame mismatch, skip)
+      false, false, false,  # Vx Vy Vz — linear velocity
+      false, false, false,  # Vroll Vpitch Vyaw — angular velocity (DISABLED: ESP32 ImuFusion.h
+                            # already fuses IMU gyro + wheel; re-fusing at EKF layer adds noise and drift)
+      false, false, false]  # Ax Ay Az — linear acceleration
+    imu0_differential: false
     imu0_relative: false

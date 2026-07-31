@@ -120,7 +120,7 @@ slam_toolbox:
     use_scan_barycenter: true
 
     # Timing
-    transform_publish_period: 0.05   # 20 Hz TF
+    transform_publish_period: 0.1   # 10 Hz TF (was 20 Hz; odom TF is ~10-15 Hz, publishing faster just repeats stale data)
     tf_buffer_duration: 60.0   # 60s: tolerate late ESP32 handshake (was 30s,
                                # but with autostart=false this is mostly belt-and-suspenders)
     # v2.4 (Jul 29 2026): Added for ESP32 1-2 Hz scan rate.
@@ -130,7 +130,7 @@ slam_toolbox:
     scan_queue_size: 20
     # transform_tolerance: how far in the past a TF lookup can be.
     # At 1 Hz scans the scan-to-pose transform might lag. 0.5s gives margin.
-    transform_tolerance: 0.5
+    transform_tolerance: 1.0   # was 0.5; at ~3-10 Hz map→odom TF, need 1.0s headroom
     throttle_scans: 1
     publish_occupancy_grid: true
     publish_tf: true

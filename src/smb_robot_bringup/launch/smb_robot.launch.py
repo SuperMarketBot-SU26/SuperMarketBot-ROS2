@@ -223,43 +223,26 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 6b. /scan QoS bridge — ESP32 publishes /scan with RELIABLE QoS but
-    #     slam_toolbox subscribes with BEST_EFFORT; DDS rejects the match
-    #     and no scan ever reaches SLAM. This relay subscribes RELIABLE
-    #     on /scan and republishes BEST_EFFORT on /scan_relay. slam_toolbox
-    #     is remapped to /scan_relay via config/robot/slam_toolbox.yaml.
-    #     See smb_nodes/scan_relay.py for details.
-    scan_relay_node = Node(
+    # 6b. Unified relay — replaces the old scan_relay + odom_imu_relay pair.
+    #     Single node handles QoS bridge (RELIABLE→BEST_EFFORT for /scan),
+    #     stamp rewriting (ESP32 millis() → host wall-clock), AND timestamp
+    #     coordination (scan stamp = latest odom stamp so SLAM's TF lookup
+    #     finds an exact match instead of extrapolating). This eliminates
+    #     the inter-node scheduling skew that caused map drag.
+    #     See smb_nodes/unified_relay.py for details.
+    unified_relay_node = Node(
         package='smb_nodes',
-        executable='scan_relay',
-        name='scan_relay',
+        executable='unified_relay',
+        name='unified_relay',
         parameters=[{
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-        }],
-        output='screen',
-    )
-
-    # 6c. /odom + /imu/data stamp bridge — ESP32 fills header.stamp with
-    #     millis()/1000 (year 1970) because it has no RTC. EKF rejects those
-    #     stamps as "in the past", so the odom->base_link TF never gets
-    #     published and SLAM has no chain to produce /map. This relay
-    #     rewrites the stamp on the host side.
-    #
-    #     flip_odom_x=False: ESP32 odom +X = motor direction = arrow side =
-    #     URDF +X = physical forward. Convention matches docs/TOPIC_CONTRACT.md
-    #     and src/smb_robot/urdf/smb.urdf.xacro. The transform branch is kept
-    #     in odom_imu_relay.py for future chassis re-orientation, but disabled.
-    odom_imu_relay_node = Node(
-        package='smb_nodes',
-        executable='odom_imu_relay',
-        name='odom_imu_relay',
-        parameters=[{
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'odom_in_topic': '/odom',
-            'odom_out_topic': '/odom_relay',
-            'imu_in_topic': '/imu/data',
-            'imu_out_topic': '/imu_relay',
-            'flip_odom_x': False,
+            'scan_in': '/scan',
+            'scan_out': '/scan_relay',
+            'odom_in': '/odom',
+            'odom_out': '/odom_relay',
+            'imu_in': '/imu/data',
+            'imu_out': '/imu_relay',
+            'publish_tf': False,  # EKF handles odom→base_link TF
         }],
         output='screen',
     )
@@ -305,8 +288,7 @@ def generate_launch_description():
         jsp_node,
         ekf_node,
         slam_launch,
-        scan_relay_node,
-        odom_imu_relay_node,
+        unified_relay_node,
         supervisor_node,
         nav2_launch,
         rviz_node,
