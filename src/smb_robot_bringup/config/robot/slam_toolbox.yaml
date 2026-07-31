@@ -66,9 +66,8 @@ slam_toolbox:
     # larger than the original 0.5m / 1.5m thresholds assumed for a 10 Hz
     # stream. Without these looser values, slam_toolbox rejects most new scans
     # as "moved too far" → new submap spawns at the wrong location → user
-    # sees "map stays there, new map pops on top" instead of one connected map.
-    minimum_travel_distance: 0.05  # was 0.2 — register scans very frequently (every 5cm) for max snappiness
-    minimum_travel_heading: 0.05   # was 0.2 — register scans after very small rotations (every ~2.8 degrees)
+    minimum_travel_distance: 0.25  # v2.4: increased from 0.05 to avoid smearing when stationary/slipping
+    minimum_travel_heading: 10.0   # v2.4: increased to 10.0 rad (572 deg) to completely disable mapping while rotating (prevents skewed scans from ruining the map)
     skip_odometry: false
 
     # Scan matching.
@@ -94,9 +93,9 @@ slam_toolbox:
     # the odometry can be off by 30cm+. Need a wider search window so the
     # scan-to-submap correlator can lock on. Otherwise it fails the match,
     # starts a new submap, and the map "pops" instead of stitching.
-    link_match_minimum_response_fine: 0.55
+    link_match_minimum_response_fine: 0.3
     link_scan_max_distance: 5.0   # was 1.5 — match scans up to 5m apart (drift)
-    correlation_search_space_dimension: 1.5  # was 0.5 — search ±1.5m window
+    correlation_search_space_dimension: 2.0  # was 0.5 — search ±2.0m window
     correlation_search_space_resolution: 0.01
     correlation_search_space_smear_deviation: 0.1
     #
@@ -109,13 +108,19 @@ slam_toolbox:
     loop_search_maximum_distance: 1.5   # was 3.0
     loop_match_minimum_chain_size: 10
     loop_match_minimum_response_coarse: 0.35
-    loop_match_minimum_response_fine: 0.45
+    loop_match_minimum_response_fine: 0.3
     loop_match_maximum_variance_coarse: 3.0
 
     # Solver — on lyrical slam_toolbox only ships `CeresSolver`, not SpaSolver.
     optimization_solver: slam_toolbox_msgs/msg/SolverMsg
     solver_plugin: solver_plugins::CeresSolver
-
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+    ceres_trust_region_strategy: LEVENBERG_MARQUARDT
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function: None
+    distance_variance_penalty: 10.0    # heavily trust odometry to ignore skewed scans
+    angle_variance_penalty: 10.0       # heavily trust odometry to ignore skewed scans
     use_scan_matching: true
     use_scan_barycenter: true
 
