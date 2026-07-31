@@ -72,8 +72,8 @@ controller_server:
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: true
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.50
+      yaw_goal_tolerance: 0.45
     FollowPath:
       # Regulated Pure Pursuit — simpler than DWB, more stable for diff-drive.
       # Avoids the segment-traj critics that DWB depends on, which can segfault
@@ -81,18 +81,21 @@ controller_server:
       # co-linear (the case for short in-place headings).
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: True
-      min_vel_x: 0.06
+      min_vel_x: 0.02
       min_vel_y: 0.0
-      max_vel_x: 0.12
-      min_vel_theta: 0.06
-      max_vel_theta: 0.3
-      acc_lim_x: 2.5
-      acc_lim_theta: 3.2
+      max_vel_x: 0.07
+      min_vel_theta: 0.20
+      max_vel_theta: 0.50
+      acc_lim_x: 0.6
+      acc_lim_theta: 2.0
       # xy_goal_tolerance / yaw_goal_tolerance / stateful inherit from defaults.
-      desired_linear_vel: 0.12
-      lookahead_dist: 0.45
+      desired_linear_vel: 0.07
+      lookahead_dist: 0.6
+      use_regulated_linear_velocity_scaling: true
+      regulated_linear_scaling_min_radius: 0.5
+      regulated_linear_scaling_min_speed: 0.02
       use_rotate_to_heading: true
-      rotate_to_heading_angular_vel: 0.25
+      rotate_to_heading_angular_vel: 0.50
       # transform_tolerance: how far in the past the controller accepts a TF
       # for. Default 0.5 is too tight for slam_toolbox: TF data is published
       # only at scan-match completion (~2 Hz), so between matches the
@@ -196,7 +199,7 @@ waypoint_follower:
     wait_at_waypoint:
       plugin: "nav2_waypoint_follower::WaitAtWaypoint"
       enabled: true
-      waypoint_pause_duration: 200
+      waypoint_pause_duration: 500
 
 behavior_server:
   ros__parameters:
