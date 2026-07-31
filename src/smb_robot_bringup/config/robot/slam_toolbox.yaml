@@ -67,8 +67,8 @@ slam_toolbox:
     # stream. Without these looser values, slam_toolbox rejects most new scans
     # as "moved too far" → new submap spawns at the wrong location → user
     # sees "map stays there, new map pops on top" instead of one connected map.
-    minimum_travel_distance: 0.2   # was 0.5 — register scans even after small moves
-    minimum_travel_heading: 0.2    # was 0.5 — register scans after small rotations
+    minimum_travel_distance: 0.05  # was 0.2 — register scans very frequently (every 5cm) for max snappiness
+    minimum_travel_heading: 0.05   # was 0.2 — register scans after very small rotations (every ~2.8 degrees)
     skip_odometry: false
 
     # Scan matching.
