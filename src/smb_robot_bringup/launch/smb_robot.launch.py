@@ -184,7 +184,7 @@ def generate_launch_description():
         launch_arguments={
             'slam_params_file': LaunchConfiguration('slam_params_file'),
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'autostart': 'false',
+            'autostart': 'true',
         }.items(),
     )
 

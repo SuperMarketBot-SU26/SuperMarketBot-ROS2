@@ -50,6 +50,8 @@ slam_toolbox:
     map_start_x: 0.0
     map_start_y: 0.0
     map_start_yaw: 0.0
+    map_file_name: "/home/nhatkhoa1124/ros2_ws/src/smb_robot_bringup/maps/room_map"
+    map_start_at_dock: true
 
     # Match the YDLIDAR X3 spec + bridge-side filter range
     max_laser_range: 6.0
@@ -66,8 +68,8 @@ slam_toolbox:
     # larger than the original 0.5m / 1.5m thresholds assumed for a 10 Hz
     # stream. Without these looser values, slam_toolbox rejects most new scans
     # as "moved too far" → new submap spawns at the wrong location → user
-    minimum_travel_distance: 0.10  # 10 cm travel threshold for rapid map updates in compact 3x3m spaces
-    minimum_travel_heading: 0.35   # 20 degrees turn threshold (was hacked to 10.0 rad / 573 deg!)
+    minimum_travel_distance: 0.35  # 35 cm travel threshold to allow odometry to cruise smoothly without constant coordinate realignment
+    minimum_travel_heading: 0.50   # 28 deg turn threshold to prevent weaving corrections from re-triggering SLAM scans
     skip_odometry: false
 
     # Scan matching.
@@ -119,13 +121,13 @@ slam_toolbox:
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: None
-    distance_variance_penalty: 2.0     # lowered from 10.0 to actively trust 10 Hz LiDAR corrections
-    angle_variance_penalty: 2.0        # lowered from 10.0 to actively trust 10 Hz LiDAR corrections
+    distance_variance_penalty: 5.0     # balanced weight to prevent over-correcting during rapid rotation
+    angle_variance_penalty: 6.0        # higher angular stability to eliminate rotational feedback oscillations
     use_scan_matching: true
     use_scan_barycenter: true
 
     # Timing
-    transform_publish_period: 0.1   # 10 Hz TF (was 20 Hz; odom TF is ~10-15 Hz, publishing faster just repeats stale data)
+    transform_publish_period: 0.2   # 5 Hz TF (acts as a steady low-pass filter against WiFi latency oscillations)
     tf_buffer_duration: 60.0   # 60s: tolerate late ESP32 handshake (was 30s,
                                # but with autostart=false this is mostly belt-and-suspenders)
     # v2.4 (Jul 29 2026): Added for ESP32 1-2 Hz scan rate.
@@ -141,3 +143,6 @@ slam_toolbox:
     publish_tf: true
 
     debug_logging: false
+        # Automatically load your saved map on startup:
+    map_file_name: "/home/nhatkhoa1124/ros2_ws/src/smb_robot_bringup/maps/room_map"
+    map_start_at_dock: true

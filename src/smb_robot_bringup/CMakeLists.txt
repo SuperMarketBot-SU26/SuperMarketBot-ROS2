@@ -7,7 +7,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY launch config params worlds
+install(DIRECTORY launch config params worlds maps waypoints
   DESTINATION share/${PROJECT_NAME}
   OPTIONAL
 )
