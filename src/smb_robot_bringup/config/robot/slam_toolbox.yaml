@@ -66,8 +66,8 @@ slam_toolbox:
     # larger than the original 0.5m / 1.5m thresholds assumed for a 10 Hz
     # stream. Without these looser values, slam_toolbox rejects most new scans
     # as "moved too far" → new submap spawns at the wrong location → user
-    minimum_travel_distance: 0.25  # v2.4: increased from 0.05 to avoid smearing when stationary/slipping
-    minimum_travel_heading: 10.0   # v2.4: increased to 10.0 rad (572 deg) to completely disable mapping while rotating (prevents skewed scans from ruining the map)
+    minimum_travel_distance: 0.10  # 10 cm travel threshold for rapid map updates in compact 3x3m spaces
+    minimum_travel_heading: 0.35   # 20 degrees turn threshold (was hacked to 10.0 rad / 573 deg!)
     skip_odometry: false
 
     # Scan matching.
@@ -119,8 +119,8 @@ slam_toolbox:
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: None
-    distance_variance_penalty: 10.0    # heavily trust odometry to ignore skewed scans
-    angle_variance_penalty: 10.0       # heavily trust odometry to ignore skewed scans
+    distance_variance_penalty: 2.0     # lowered from 10.0 to actively trust 10 Hz LiDAR corrections
+    angle_variance_penalty: 2.0        # lowered from 10.0 to actively trust 10 Hz LiDAR corrections
     use_scan_matching: true
     use_scan_barycenter: true
 
