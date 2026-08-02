@@ -64,6 +64,7 @@ slam_toolbox:
     # as "moved too far" → new submap spawns at the wrong location.
     minimum_travel_distance: 0.05   # 5cm threshold: continuous real-time map corrections during linear motion
     minimum_travel_heading: 0.05    # 2.8 deg turn threshold: continuous real-time orientation tracking without stuttering
+    minimum_time_interval: 0.2      # 5 Hz heartbeat: continuous TF timestamp renewal when stationary without network or CPU overhead
     skip_odometry: false
 
     # Scan matching
