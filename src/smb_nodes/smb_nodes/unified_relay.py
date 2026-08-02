@@ -140,28 +140,9 @@ class UnifiedRelay(Node):
         )
 
     def _get_coordinated_stamp(self, esp32_stamp):
-        """Convert ESP32 timestamp to ROS 2 wall-clock time using minimum-offset sync, or pass through if epoch-synced."""
-        # If the ESP32 clock is already synchronized to wall-clock epoch time (> year 2001),
-        # return the true hardware capture timestamp directly without applying network offset filters.
-        if esp32_stamp.sec > 1000000000:
-            return esp32_stamp
-
-        esp32_ns = esp32_stamp.sec * 1e9 + esp32_stamp.nanosec
-        ros_ns = self.get_clock().now().nanoseconds
-        
-        current_offset = ros_ns - esp32_ns
-        
-        # Initialize or track the minimum offset (represents fastest transmission time)
-        if self._time_offset_ns is None or current_offset < self._time_offset_ns:
-            self._time_offset_ns = current_offset
-        else:
-            # Slowly pull offset up to handle clock drift over long periods
-            self._time_offset_ns = 0.999 * self._time_offset_ns + 0.001 * current_offset
-
-        corrected_ns = int(esp32_ns + self._time_offset_ns)
-        
-        stamp = rclpy.time.Time(nanoseconds=corrected_ns).to_msg()
-        return stamp
+        """Convert ESP32 timestamp directly to host wall-clock time to prevent drift and extrapolation errors."""
+        # Directly use ROS 2 host wall-clock time so that sensor streams never drift behind real-time execution.
+        return self.get_clock().now().to_msg()
 
     def _on_odom(self, msg: Odometry) -> None:
         """Relay odom with synchronized host-clock stamp."""

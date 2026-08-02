@@ -71,9 +71,9 @@ slam_toolbox:
     do_loop_closing: true
     link_match_minimum_response_fine: 0.1
     link_scan_max_distance: 5.0
-    correlation_search_space_dimension: 1.5   # ±1.5m search window ensures SLAM stays aligned even during continuous movement and odometry drift
-    correlation_search_space_resolution: 0.05 # 5cm resolution (matches map resolution) removes 97.7% of redundant search math for instantaneous Ceres scan matching
-    correlation_search_space_smear_deviation: 0.05
+    correlation_search_space_dimension: 0.5   # ±50cm search window: reduce matrix computations by 89% for instantaneous scan matching without stalling TF publishers
+    correlation_search_space_resolution: 0.05 # 5cm resolution MUST match occupancy grid resolution (0.05) to prevent 'unable to get pointer in probability search' runtime crashes
+    correlation_search_space_smear_deviation: 0.05 # 5cm blur window matching grid resolution
 
     # Loop-closure params
     loop_search_maximum_distance: 1.5
