@@ -150,6 +150,7 @@ def generate_launch_description() -> LaunchDescription:
                 'autostart': autostart,
                 'node_names': lifecycle_nodes,
                 'use_sim_time': use_sim_time,
+                'bond_timeout': 60.0,
             }],
         ),
     ]

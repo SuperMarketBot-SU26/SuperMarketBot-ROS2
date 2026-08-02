@@ -123,34 +123,11 @@ pkill -9 -f "micro_ros_agent"        2>/dev/null || true
 pkill -9 -f "async_slam_toolbox_node"     2>/dev/null || true
 pkill -9 -f "robot_state_publisher"  2>/dev/null || true
 pkill -9 -f "nav2_container"        2>/dev/null || true
-pkill -9 -f "rviz2"                 2>/dev/null || true
-pkill -9 -f "supervisor"             2>/dev/null || true
-pkill -9 -f "ekf_node"               2>/dev/null || true
-pkill -9 -f "lifecycle_manager"      2>/dev/null || true
-pkill -9 -f "controller_server"      2>/dev/null || true
-pkill -9 -f "planner_server"         2>/dev/null || true
-pkill -9 -f "bt_navigator"           2>/dev/null || true
-pkill -9 -f "behavior_server"        2>/dev/null || true
-pkill -9 -f "waypoint_follower"      2>/dev/null || true
-# Catch any zombie python launch wrappers left after their children died.
-pkill -9 -f "ros2 launch smb.launch.py" 2>/dev/null || true
-sleep 1
-echo "[test_robot] Cleanup done."
-
-# ----- Cleanup on exit ---------------------------------------------------------
-cleanup() {
-    echo
-    echo "[test_robot] Shutting down..."
-    pkill -INT -f "ros2 launch smb_robot_bringup"  2>/dev/null || true
-    pkill -INT -f "ros2 launch smb.launch.py"      2>/dev/null || true
-    sleep 2
-    pkill -9 -f "snap.micro-ros-agent"    2>/dev/null || true
-    pkill -9 -f "micro_ros_agent"        2>/dev/null || true
-    pkill -9 -f "async_slam_toolbox_node"     2>/dev/null || true
-    pkill -9 -f "robot_state_publisher"  2>/dev/null || true
-    pkill -9 -f "nav2_container"        2>/dev/null || true
     pkill -9 -f "rviz2"                 2>/dev/null || true
     pkill -9 -f "supervisor"             2>/dev/null || true
+    pkill -9 -f "unified_relay"          2>/dev/null || true
+    pkill -9 -f "scan_relay"             2>/dev/null || true
+    pkill -9 -f "odom_imu_relay"         2>/dev/null || true
     pkill -9 -f "ekf_node"               2>/dev/null || true
     pkill -9 -f "lifecycle_manager"      2>/dev/null || true
     pkill -9 -f "controller_server"      2>/dev/null || true
@@ -158,7 +135,40 @@ cleanup() {
     pkill -9 -f "bt_navigator"           2>/dev/null || true
     pkill -9 -f "behavior_server"        2>/dev/null || true
     pkill -9 -f "waypoint_follower"      2>/dev/null || true
-pkill -9 -f "ros2 launch smb.launch.py" 2>/dev/null || true
+    # Catch any zombie python launch wrappers left after their children died.
+    pkill -9 -f "ros2 launch smb.launch.py" 2>/dev/null || true
+    # Purge lingering ROS2 / DDS shared-memory buffers from previous runs
+    rm -rf /dev/shm/fastrtps_* /dev/shm/ros2* /dev/shm/sem.* 2>/dev/null || true
+    sleep 1
+    echo "[test_robot] Cleanup done."
+
+    # ----- Cleanup on exit ---------------------------------------------------------
+    cleanup() {
+        echo
+        echo "[test_robot] Shutting down..."
+        pkill -INT -f "ros2 launch smb_robot_bringup"  2>/dev/null || true
+        pkill -INT -f "ros2 launch smb.launch.py"      2>/dev/null || true
+        sleep 2
+        pkill -9 -f "snap.micro-ros-agent"    2>/dev/null || true
+        pkill -9 -f "micro_ros_agent"        2>/dev/null || true
+        pkill -9 -f "async_slam_toolbox_node"     2>/dev/null || true
+        pkill -9 -f "robot_state_publisher"  2>/dev/null || true
+        pkill -9 -f "nav2_container"        2>/dev/null || true
+        pkill -9 -f "rviz2"                 2>/dev/null || true
+        pkill -9 -f "supervisor"             2>/dev/null || true
+        pkill -9 -f "unified_relay"          2>/dev/null || true
+        pkill -9 -f "scan_relay"             2>/dev/null || true
+        pkill -9 -f "odom_imu_relay"         2>/dev/null || true
+        pkill -9 -f "ekf_node"               2>/dev/null || true
+        pkill -9 -f "lifecycle_manager"      2>/dev/null || true
+        pkill -9 -f "controller_server"      2>/dev/null || true
+        pkill -9 -f "planner_server"         2>/dev/null || true
+        pkill -9 -f "bt_navigator"           2>/dev/null || true
+        pkill -9 -f "behavior_server"        2>/dev/null || true
+        pkill -9 -f "waypoint_follower"      2>/dev/null || true
+    pkill -9 -f "ros2 launch smb.launch.py" 2>/dev/null || true
+  # Purge lingering ROS2 / DDS shared-memory buffers from this session
+  rm -rf /dev/shm/fastrtps_* /dev/shm/ros2* /dev/shm/sem.* 2>/dev/null || true
   # Trim old launch logs to keep the latest 5 (most recent ones stay)
   find "$LOG_DIR" -maxdepth 1 -name '*.log' -type f -mmin +60 \
     -printf '%T@ %p\n' 2>/dev/null \

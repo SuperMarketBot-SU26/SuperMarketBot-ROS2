@@ -26,7 +26,7 @@ Visualization Manager:
         Z: 0
       Plane: XY
       Plane Cell Count: 20
-      Reference Frame: odom
+      Reference Frame: map
       Value: true
     - Class: rviz_default_plugins/TF
       Enabled: true
@@ -189,8 +189,8 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: odom
-    Frame Rate: 30
+    Fixed Frame: map
+    Frame Rate: 60
   Name: root
   Tools:
     - Class: rviz_default_plugins/MoveCamera

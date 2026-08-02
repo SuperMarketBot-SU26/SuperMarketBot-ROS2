@@ -31,7 +31,7 @@ ekf_filter_node:
     map_frame: map
 
     # Frequency
-    frequency: 30.0
+    frequency: 60.0            # 60 Hz high-speed state publication for smooth 60 FPS RViz tracking
     # v2.5 (Jul 31 2026): increased from 0.1 to 0.5 to tolerate WiFi UDP
     # jitter. At 0.1s the EKF skips cycles when /odom_relay arrives late
     # (WiFi + micro-ROS + relay scheduling), dropping odom→base_link TF

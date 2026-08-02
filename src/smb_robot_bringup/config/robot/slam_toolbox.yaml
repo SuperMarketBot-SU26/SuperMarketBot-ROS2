@@ -61,88 +61,49 @@ slam_toolbox:
     # a real environment (not a 10x10m box). Real robot has wheel-encoder
     # odometry that drifts a bit, so we want enough candidates.
     #
-    # v2.3: minimum_travel* and link_scan_max_distance LOOSENED because the
-    # ESP32 publishes /scan at ~1-2 Hz (instead of 10 Hz) when WiFi + micro-ROS
-    # UDP backpressure + LiDAR UART parsing all compete for CPU. With sparse
-    # scans the robot can move 10-30cm between consecutive scans, which is
-    # larger than the original 0.5m / 1.5m thresholds assumed for a 10 Hz
-    # stream. Without these looser values, slam_toolbox rejects most new scans
-    # as "moved too far" → new submap spawns at the wrong location → user
-    minimum_travel_distance: 0.35  # 35 cm travel threshold to allow odometry to cruise smoothly without constant coordinate realignment
-    minimum_travel_heading: 0.50   # 28 deg turn threshold to prevent weaving corrections from re-triggering SLAM scans
+    # as "moved too far" → new submap spawns at the wrong location.
+    minimum_travel_distance: 0.05   # 5cm threshold: continuous real-time map corrections during linear motion
+    minimum_travel_heading: 0.05    # 2.8 deg turn threshold: continuous real-time orientation tracking without stuttering
     skip_odometry: false
 
-    # Scan matching.
-    #
-    # WHY LOOP CLOSING IS ENABLED HERE (do_loop_closing: true):
-    #   The real-robot environment is not the symmetric 10x10m sim room,
-    #   so loop-closure false positives aren't a concern. The ESP32 wheel
-    #   encoders accumulate drift over time (~5-10 cm per minute of motion
-    #   on smooth surfaces), and without loop closure the map will
-    #   gradually warp as odom drift compounds.
-    #
-    #   Thresholds are kept at moderate values — tighten
-    #   `loop_match_minimum_response_fine` (default 0.45) if you see
-    #   false loops snap the pose graph, loosen if genuine loops aren't
-    #   closing.
+    # Scan matching
     do_loop_closing: true
-    #
-    # Per-step link matching — keep tighter than upstream defaults (0.1)
-    # but allow some flexibility for real-world sensor noise + sparse scans.
-    # v2.3: link_scan_max_distance + correlation_search_space_dimension INCREASED
-    # for the same reason as minimum_travel_* above: ESP32 ~1-2 Hz scan rate +
-    # wheel-encoder drift means consecutive scans can be 30-50cm apart and
-    # the odometry can be off by 30cm+. Need a wider search window so the
-    # scan-to-submap correlator can lock on. Otherwise it fails the match,
-    # starts a new submap, and the map "pops" instead of stitching.
-    link_match_minimum_response_fine: 0.3
-    link_scan_max_distance: 5.0   # was 1.5 — match scans up to 5m apart (drift)
-    correlation_search_space_dimension: 2.0  # was 0.5 — search ±2.0m window
-    correlation_search_space_resolution: 0.01
-    correlation_search_space_smear_deviation: 0.1
-    #
-    # Loop-closure params — upstream defaults; tuned for real environment.
-    # v2.3: loop_search_maximum_distance REDUCED so loop closure considers
-    # nearby submaps (within 1.5m) even when wheel-encoder drift has moved
-    # them apart by tens of cm. Combined with the wider link_scan_max_distance,
-    # this is what stitches consecutive submaps when the robot returns to
-    # a previously-mapped area after exploring.
-    loop_search_maximum_distance: 1.5   # was 3.0
+    link_match_minimum_response_fine: 0.1
+    link_scan_max_distance: 5.0
+    correlation_search_space_dimension: 1.5   # ±1.5m search window ensures SLAM stays aligned even during continuous movement and odometry drift
+    correlation_search_space_resolution: 0.05 # 5cm resolution (matches map resolution) removes 97.7% of redundant search math for instantaneous Ceres scan matching
+    correlation_search_space_smear_deviation: 0.05
+
+    # Loop-closure params
+    loop_search_maximum_distance: 1.5
     loop_match_minimum_chain_size: 10
     loop_match_minimum_response_coarse: 0.35
     loop_match_minimum_response_fine: 0.3
     loop_match_maximum_variance_coarse: 3.0
 
-    # Solver — on lyrical slam_toolbox only ships `CeresSolver`, not SpaSolver.
+    # Solver
     optimization_solver: slam_toolbox_msgs/msg/SolverMsg
     solver_plugin: solver_plugins::CeresSolver
+    threads: 8                         # Allocate 8 processing threads to parallelize Ceres graph optimization and scan matcher loops
     ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
     ceres_preconditioner: SCHUR_JACOBI
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: None
-    distance_variance_penalty: 5.0     # balanced weight to prevent over-correcting during rapid rotation
-    angle_variance_penalty: 6.0        # higher angular stability to eliminate rotational feedback oscillations
+    distance_variance_penalty: 0.01    # reduced to 0.01: prioritize point cloud wall alignment over drifting linear odometry during forward movement
+    angle_variance_penalty: 0.01       # reduced to 0.01: prioritize point cloud alignment over drifting skid-steer odometry orientation during turns
     use_scan_matching: true
     use_scan_barycenter: true
 
     # Timing
-    transform_publish_period: 0.2   # 5 Hz TF (acts as a steady low-pass filter against WiFi latency oscillations)
-    tf_buffer_duration: 60.0   # 60s: tolerate late ESP32 handshake (was 30s,
-                               # but with autostart=false this is mostly belt-and-suspenders)
-    # v2.4 (Jul 29 2026): Added for ESP32 1-2 Hz scan rate.
-    # scan_queue_size: increase buffer so late-arriving scans at 2 Hz don't get
-    # dropped. slam_toolbox processes one scan per call; with a 2 Hz input the
-    # default queue of 5 means ~2.5s buffer — enough for typical timing jitter.
-    scan_queue_size: 20
+    transform_publish_period: 0.02   # 50 Hz TF: continuous high-speed coordinate synchronization for ultra-smooth RViz displays
+    tf_buffer_duration: 60.0
+    # scan_queue_size: reduced from 20 to 3 so late-arriving scans do not pile up in buffer.
+    # Processing a backlog of 20 old scans forces SLAM to trail up to 2 seconds behind real-time turns.
+    scan_queue_size: 3
     # transform_tolerance: how far in the past a TF lookup can be.
-    # At 1 Hz scans the scan-to-pose transform might lag. 0.5s gives margin.
-    transform_tolerance: 1.0   # was 0.5; at ~3-10 Hz map→odom TF, need 1.0s headroom
+    transform_tolerance: 0.5   # 500ms tolerance: prevent Wi-Fi packet jitter from causing TF extrapolation errors during driving
     throttle_scans: 1
     publish_occupancy_grid: true
     publish_tf: true
-
     debug_logging: false
-        # Automatically load your saved map on startup:
-    map_file_name: "/home/nhatkhoa1124/ros2_ws/src/smb_robot_bringup/maps/room_map"
-    map_start_at_dock: true

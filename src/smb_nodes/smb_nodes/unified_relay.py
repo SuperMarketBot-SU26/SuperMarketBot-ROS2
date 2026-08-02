@@ -89,6 +89,7 @@ class UnifiedRelay(Node):
         # between odom and scan. By calculating a fixed offset (ROS_time - ESP32_time),
         # we preserve the exact relative timing generated on the microcontroller.
         self._time_offset_ns = None
+        self._latest_odom_stamp_ns = None
 
         # ---- QoS profiles ----
         # Input: match ESP32 micro-ros-arduino defaults (RELIABLE)
@@ -121,8 +122,8 @@ class UnifiedRelay(Node):
             self._tf_broadcaster = TransformBroadcaster(self)
 
         # ---- Subscribers ----
-        # Subscribe to odom FIRST so _latest_odom_stamp is populated
-        # before the first scan arrives (odom runs at 30 Hz, scan at ~5 Hz)
+        # Subscribe to odom FIRST so _latest_odom_stamp_ns is populated
+        # before the first scan arrives (odom runs at 30 Hz, scan at ~10 Hz)
         self.create_subscription(
             Odometry, odom_in, self._on_odom, qos_reliable_in)
         self.create_subscription(
@@ -139,7 +140,12 @@ class UnifiedRelay(Node):
         )
 
     def _get_coordinated_stamp(self, esp32_stamp):
-        """Convert ESP32 timestamp to ROS 2 wall-clock time using minimum-offset sync."""
+        """Convert ESP32 timestamp to ROS 2 wall-clock time using minimum-offset sync, or pass through if epoch-synced."""
+        # If the ESP32 clock is already synchronized to wall-clock epoch time (> year 2001),
+        # return the true hardware capture timestamp directly without applying network offset filters.
+        if esp32_stamp.sec > 1000000000:
+            return esp32_stamp
+
         esp32_ns = esp32_stamp.sec * 1e9 + esp32_stamp.nanosec
         ros_ns = self.get_clock().now().nanoseconds
         
@@ -160,6 +166,7 @@ class UnifiedRelay(Node):
     def _on_odom(self, msg: Odometry) -> None:
         """Relay odom with synchronized host-clock stamp."""
         stamp = self._get_coordinated_stamp(msg.header.stamp)
+        self._latest_odom_stamp_ns = stamp.sec * 1000000000 + stamp.nanosec
         msg.header.stamp = stamp
         self._odom_pub.publish(msg)
 
@@ -176,8 +183,15 @@ class UnifiedRelay(Node):
             self._tf_broadcaster.sendTransform(t)
 
     def _on_scan(self, msg: LaserScan) -> None:
-        """Relay scan with synchronized host-clock stamp."""
-        msg.header.stamp = self._get_coordinated_stamp(msg.header.stamp)
+        """Relay scan with synchronized host-clock stamp clamped to latest odom stamp."""
+        stamp = self._get_coordinated_stamp(msg.header.stamp)
+        scan_ns = stamp.sec * 1000000000 + stamp.nanosec
+        # Clamp scan timestamp so it never exceeds the latest odom timestamp,
+        # preventing SLAM Toolbox from dropping scans due to future TF extrapolation.
+        if self._latest_odom_stamp_ns is not None and scan_ns > self._latest_odom_stamp_ns:
+            scan_ns = self._latest_odom_stamp_ns
+            stamp = rclpy.time.Time(nanoseconds=scan_ns).to_msg()
+        msg.header.stamp = stamp
         self._scan_pub.publish(msg)
 
     def _on_imu(self, msg: Imu) -> None:
