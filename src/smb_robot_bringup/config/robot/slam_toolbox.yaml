@@ -62,8 +62,8 @@ slam_toolbox:
     # odometry that drifts a bit, so we want enough candidates.
     #
     # as "moved too far" → new submap spawns at the wrong location.
-    minimum_travel_distance: 0.05   # 5cm threshold: continuous real-time map corrections during linear motion
-    minimum_travel_heading: 0.05    # 2.8 deg turn threshold: continuous real-time orientation tracking without stuttering
+    minimum_travel_distance: 0.01   # 1cm threshold: evaluate scan matching every ~0.6s at low speeds (1.5cm/s) to eliminate blind odometry drift before reaching waypoints
+    minimum_travel_heading: 0.02    # 1.1 deg turn threshold: maintain continuous real-time orientation tracking during gentle turns
     minimum_time_interval: 0.2      # 5 Hz heartbeat: continuous TF timestamp renewal when stationary without network or CPU overhead
     skip_odometry: false
 
@@ -90,9 +90,9 @@ slam_toolbox:
     ceres_preconditioner: SCHUR_JACOBI
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
-    ceres_loss_function: None
-    distance_variance_penalty: 0.01    # reduced to 0.01: prioritize point cloud wall alignment over drifting linear odometry during forward movement
-    angle_variance_penalty: 0.01       # reduced to 0.01: prioritize point cloud alignment over drifting skid-steer odometry orientation during turns
+    ceres_loss_function: HuberLoss
+    distance_variance_penalty: 0.2     # Raised to 0.2: anchor scan matching securely within wheel odometry bounds to prevent sudden pose jumps across space
+    angle_variance_penalty: 0.2        # Raised to 0.2: stabilize orientation tracking against localized lidar ambiguities during turns
     use_scan_matching: true
     use_scan_barycenter: true
 

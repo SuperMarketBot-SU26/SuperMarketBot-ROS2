@@ -60,19 +60,19 @@ controller_server:
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: true
-      xy_goal_tolerance: 0.20
+      xy_goal_tolerance: 0.08
       yaw_goal_tolerance: 3.14
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: True
-      min_vel_x: 0.015
+      min_vel_x: 0.01
       min_vel_y: 0.0
-      max_vel_x: 0.02
+      max_vel_x: 0.015
       min_vel_theta: 0.30
       max_vel_theta: 0.60
-      acc_lim_x: 0.10
+      acc_lim_x: 0.05
       acc_lim_theta: 0.05
-      desired_linear_vel: 0.02
+      desired_linear_vel: 0.015
       lookahead_dist: 0.35
       use_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 0.5
