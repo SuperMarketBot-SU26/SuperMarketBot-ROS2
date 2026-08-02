@@ -91,8 +91,8 @@ slam_toolbox:
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: HuberLoss
-    distance_variance_penalty: 0.2     # Raised to 0.2: anchor scan matching securely within wheel odometry bounds to prevent sudden pose jumps across space
-    angle_variance_penalty: 0.2        # Raised to 0.2: stabilize orientation tracking against localized lidar ambiguities during turns
+    distance_variance_penalty: 0.5     # Calibrated to 0.5: balance fast solver convergence with rejection of wheel odometry slippage during rapid turns
+    angle_variance_penalty: 0.5        # Calibrated to 0.5: anchor orientation alignments to physical wall reflections rather than drifting turning encoders
     use_scan_matching: true
     use_scan_barycenter: true
 
