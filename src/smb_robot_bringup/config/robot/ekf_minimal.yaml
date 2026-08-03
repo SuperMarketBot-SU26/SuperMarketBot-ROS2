@@ -86,22 +86,11 @@ ekf_filter_node:
 
     odom0: /odom_relay
     odom0_config: [
-      true,  true,  false,  # X Y Z — position (linear, used)
-      false, false, true,   # R P Y — absolute orientation: fuse yaw from ESP32 EKF heading (heading correction)
-      false, false, false,  # Vx Vy Vz — linear velocity (unused; rely on position integration)
-      false, false, false,  # Vroll Vpitch Vyaw — angular velocity (DISABLED: same wheel source as yaw above)
+      true,  true,  false,  # X Y Z — fuse precise X, Y coordinates from ESP32 localization
+      false, false, true,   # R P Y — fuse Yaw orientation from ESP32 hardware EKF (ImuFusion.h)
+      false, false, false,  # Vx Vy Vz — disabled: avoid positional double-counting that causes kinematic overshooting
+      false, false, true,   # Vroll Vpitch Vyaw — enable Vyaw angular velocity tracking for instantaneous orientation prediction during turning
       false, false, false]  # Ax Ay Az — linear acceleration
 
     odom0_differential: false
     odom0_relative: false
-
-    imu0: /imu_relay
-    imu0_config: [
-      false, false, false,   # X Y Z — position
-      false, false, false,  # roll pitch yaw — absolute orientation (frame mismatch, skip)
-      false, false, false,  # Vx Vy Vz — linear velocity
-      false, false, false,  # Vroll Vpitch Vyaw — angular velocity (DISABLED: ESP32 ImuFusion.h
-                            # already fuses IMU gyro + wheel; re-fusing at EKF layer adds noise and drift)
-      false, false, false]  # Ax Ay Az — linear acceleration
-    imu0_differential: false
-    imu0_relative: false

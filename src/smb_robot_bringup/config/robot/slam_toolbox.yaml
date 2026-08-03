@@ -61,17 +61,16 @@ slam_toolbox:
     # a real environment (not a 10x10m box). Real robot has wheel-encoder
     # odometry that drifts a bit, so we want enough candidates.
     #
-    # as "moved too far" → new submap spawns at the wrong location.
-    minimum_travel_distance: 0.01   # 1cm threshold: evaluate scan matching every ~0.6s at low speeds (1.5cm/s) to eliminate blind odometry drift before reaching waypoints
-    minimum_travel_heading: 0.02    # 1.1 deg turn threshold: maintain continuous real-time orientation tracking during gentle turns
-    minimum_time_interval: 0.2      # 5 Hz heartbeat: continuous TF timestamp renewal when stationary without network or CPU overhead
+    minimum_travel_distance: 0.02   # 2cm threshold: maintain responsive map updating without excessive CPU load
+    minimum_travel_heading: 0.01    # ~0.57 deg turn threshold: trigger rapid rotational updates every half-degree of turning so SLAM aligns instantaneously with LiDAR scans
+    minimum_time_interval: 0.04     # 25 Hz maximum update rate: leverage host laptop computing power to optimize submaps instantaneously as unthrottled scans arrive
     skip_odometry: false
 
     # Scan matching
     do_loop_closing: true
     link_match_minimum_response_fine: 0.1
     link_scan_max_distance: 5.0
-    correlation_search_space_dimension: 0.5   # ±50cm search window: reduce matrix computations by 89% for instantaneous scan matching without stalling TF publishers
+    correlation_search_space_dimension: 1.0   # ±1.0m search window: expand scan matching search perimeter to locate wall geometry when odometry drifts beyond 50cm during turning maneuvers
     correlation_search_space_resolution: 0.05 # 5cm resolution MUST match occupancy grid resolution (0.05) to prevent 'unable to get pointer in probability search' runtime crashes
     correlation_search_space_smear_deviation: 0.05 # 5cm blur window matching grid resolution
 
@@ -91,19 +90,18 @@ slam_toolbox:
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: HuberLoss
-    distance_variance_penalty: 0.5     # Calibrated to 0.5: balance fast solver convergence with rejection of wheel odometry slippage during rapid turns
-    angle_variance_penalty: 0.5        # Calibrated to 0.5: anchor orientation alignments to physical wall reflections rather than drifting turning encoders
+    distance_variance_penalty: 0.4     # Tuned to 0.4: firm balance between stabilized odometry translation and dense scan convergence
+    angle_variance_penalty: 0.01       # Reduced to 0.01: virtually remove odometry orientation stiffness so Ceres scan matching aggressively aligns map orientation to real LiDAR wall returns
     use_scan_matching: true
     use_scan_barycenter: true
 
     # Timing
     transform_publish_period: 0.02   # 50 Hz TF: continuous high-speed coordinate synchronization for ultra-smooth RViz displays
     tf_buffer_duration: 60.0
-    # scan_queue_size: reduced from 20 to 3 so late-arriving scans do not pile up in buffer.
-    # Processing a backlog of 20 old scans forces SLAM to trail up to 2 seconds behind real-time turns.
-    scan_queue_size: 3
+    # scan_queue_size: expanded to 20 to absorb UDP packet transmissions for 360-beam scans over wireless networks without dropping frames.
+    scan_queue_size: 20
     # transform_tolerance: how far in the past a TF lookup can be.
-    transform_tolerance: 0.5   # 500ms tolerance: prevent Wi-Fi packet jitter from causing TF extrapolation errors during driving
+    transform_tolerance: 1.0   # 1.0s tolerance: accommodate 4G mobile network transmission jitter without inducing TF extrapolation errors during driving
     throttle_scans: 1
     publish_occupancy_grid: true
     publish_tf: true

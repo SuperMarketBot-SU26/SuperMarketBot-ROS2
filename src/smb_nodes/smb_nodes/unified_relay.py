@@ -92,21 +92,21 @@ class UnifiedRelay(Node):
         self._latest_odom_stamp_ns = None
 
         # ---- QoS profiles ----
-        # Input: match ESP32 micro-ros-arduino defaults (RELIABLE)
+        # Input: match ESP32 micro-ros-arduino defaults (RELIABLE); expand depth to 20 for 720-beam UDP bursts
         qos_reliable_in = QoSProfile(
-            depth=10,
+            depth=20,
             reliability=QoSReliabilityPolicy.RELIABLE,
             durability=QoSDurabilityPolicy.VOLATILE,
         )
-        # Scan output: match slam_toolbox's BEST_EFFORT subscriber
+        # Scan output: match slam_toolbox's BEST_EFFORT subscriber; expand depth to 20 for dense scan queues
         qos_scan_out = QoSProfile(
-            depth=5,
+            depth=20,
             reliability=QoSReliabilityPolicy.BEST_EFFORT,
             durability=QoSDurabilityPolicy.VOLATILE,
         )
         # Odom/IMU output: keep RELIABLE for EKF
         qos_reliable_out = QoSProfile(
-            depth=10,
+            depth=20,
             reliability=QoSReliabilityPolicy.RELIABLE,
             durability=QoSDurabilityPolicy.VOLATILE,
         )
@@ -116,20 +116,21 @@ class UnifiedRelay(Node):
         self._odom_pub = self.create_publisher(Odometry, odom_out, qos_reliable_out)
         self._imu_pub = self.create_publisher(Imu, imu_out, qos_reliable_out)
 
-        # Optional TF broadcaster
-        self._tf_broadcaster = None
+        # ---- Subscribers ----
+        self._scan_sub = self.create_subscription(
+            LaserScan, scan_in, self._on_scan, qos_reliable_in
+        )
+        self._odom_sub = self.create_subscription(
+            Odometry, odom_in, self._on_odom, qos_reliable_in
+        )
+        self._imu_sub = self.create_subscription(
+            Imu, imu_in, self._on_imu, qos_reliable_in
+        )
+
+        # ---- Optional static odom → base_link broadcaster ----
+        self._tf_broadcaster: Optional[TransformBroadcaster] = None
         if self._publish_tf:
             self._tf_broadcaster = TransformBroadcaster(self)
-
-        # ---- Subscribers ----
-        # Subscribe to odom FIRST so _latest_odom_stamp_ns is populated
-        # before the first scan arrives (odom runs at 30 Hz, scan at ~10 Hz)
-        self.create_subscription(
-            Odometry, odom_in, self._on_odom, qos_reliable_in)
-        self.create_subscription(
-            LaserScan, scan_in, self._on_scan, qos_reliable_in)
-        self.create_subscription(
-            Imu, imu_in, self._on_imu, qos_reliable_in)
 
         self.get_logger().info(
             f'unified_relay started:\n'
@@ -140,9 +141,14 @@ class UnifiedRelay(Node):
         )
 
     def _get_coordinated_stamp(self, esp32_stamp):
-        """Convert ESP32 timestamp directly to host wall-clock time to prevent drift and extrapolation errors."""
-        # Directly use ROS 2 host wall-clock time so that sensor streams never drift behind real-time execution.
-        return self.get_clock().now().to_msg()
+        """Convert ESP32 timestamp to host wall-clock time using an offset to preserve relative timing and eliminate UDP jitter."""
+        esp32_ns = esp32_stamp.sec * 1000000000 + esp32_stamp.nanosec
+        ros_ns = self.get_clock().now().nanoseconds
+        # Re-sync offset if uninitialized or if drift/jitter exceeds 500ms
+        if self._time_offset_ns is None or abs(ros_ns - (esp32_ns + self._time_offset_ns)) > 500000000:
+            self._time_offset_ns = ros_ns - esp32_ns
+        synced_ns = esp32_ns + self._time_offset_ns
+        return rclpy.time.Time(nanoseconds=synced_ns).to_msg()
 
     def _on_odom(self, msg: Odometry) -> None:
         """Relay odom with synchronized host-clock stamp."""
