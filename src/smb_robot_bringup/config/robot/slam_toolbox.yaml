@@ -62,7 +62,7 @@ slam_toolbox:
     # odometry that drifts a bit, so we want enough candidates.
     #
     minimum_travel_distance: 0.02   # 2cm threshold: maintain responsive map updating without excessive CPU load
-    minimum_travel_heading: 0.01    # ~0.57 deg turn threshold: trigger rapid rotational updates every half-degree of turning so SLAM aligns instantaneously with LiDAR scans
+    minimum_travel_heading: 0.005   # ~0.28 deg turn threshold: trigger rapid rotational updates every quarter-degree of turning so SLAM orientation aligns instantaneously with LiDAR scans
     minimum_time_interval: 0.04     # 25 Hz maximum update rate: leverage host laptop computing power to optimize submaps instantaneously as unthrottled scans arrive
     skip_odometry: false
 
@@ -90,16 +90,16 @@ slam_toolbox:
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: HuberLoss
-    distance_variance_penalty: 0.4     # Tuned to 0.4: firm balance between stabilized odometry translation and dense scan convergence
-    angle_variance_penalty: 0.01       # Reduced to 0.01: virtually remove odometry orientation stiffness so Ceres scan matching aggressively aligns map orientation to real LiDAR wall returns
+    distance_variance_penalty: 0.4      # Tuned to 0.4: firm balance between stabilized odometry translation and dense scan convergence
+    angle_variance_penalty: 0.0001      # Reduced to 0.0001 (100x reduction): virtually eliminate odometry rotational resistance so Ceres scan matcher aggressively rotates and locks LiDAR scans onto room geometry
     use_scan_matching: true
     use_scan_barycenter: true
 
     # Timing
     transform_publish_period: 0.02   # 50 Hz TF: continuous high-speed coordinate synchronization for ultra-smooth RViz displays
     tf_buffer_duration: 60.0
-    # scan_queue_size: expanded to 20 to absorb UDP packet transmissions for 360-beam scans over wireless networks without dropping frames.
-    scan_queue_size: 20
+    # scan_queue_size: expanded to 40 to absorb UDP packet transmissions for high-density 720-beam scans without dropping frames.
+    scan_queue_size: 40
     # transform_tolerance: how far in the past a TF lookup can be.
     transform_tolerance: 1.0   # 1.0s tolerance: accommodate 4G mobile network transmission jitter without inducing TF extrapolation errors during driving
     throttle_scans: 1

@@ -63,7 +63,7 @@ controller_server:
       yaw_goal_tolerance: 3.14
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-      debug_trajectory_details: True
+      debug_trajectory_details: False  # Disabled to eliminate terminal console spam and preserve CPU cycles for SLAM optimization
       min_vel_x: 0.015     # Adjusted to 0.015 m/s for clean linear movement initiation
       min_vel_y: 0.0
       max_vel_x: 0.035     # Increased to 0.035 m/s (3.5 cm/s) for responsive linear transit between stepwise SLAM pause windows

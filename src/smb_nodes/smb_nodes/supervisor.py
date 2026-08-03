@@ -319,7 +319,7 @@ class Supervisor(Node):
             return
         now = self.get_clock().now()
         self._diag_seq += 1
-        self.get_logger().info(
+        self.get_logger().debug(
             f'[MANUAL-IN #{self._diag_seq}] lin={msg.linear.x:+.3f} '
             f'ang={msg.angular.z:+.3f} (cache_overwrite)')
         self._last_manual_input_at = now
@@ -453,19 +453,16 @@ class Supervisor(Node):
         forward command to be delayed or partially emitted).
         """
         if self._state is State.ESTOP:
-            self.get_logger().info(
+            self.get_logger().debug(
                 f'[PUB] state=ESTOP → publishing zero Twist')
             self._cmd_vel_out_pub.publish(Twist())
             self._last_publish_at = self.get_clock().now()
             return
         now = self.get_clock().now()
-        # v2.6 DIAGNOSTIC (2026-07-30): log every publish tick with cache +
-        # age since last manual input. Helps correlate "robot refuses to
-        # move" with timing of supervisor-to-firmware path.
         age_ms = (
             (now - self._last_manual_input_at).nanoseconds / 1_000_000
             if self._last_manual_input_at is not None else -1)
-        self.get_logger().info(
+        self.get_logger().debug(
             f'[PUB] state={self._state.value} '
             f'cache=lin={self._last_cmd_vel.linear.x:+.3f} '
             f'ang={self._last_cmd_vel.angular.z:+.3f} '
