@@ -125,23 +125,27 @@ def generate_launch_description():
         default_value=nav2_config_default,
         description='Nav2 params YAML.')
 
+    declare_serial_port_cmd = DeclareLaunchArgument(
+        'serial_port',
+        default_value='/dev/ttyUSB0',
+        description='USB serial device connected to ESP32 for micro-ROS.')
+
+    declare_serial_baud_cmd = DeclareLaunchArgument(
+        'serial_baud',
+        default_value='115200',
+        description='Baudrate for USB serial micro-ROS connection.')
+
     ekf_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml')
 
     # ---- Nodes ----
 
-    # 1. micro-ROS agent — bridges ESP32 WiFi UDP ↔ ROS2 topics.
-    #    Built from source against ROS 2 lyrical (snap version uses older
-    #    FastDDS / CDR v1 format incompatible with ROS 2 lyrical CDR v2).
-    #    Path defaults to ~/ros2_ws/install/micro_ros_agent/...; override
-    #    via SMB_MICRO_ROS_AGENT env var (e.g. for CI workspaces in
-    #    different locations). See ros2_ws.repos + SuperBuild.cmake patch
-    #    for build instructions.
+    # 1. micro-ROS agent — bridges ESP32 USB Serial ↔ ROS2 topics directly on Pi 5.
     micro_ros_agent_bin = os.environ.get(
         'SMB_MICRO_ROS_AGENT',
         os.path.expanduser(
             '~/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent'))
     micro_ros_agent_node = ExecuteProcess(
-        cmd=[micro_ros_agent_bin, 'udp4', '--port', '8888'],
+        cmd=[micro_ros_agent_bin, 'serial', '--dev', LaunchConfiguration('serial_port'), '-b', LaunchConfiguration('serial_baud')],
         condition=IfCondition(LaunchConfiguration('use_micro_ros')),
         output='screen',
         shell=False,

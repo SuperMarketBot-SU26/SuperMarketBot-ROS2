@@ -1,0 +1,25 @@
+services:
+  supermarket_bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: lyrical # Targeted for ROS 2 Lyrical Lyrebird (2026 release) compatibility
+    image: supermarket-bot-ros2:latest
+    container_name: smb_ros2_core
+    # CRITICAL: Host network mode guarantees ROS 2 DDS topic auto-discovery across Wi-Fi & LAN
+    network_mode: "host"
+    # Privileged mode gives Docker complete hardware access to plugged-in USB ports (ESP32 Serial / LiDAR)
+    privileged: true
+    volumes:
+      # Mount entire live workspace so colcon build caches are permanently preserved on host disk!
+      - .:/ros2_ws:rw
+      # Mount hardware devices directly into container for serial communication
+      - /dev:/dev:rw
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - "RCUTILS_CONSOLE_OUTPUT_FORMAT=[{severity}] [{time}]: {message}"
+    # Automatically restart whenever the Raspberry Pi boots up or if a transient crash occurs
+    restart: unless-stopped
+    command: ["ros2", "launch", "smb_robot_bringup", "smb_robot.launch.py", "use_nav2:=true", "use_rviz:=false"]

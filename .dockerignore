@@ -1,0 +1,13 @@
+build/
+install/
+log/
+.git/
+.data/
+.cursor/
+.test_robot_logs/
+*.posegraph
+*.pdf
+*.gv
+*.swp
+*.pyc
+__pycache__/
