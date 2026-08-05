@@ -212,7 +212,17 @@ SESSION_TS="$(date +%Y%m%d-%H%M%S)"
 LAUNCH_LOG="$LOG_DIR/launch_${SESSION_TS}.log"
 HELPER_LOG="$LOG_DIR/auto_activate_${SESSION_TS}.log"
 
+SERIAL_PORT=$(ls /dev/ttyACM* /dev/ttyUSB* 2>/dev/null | head -n 1 || true)
+SERIAL_ARG=""
+if [ -n "$SERIAL_PORT" ]; then
+    echo "[test_robot] Auto-detected USB Serial Port: $SERIAL_PORT"
+    SERIAL_ARG="serial_port:=$SERIAL_PORT"
+else
+    echo "[test_robot] WARNING: No /dev/ttyACM* or /dev/ttyUSB* device detected!"
+fi
+
 ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
+  rviz:=false $SERIAL_ARG \
   ${do_no_nav2:+use_nav2:=false} \
   ${do_no_slam:+use_slam:=false} \
   > >(tee "$LAUNCH_LOG") 2>&1 &

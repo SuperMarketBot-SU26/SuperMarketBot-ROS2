@@ -92,10 +92,15 @@ class UnifiedRelay(Node):
         self._latest_odom_stamp_ns = None
 
         # ---- QoS profiles ----
-        # Input: match ESP32 micro-ros-arduino defaults (RELIABLE); expand depth to 20 for 720-beam UDP bursts
+        # Input: match ESP32 micro-ros-arduino defaults (RELIABLE for scan; BEST_EFFORT for odom/imu)
         qos_reliable_in = QoSProfile(
             depth=20,
             reliability=QoSReliabilityPolicy.RELIABLE,
+            durability=QoSDurabilityPolicy.VOLATILE,
+        )
+        qos_best_effort_in = QoSProfile(
+            depth=20,
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
             durability=QoSDurabilityPolicy.VOLATILE,
         )
         # Scan output: match slam_toolbox's BEST_EFFORT subscriber; expand depth to 20 for dense scan queues
@@ -124,7 +129,7 @@ class UnifiedRelay(Node):
             Odometry, odom_in, self._on_odom, qos_reliable_in
         )
         self._imu_sub = self.create_subscription(
-            Imu, imu_in, self._on_imu, qos_reliable_in
+            Imu, imu_in, self._on_imu, qos_best_effort_in
         )
 
         # ---- Optional static odom → base_link broadcaster ----

@@ -78,9 +78,14 @@ class OdomImuRelay(Node):
         imu_out = self.get_parameter('imu_out_topic').value
         self._flip_x = self.get_parameter('flip_odom_x').value
 
-        qos = rclpy.qos.QoSProfile(
+        qos_pub = rclpy.qos.QoSProfile(
             depth=10,
             reliability=rclpy.qos.ReliabilityPolicy.RELIABLE,
+            durability=rclpy.qos.DurabilityPolicy.VOLATILE,
+        )
+        qos_sub = rclpy.qos.QoSProfile(
+            depth=10,
+            reliability=rclpy.qos.ReliabilityPolicy.BEST_EFFORT,
             durability=rclpy.qos.DurabilityPolicy.VOLATILE,
         )
 
@@ -88,15 +93,15 @@ class OdomImuRelay(Node):
         self._imu_pub = None
 
         if odom_out:
-            self._odom_pub = self.create_publisher(Odometry, odom_out, qos)
+            self._odom_pub = self.create_publisher(Odometry, odom_out, qos_pub)
         if imu_out:
-            self._imu_pub = self.create_publisher(Imu, imu_out, qos)
+            self._imu_pub = self.create_publisher(Imu, imu_out, qos_pub)
 
         if odom_in and self._odom_pub:
-            self.create_subscription(Odometry, odom_in, self._on_odom, qos)
+            self.create_subscription(Odometry, odom_in, self._on_odom, qos_pub)
             self.get_logger().info(f'subscribe /odom {odom_in} -> {odom_out}')
         if imu_in and self._imu_pub:
-            self.create_subscription(Imu, imu_in, self._on_imu, qos)
+            self.create_subscription(Imu, imu_in, self._on_imu, qos_sub)
             self.get_logger().info(f'subscribe /imu {imu_in} -> {imu_out}')
 
         self.get_logger().info(

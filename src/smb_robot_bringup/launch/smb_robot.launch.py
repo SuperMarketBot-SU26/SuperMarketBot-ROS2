@@ -82,7 +82,7 @@ def generate_launch_description():
 
     declare_rviz_cmd = DeclareLaunchArgument(
         'rviz',
-        default_value='true',
+        default_value='false',
         description='Open RViz2 with saved config.')
 
     declare_use_nav2_cmd = DeclareLaunchArgument(
@@ -132,7 +132,7 @@ def generate_launch_description():
 
     declare_serial_baud_cmd = DeclareLaunchArgument(
         'serial_baud',
-        default_value='115200',
+        default_value='921600',
         description='Baudrate for USB serial micro-ROS connection.')
 
     ekf_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml')
@@ -140,10 +140,17 @@ def generate_launch_description():
     # ---- Nodes ----
 
     # 1. micro-ROS agent — bridges ESP32 USB Serial ↔ ROS2 topics directly on Pi 5.
-    micro_ros_agent_bin = os.environ.get(
-        'SMB_MICRO_ROS_AGENT',
-        os.path.expanduser(
-            '~/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent'))
+    default_agent_paths = [
+        '/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent',
+        os.path.expanduser('~/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent'),
+        '/opt/ros/lyrical/bin/micro_ros_agent'
+    ]
+    agent_bin_found = 'micro_ros_agent'
+    for p in default_agent_paths:
+        if os.path.exists(p):
+            agent_bin_found = p
+            break
+    micro_ros_agent_bin = os.environ.get('SMB_MICRO_ROS_AGENT', agent_bin_found)
     micro_ros_agent_node = ExecuteProcess(
         cmd=[micro_ros_agent_bin, 'serial', '--dev', LaunchConfiguration('serial_port'), '-b', LaunchConfiguration('serial_baud')],
         condition=IfCondition(LaunchConfiguration('use_micro_ros')),
@@ -213,7 +220,7 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'false',
             'params_file': LaunchConfiguration('nav2_params_file'),
-            'autostart': 'true',
+            'autostart': 'false',
         }.items(),
     )
 
@@ -291,6 +298,8 @@ def generate_launch_description():
         declare_use_slam_cmd,
         declare_slam_params_cmd,
         declare_nav2_params_cmd,
+        declare_serial_port_cmd,
+        declare_serial_baud_cmd,
         micro_ros_agent_node,
         rsp_node,
         jsp_node,

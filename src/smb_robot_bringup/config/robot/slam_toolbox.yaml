@@ -50,7 +50,7 @@ slam_toolbox:
     map_start_x: 0.0
     map_start_y: 0.0
     map_start_yaw: 0.0
-    map_file_name: "/home/nhatkhoa1124/ros2_ws/src/smb_robot_bringup/maps/room_map"
+    map_file_name: "/ros2_ws/src/smb_robot_bringup/maps/room_map"
     map_start_at_dock: true
 
     # Match the YDLIDAR X3 spec + bridge-side filter range
