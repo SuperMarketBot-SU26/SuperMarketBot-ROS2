@@ -17,6 +17,7 @@ fi
 DO_BUILD=false
 USE_NAV2="true"
 USE_SLAM="true"
+USE_MQTT_BRIDGE="${USE_MQTT_BRIDGE:-false}"
 
 for arg in "$@"; do
     if [ "$arg" == "--build" ] || [ "$arg" == "-b" ]; then
@@ -29,6 +30,10 @@ for arg in "$@"; do
     if [ "$arg" == "--no-slam" ]; then
         USE_SLAM="false"
         echo "[start_pi5_robot] Flag detected: Disabling SLAM"
+    fi
+    if [ "$arg" == "--mqtt-bridge" ] || [ "$arg" == "--mqtt" ]; then
+        USE_MQTT_BRIDGE="true"
+        echo "[start_pi5_robot] Flag detected: Enabling MQTT navigation bridge"
     fi
 done
 
@@ -54,6 +59,7 @@ pkill -9 -f "smb_robot.launch.py" 2>/dev/null || true
 pkill -9 -f "smb.launch.py" 2>/dev/null || true
 pkill -9 -f "unified_relay" 2>/dev/null || true
 pkill -9 -f "supervisor" 2>/dev/null || true
+pkill -9 -f "smb_mqtt_bridge" 2>/dev/null || true
 sleep 1
 echo "[start_pi5_robot] Cleanup completed cleanly."
 
@@ -75,6 +81,25 @@ else
     echo "                      Micro-ROS agent will boot with default setting, but waiting for hardware connection."
 fi
 
+# 5b. MQTT Bridge credentials (from environment or .env file)
+MQTT_HOST="${MQTT_HOST:-}"
+MQTT_PORT="${MQTT_PORT:-8883}"
+MQTT_USERNAME="${MQTT_USERNAME:-}"
+MQTT_PASSWORD="${MQTT_PASSWORD:-}"
+ROBOT_CODE="${ROBOT_CODE:-RB001}"
+
+MQTT_ARGS=""
+if [ "${USE_MQTT_BRIDGE}" = "true" ]; then
+    MQTT_ARGS="use_mqtt_bridge:=true"
+    if [ -n "$MQTT_HOST" ]; then
+        MQTT_ARGS="${MQTT_ARGS} mqtt_host:=${MQTT_HOST} mqtt_port:=${MQTT_PORT}"
+    fi
+    if [ -n "$MQTT_USERNAME" ]; then
+        MQTT_ARGS="${MQTT_ARGS} mqtt_username:=${MQTT_USERNAME} mqtt_password:=${MQTT_PASSWORD}"
+    fi
+    MQTT_ARGS="${MQTT_ARGS} robot_code:=${ROBOT_CODE}"
+fi
+
 # 6. Display launch summary
 echo "=========================================================================="
 echo "      🤖 SUPERMARKETBOT-ROS2 : PI 5 HARDWARE BRINGUP 🤖                   "
@@ -84,6 +109,7 @@ echo "  Serial Port : ${SERIAL_PORT:-None detected}"
 echo "  RViz GUI    : disabled (headless Docker mode)"
 echo "  SLAM Engine : ${USE_SLAM}"
 echo "  Nav2 Stack  : ${USE_NAV2} (autostart disabled to await SLAM map)"
+echo "  MQTT Bridge : ${USE_MQTT_BRIDGE} (robot_code=${ROBOT_CODE})"
 echo "=========================================================================="
 echo "[start_pi5_robot] Launching engine in active terminal..."
 
@@ -93,4 +119,6 @@ exec ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
     use_nav2:="${USE_NAV2}" \
     use_slam:="${USE_SLAM}" \
     serial_baud:=921600 \
-    ${SERIAL_ARG}
+    ${SERIAL_ARG} \
+    ${MQTT_ARGS}
+

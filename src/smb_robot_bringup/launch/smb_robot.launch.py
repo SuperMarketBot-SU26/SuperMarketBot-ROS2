@@ -135,6 +135,42 @@ def generate_launch_description():
         default_value='921600',
         description='Baudrate for USB serial micro-ROS connection.')
 
+    # MQTT Bridge args
+    declare_use_mqtt_bridge_cmd = DeclareLaunchArgument(
+        'use_mqtt_bridge',
+        default_value='false',
+        description='Enable MQTT navigation bridge (backend → Nav2). Default false.')
+
+    declare_mqtt_host_cmd = DeclareLaunchArgument(
+        'mqtt_host',
+        default_value='',
+        description='HiveMQ Cloud broker hostname.')
+
+    declare_mqtt_port_cmd = DeclareLaunchArgument(
+        'mqtt_port',
+        default_value='8883',
+        description='MQTT broker port (8883 = TLS).')
+
+    declare_mqtt_username_cmd = DeclareLaunchArgument(
+        'mqtt_username',
+        default_value='',
+        description='MQTT broker username.')
+
+    declare_mqtt_password_cmd = DeclareLaunchArgument(
+        'mqtt_password',
+        default_value='',
+        description='MQTT broker password.')
+
+    declare_mqtt_use_tls_cmd = DeclareLaunchArgument(
+        'mqtt_use_tls',
+        default_value='true',
+        description='Enable TLS for MQTT connection (required for HiveMQ Cloud).')
+
+    declare_robot_code_cmd = DeclareLaunchArgument(
+        'robot_code',
+        default_value='RB001',
+        description='Robot identifier for MQTT topic routing.')
+
     ekf_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml')
 
     # ---- Nodes ----
@@ -273,6 +309,27 @@ def generate_launch_description():
         output='screen',
     )
 
+    # 9. MQTT Bridge — connects Backend (HiveMQ Cloud) to Nav2 waypoint
+    #    navigation. Receives NAVIGATE_WAYPOINTS commands via MQTT, drives
+    #    Nav2 FollowWaypoints, and reports status back to the backend.
+    #    Gated behind use_mqtt_bridge (default false).
+    mqtt_bridge_node = Node(
+        package='smb_nodes',
+        executable='smb_mqtt_bridge',
+        name='smb_mqtt_bridge',
+        parameters=[{
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+            'mqtt_host': LaunchConfiguration('mqtt_host'),
+            'mqtt_port': LaunchConfiguration('mqtt_port'),
+            'mqtt_username': LaunchConfiguration('mqtt_username'),
+            'mqtt_password': LaunchConfiguration('mqtt_password'),
+            'mqtt_use_tls': LaunchConfiguration('mqtt_use_tls'),
+            'robot_code': LaunchConfiguration('robot_code'),
+        }],
+        condition=IfCondition(LaunchConfiguration('use_mqtt_bridge')),
+        output='screen',
+    )
+
     # 8. robot_localization EKF — single-source (odom only) to publish
     #    odom → base_link TF. slam_toolbox needs this TF to produce map → odom.
     #    Phase 2 will replace this with full sensor fusion (wheel + IMU + AMCL).
@@ -300,6 +357,13 @@ def generate_launch_description():
         declare_nav2_params_cmd,
         declare_serial_port_cmd,
         declare_serial_baud_cmd,
+        declare_use_mqtt_bridge_cmd,
+        declare_mqtt_host_cmd,
+        declare_mqtt_port_cmd,
+        declare_mqtt_username_cmd,
+        declare_mqtt_password_cmd,
+        declare_mqtt_use_tls_cmd,
+        declare_robot_code_cmd,
         micro_ros_agent_node,
         rsp_node,
         jsp_node,
@@ -308,5 +372,6 @@ def generate_launch_description():
         unified_relay_node,
         supervisor_node,
         nav2_launch,
+        mqtt_bridge_node,
         rviz_node,
     ])

@@ -25,6 +25,7 @@ setup(
             'scan_relay = smb_nodes.scan_relay:main',
             'odom_imu_relay = smb_nodes.odom_imu_relay:main',
             'unified_relay = smb_nodes.unified_relay:main',
+            'smb_mqtt_bridge = smb_nodes.smb_mqtt_bridge:main',
         ],
     },
 )
