@@ -32,8 +32,8 @@
        Scan data: lidar on back (-X) with 180° rotation so angle 0° faces backward
        (toward wall = physical front). -->
 
-  <xacro:property name="wheel_offset_x" value="0.05"/>
-  <xacro:property name="caster_offset_x" value="-0.05"/>
+  <xacro:property name="wheel_offset_x" value="-0.05"/>
+  <xacro:property name="caster_offset_x" value="0.05"/>
   <!-- Caster uses the same radius as the drive wheels so all three contact
        points lie on the same ground plane. The wheel_radius property above
        is reused for the caster sphere. -->
@@ -197,7 +197,7 @@
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="laser_frame"/>
-    <origin xyz="${lidar_offset_x} 0 ${lidar_offset_z}" rpy="0 0 -1.5707"/>
+    <origin xyz="${lidar_offset_x} 0 ${lidar_offset_z}" rpy="0 0 1.5708"/>
   </joint>
   <link name="laser_frame">
     <inertial>

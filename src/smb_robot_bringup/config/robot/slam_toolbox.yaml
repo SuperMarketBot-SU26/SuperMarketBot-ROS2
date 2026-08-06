@@ -49,9 +49,9 @@ slam_toolbox:
     # a real environment (not a 10x10m box). Real robot has wheel-encoder
     # odometry that drifts a bit, so we want enough candidates.
     #
-    minimum_travel_distance: 0.1    # 10cm threshold: standard mapping updates
-    minimum_travel_heading: 0.05    # ~3 deg turn threshold: update frequently so it doesn't get stuck with a large offset when stopping
-    minimum_time_interval: 0.5      # 2 Hz maximum update rate when stationary
+    minimum_travel_distance: 0.02   # 2cm threshold: aggressively correct pose during linear movement
+    minimum_travel_heading: 0.01    # ~0.5 deg turn threshold: trigger rapid rotational updates
+    minimum_time_interval: 0.1      # 10 Hz maximum update rate when stationary
     skip_odometry: false
 
     # Scan matching
