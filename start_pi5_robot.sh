@@ -55,6 +55,7 @@ fi
 # 4. Safe Cleanup of leftover processes from previous sessions
 echo "[start_pi5_robot] 🧹 Cleaning any existing ROS 2 / Micro-ROS processes..."
 pkill -9 -f "micro_ros_agent" 2>/dev/null || true
+pkill -9 -f "ydlidar_ros2_driver" 2>/dev/null || true
 pkill -9 -f "smb_robot.launch.py" 2>/dev/null || true
 pkill -9 -f "smb.launch.py" 2>/dev/null || true
 pkill -9 -f "unified_relay" 2>/dev/null || true
@@ -63,22 +64,41 @@ pkill -9 -f "smb_mqtt_bridge" 2>/dev/null || true
 sleep 1
 echo "[start_pi5_robot] Cleanup completed cleanly."
 
-# 5. Auto-detect ESP32 USB Serial device (/dev/ttyACM* or /dev/ttyUSB*)
-SERIAL_PORT=""
-for port in /dev/ttyACM0 /dev/ttyACM1 /dev/ttyUSB0 /dev/ttyUSB1; do
+# 5. Auto-detect USB devices
+#    - ESP32 shows up as /dev/ttyACM* (USB CDC native serial)
+#    - YDLIDAR X3 shows up as /dev/ttyUSB* (USB-to-UART adapter, typically CH340/CP2102)
+ESP32_PORT=""
+for port in /dev/ttyACM0 /dev/ttyACM1; do
     if [ -e "$port" ]; then
-        SERIAL_PORT="$port"
+        ESP32_PORT="$port"
+        break
+    fi
+done
+
+LIDAR_PORT=""
+for port in /dev/ttyUSB0 /dev/ttyUSB1; do
+    if [ -e "$port" ]; then
+        LIDAR_PORT="$port"
         break
     fi
 done
 
 SERIAL_ARG=""
-if [ -n "$SERIAL_PORT" ]; then
-    echo "[start_pi5_robot] 🚀 Auto-detected ESP32 connected to: $SERIAL_PORT"
-    SERIAL_ARG="serial_port:=$SERIAL_PORT"
+if [ -n "$ESP32_PORT" ]; then
+    echo "[start_pi5_robot] 🚀 Auto-detected ESP32 connected to: $ESP32_PORT"
+    SERIAL_ARG="serial_port:=$ESP32_PORT"
 else
-    echo "[start_pi5_robot] ⚠️ WARNING: No USB serial device (/dev/ttyACM* or /dev/ttyUSB*) found!"
-    echo "                      Micro-ROS agent will boot with default setting, but waiting for hardware connection."
+    echo "[start_pi5_robot] ⚠️ WARNING: No ESP32 (/dev/ttyACM*) found!"
+    echo "                      Micro-ROS agent will boot with default setting, but waiting for hardware."
+fi
+
+LIDAR_ARG=""
+if [ -n "$LIDAR_PORT" ]; then
+    echo "[start_pi5_robot] 📡 Auto-detected YDLIDAR connected to: $LIDAR_PORT"
+    LIDAR_ARG="lidar_port:=$LIDAR_PORT"
+else
+    echo "[start_pi5_robot] ⚠️ WARNING: No YDLIDAR (/dev/ttyUSB*) found!"
+    echo "                      YDLIDAR driver will boot with default /dev/ttyUSB0."
 fi
 
 # 5b. MQTT Bridge credentials (from environment or .env file)
@@ -105,7 +125,8 @@ echo "==========================================================================
 echo "      🤖 SUPERMARKETBOT-ROS2 : PI 5 HARDWARE BRINGUP 🤖                   "
 echo "=========================================================================="
 echo "  Workspace   : ${SCRIPT_DIR}"
-echo "  Serial Port : ${SERIAL_PORT:-None detected}"
+echo "  ESP32 Port  : ${ESP32_PORT:-None detected}"
+echo "  LiDAR Port  : ${LIDAR_PORT:-/dev/ttyUSB0 (default)}"
 echo "  RViz GUI    : disabled (headless Docker mode)"
 echo "  SLAM Engine : ${USE_SLAM}"
 echo "  Nav2 Stack  : ${USE_NAV2} (autostart disabled to await SLAM map)"
@@ -120,5 +141,5 @@ exec ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
     use_slam:="${USE_SLAM}" \
     serial_baud:=921600 \
     ${SERIAL_ARG} \
+    ${LIDAR_ARG} \
     ${MQTT_ARGS}
-

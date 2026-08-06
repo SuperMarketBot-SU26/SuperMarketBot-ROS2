@@ -127,13 +127,18 @@ def generate_launch_description():
 
     declare_serial_port_cmd = DeclareLaunchArgument(
         'serial_port',
-        default_value='/dev/ttyUSB0',
-        description='USB serial device connected to ESP32 for micro-ROS.')
+        default_value='/dev/ttyACM0',
+        description='USB serial device connected to ESP32 for micro-ROS (odom + IMU).')
 
     declare_serial_baud_cmd = DeclareLaunchArgument(
         'serial_baud',
         default_value='921600',
         description='Baudrate for USB serial micro-ROS connection.')
+
+    declare_lidar_port_cmd = DeclareLaunchArgument(
+        'lidar_port',
+        default_value='/dev/ttyUSB0',
+        description='USB serial device for YDLIDAR X3 (direct Pi 5 connection).')
 
     # MQTT Bridge args
     declare_use_mqtt_bridge_cmd = DeclareLaunchArgument(
@@ -175,7 +180,9 @@ def generate_launch_description():
 
     # ---- Nodes ----
 
-    # 1. micro-ROS agent — bridges ESP32 USB Serial ↔ ROS2 topics directly on Pi 5.
+    # 1. micro-ROS agent — bridges ESP32 USB Serial ↔ ROS2 for odom + IMU.
+    #    LiDAR is now direct USB on Pi 5 (ydlidar_node below), so the ESP32
+    #    only provides /odom and /imu/data via micro-ROS.
     default_agent_paths = [
         '/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent',
         os.path.expanduser('~/ros2_ws/install/micro_ros_agent/lib/micro_ros_agent/micro_ros_agent'),
@@ -192,6 +199,21 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_micro_ros')),
         output='screen',
         shell=False,
+    )
+
+    # 1b. YDLIDAR X3 driver — reads LiDAR data directly from Pi 5 USB.
+    #     Publishes /scan with BEST_EFFORT QoS and wall-clock timestamps.
+    #     No relay or timestamp rewriting needed.
+    ydlidar_params_file = os.path.join(
+        pkg_bringup, 'config', 'robot', 'ydlidar_x3.yaml')
+    ydlidar_node = Node(
+        package='ydlidar_ros2_driver',
+        executable='ydlidar_ros2_driver_node',
+        name='ydlidar_ros2_driver_node',
+        parameters=[ydlidar_params_file, {
+            'port': LaunchConfiguration('lidar_port'),
+        }],
+        output='screen',
     )
 
     # 2. robot_state_publisher (URDF -> /tf_static)
@@ -274,21 +296,17 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 6b. Unified relay — replaces the old scan_relay + odom_imu_relay pair.
-    #     Single node handles QoS bridge (RELIABLE→BEST_EFFORT for /scan),
-    #     stamp rewriting (ESP32 millis() → host wall-clock), AND timestamp
-    #     coordination (scan stamp = latest odom stamp so SLAM's TF lookup
-    #     finds an exact match instead of extrapolating). This eliminates
-    #     the inter-node scheduling skew that caused map drag.
-    #     See smb_nodes/unified_relay.py for details.
+    # 6b. Unified relay — handles ESP32 odom + IMU timestamp rewriting.
+    #     The ESP32 stamps /odom and /imu/data with millis() (epoch 1970);
+    #     this relay shifts them to host wall-clock time.
+    #     Scan relay is NO LONGER NEEDED — the YDLIDAR driver publishes
+    #     /scan directly with correct timestamps and BEST_EFFORT QoS.
     unified_relay_node = Node(
         package='smb_nodes',
         executable='unified_relay',
         name='unified_relay',
         parameters=[{
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'scan_in': '/scan',
-            'scan_out': '/scan_relay',
             'odom_in': '/odom',
             'odom_out': '/odom_relay',
             'imu_in': '/imu/data',
@@ -357,6 +375,7 @@ def generate_launch_description():
         declare_nav2_params_cmd,
         declare_serial_port_cmd,
         declare_serial_baud_cmd,
+        declare_lidar_port_cmd,
         declare_use_mqtt_bridge_cmd,
         declare_mqtt_host_cmd,
         declare_mqtt_port_cmd,
@@ -364,6 +383,7 @@ def generate_launch_description():
         declare_mqtt_password_cmd,
         declare_mqtt_use_tls_cmd,
         declare_robot_code_cmd,
+        ydlidar_node,
         micro_ros_agent_node,
         rsp_node,
         jsp_node,

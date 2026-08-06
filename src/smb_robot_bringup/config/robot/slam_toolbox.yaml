@@ -31,18 +31,11 @@ slam_toolbox:
     map_frame: map
     base_frame: base_link
     # /scan messages arrive with header.frame_id = `laser_frame` because
-    # the ESP32's MicroRos.h publishes with frame_id = "laser_frame" and
     # the URDF links laser_frame to base_link via robot_state_publisher.
-    # ESP32 publishes /scan with RELIABLE QoS; slam_toolbox subscribes with
-    # BEST_EFFORT — incompatible under DDS, so discovery rejects the match
-    # and no scan ever reaches SLAM. The scan_relay node (smb_nodes) bridges
-    # both QoS and timestamp: subscribes RELIABLE on /scan, republishes
-    # BEST_EFFORT on /scan_relay with header.stamp replaced by the relay's
-    # current ROS2 clock (ESP32 fills stamp with millis()/1000, not Unix
-    # epoch, so without rewriting slam_toolbox drops every scan as
-    # "earlier than all the data in the transform cache"). slam_toolbox
-    # reads from /scan_relay.
-    scan_topic: /scan_relay
+    # YDLIDAR X3 is connected directly to Pi 5 via USB (not through ESP32).
+    # The driver publishes /scan with BEST_EFFORT QoS and wall-clock timestamps,
+    # so no relay is needed.
+    scan_topic: /scan
 
     # Map params
     mode: mapping          # online_async

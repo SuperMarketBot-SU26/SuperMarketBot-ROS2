@@ -25,6 +25,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     usbutils \
     && rm -rf /var/lib/apt/lists/*
 
+# Install YDLidar-SDK (requires older CMake due to ancient CMakeLists.txt)
+RUN apt-get update && apt-get install -y --no-install-recommends pkg-config git python3-pip \
+    && python3 -m pip install cmake==3.28.4 --break-system-packages \
+    && git clone https://github.com/YDLIDAR/YDLidar-SDK.git /tmp/YDLidar-SDK \
+    && cd /tmp/YDLidar-SDK && mkdir build && cd build \
+    && /usr/local/bin/cmake .. && make -j$(nproc) && make install \
+    && rm -rf /tmp/YDLidar-SDK \
+    && ldconfig \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set CycloneDDS as default middleware for dependable Wi-Fi and container networking
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 

@@ -18,6 +18,7 @@
   <exec_depend>nav2_simple_commander</exec_depend>
   <!-- nav2_bringup brings up the navigation stack; waypoint_follower talks to it. -->
   <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>python3-paho-mqtt</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
