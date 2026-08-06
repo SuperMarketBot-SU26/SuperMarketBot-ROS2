@@ -45,7 +45,7 @@ controller_server:
     costmap_update_timeout: 0.30
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
-    min_theta_velocity_threshold: 0.50 # Elevated from 0.001 to 0.50 rad/s (~29 deg/s) to prevent publishing low rotational commands that stall below surface static friction boundaries
+    min_theta_velocity_threshold: 0.80 # Pumped up further to ensure no weak rotational commands are sent
     failure_tolerance: 10.0
     progress_checker_plugins: ["progress_checker"]
     goal_checker_plugins: ["general_goal_checker"]
@@ -64,21 +64,21 @@ controller_server:
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: False  # Disabled to eliminate terminal console spam and preserve CPU cycles for SLAM optimization
-      min_vel_x: 0.015     # Adjusted to 0.015 m/s for clean linear movement initiation
+      min_vel_x: 0.05      # Increased to overcome static friction
       min_vel_y: 0.0
-      max_vel_x: 0.15      # Increased to 0.15 m/s (15 cm/s) for brisk USB transit
-      min_vel_theta: 0.30  # Reduced to 0.30 rad/s (~17 deg/s): stay safely above motor static friction deadbands while enabling fine turning adjustments
-      max_vel_theta: 1.00  # Restored to 1.00 rad/s (~57 deg/s)
-      acc_lim_x: 0.50      # Increased linear acceleration ramp to 0.50 m/s²
-      acc_lim_theta: 1.50  # Restored to 1.50 rad/s² for smooth but fast turn initiation
-      desired_linear_vel: 0.15  # Synchronized with max_vel_x at 0.15 m/s
-      lookahead_dist: 0.40  # Adjusted to 0.40m: maintain reactive turning guidance without halting prematurely for distant hallway obstacles
+      max_vel_x: 0.25      # Increased for a heavier robot
+      min_vel_theta: 0.80  # Pumped up to hit motors hard immediately
+      max_vel_theta: 2.50  # Maxed out to ensure 100% PWM from ESP32
+      acc_lim_x: 1.5       # Boosted linear acceleration
+      acc_lim_theta: 5.0   # Massive rotational acceleration burst
+      desired_linear_vel: 0.25
+      lookahead_dist: 0.50 
       use_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 0.5
       regulated_linear_scaling_min_speed: 0.05   # Synchronized with min_vel_x at 0.05 m/s
       use_rotate_to_heading: true
       rotate_to_heading_min_angle: 0.785
-      rotate_to_heading_angular_vel: 0.85  # Restored to 0.85 rad/s
+      rotate_to_heading_angular_vel: 2.5
       transform_tolerance: 0.2 # Restored transform tolerance to 1.0s
       use_collision_detection: true
       max_allowed_time_to_collision_up_to_carrot: 10.0 # 15cm braking window at 1.5cm/s: halt motor output right before physical obstruction without blocking maneuvering detours
@@ -194,14 +194,14 @@ behavior_server:
     behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
     spin:
       plugin: "nav2_behaviors::Spin"
-      max_rotational_vel: 1.00     # Restored spin max rotational vel to 1.00 rad/s
-      min_rotational_vel: 0.50     # Synchronized with RPP minimum turning floor (0.50 rad/s)
-      rotational_acc_lim: 0.80     # Synchronized with RPP turn acceleration ramp (0.80 rad/s²)
+      max_rotational_vel: 2.50
+      min_rotational_vel: 0.80
+      rotational_acc_lim: 5.0
     backup:
       plugin: "nav2_behaviors::BackUp"
-      max_linear_vel: 0.15         # Synchronized with RPP controller max_vel_x (0.15 m/s)
-      min_linear_vel: 0.015        # Synchronized with RPP minimum linear floor (0.015 m/s)
-      linear_acc_lim: 0.50         # Synchronized with RPP linear acceleration ramp (0.50 m/s²)
+      max_linear_vel: 0.25
+      min_linear_vel: 0.05
+      linear_acc_lim: 1.0
     drive_on_heading:
       plugin: "nav2_behaviors::DriveOnHeading"
     wait:
