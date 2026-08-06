@@ -73,14 +73,13 @@ class ScanRelay(Node):
         out_topic = self.get_parameter('out_topic').value
 
         # ---- QoS ----
-        # In: match ESP32 micro-ros-arduino's default RELIABLE publisher.
-        # Out: match slam_toolbox's BEST_EFFORT subscriber default so the
-        # SLAM stack accepts the data.
+        # In: match YDLidar driver's BEST_EFFORT publisher.
+        # Out: match slam_toolbox's RELIABLE subscriber.
         in_qos = QoSProfile(
-            depth=10, reliability=QoSReliabilityPolicy.RELIABLE,
+            depth=10, reliability=QoSReliabilityPolicy.BEST_EFFORT,
             durability=QoSDurabilityPolicy.VOLATILE)
         out_qos = QoSProfile(
-            depth=5, reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            depth=5, reliability=QoSReliabilityPolicy.RELIABLE,
             durability=QoSDurabilityPolicy.VOLATILE)
 
         # ---- I/O ----
@@ -89,8 +88,8 @@ class ScanRelay(Node):
             LaserScan, in_topic, self._on_scan, in_qos)
 
         self.get_logger().info(
-            f'scan_relay started: {in_topic} (RELIABLE) -> '
-            f'{out_topic} (BEST_EFFORT)')
+            f'scan_relay started: {in_topic} (BEST_EFFORT) -> '
+            f'{out_topic} (RELIABLE)')
 
     def _on_scan(self, msg: LaserScan) -> None:
         # Overwrite header.stamp with the relay's current ROS2 clock time.

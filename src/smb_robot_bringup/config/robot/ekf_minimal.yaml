@@ -19,8 +19,8 @@
 # This is a single-source-for-position + IMU-aided-heading EKF. Full sensor
 # fusion (multiple wheel+IMU+GPS at the EKF level) is in the IOT-repo
 # ekf_config.yaml and is the target for Phase 2. For now, this minimal
-# config combines /odom_relay for translation (post v2.4 firmware: signed)
-# + /imu_relay gyro for heading drift correction.
+# config combines /odom for translation (post v2.4 firmware: signed)
+# + /imu/data gyro for heading drift correction.
 
 ekf_filter_node:
   ros__parameters:
@@ -32,11 +32,7 @@ ekf_filter_node:
 
     # Frequency
     frequency: 60.0            # 60 Hz high-speed state publication for smooth 60 FPS RViz tracking
-    # v2.5 (Jul 31 2026): increased from 0.1 to 0.5 to tolerate WiFi UDP
-    # jitter. At 0.1s the EKF skips cycles when /odom_relay arrives late
-    # (WiFi + micro-ROS + relay scheduling), dropping odom→base_link TF
-    # from 30 Hz to ~10 Hz. This starves slam_toolbox's map→odom TF.
-    sensor_timeout: 0.5
+    sensor_timeout: 0.05       # 50ms timeout (tuned for 50Hz stable USB serial, no WiFi jitter)
     two_d_mode: true           # planar robot, ignore Z / roll / pitch
     publish_tf: true           # publish odom → base_link TF
     print_diagnostics: false
@@ -84,7 +80,7 @@ ekf_filter_node:
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    1e-9]
 
-    odom0: /odom_relay
+    odom0: /odom
     odom0_config: [
       true,  true,  false,  # X Y Z — fuse precise X, Y coordinates from ESP32 localization
       false, false, true,   # R P Y — fuse Yaw orientation from ESP32 hardware EKF (ImuFusion.h)

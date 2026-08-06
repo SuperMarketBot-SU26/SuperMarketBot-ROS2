@@ -2,7 +2,7 @@ To copy & sync:
 rsync -avz --progress --exclude='build/' --exclude='install/' --exclude='log/' --exclude='.data/' --exclude='.git/' . snake@snake.local:~/ros2_ws
 
 To run:
-docker exec -it smb_ros2_core bash -c "cd /ros2_ws && source install/setup.bash && ./start_pi5_robot.sh"
+docker run -it --rm -v ~/ros2_ws:/ros2_ws --network host --privileged supermarket-bot-ros2:latest bash -c "cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./start_pi5_robot.sh"
 
 run & build (new):
 docker run -it --rm -v ~/ros2_ws:/ros2_ws --network host --privileged supermarket-bot-ros2:latest bash -c "cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./start_pi5_robot.sh --build"

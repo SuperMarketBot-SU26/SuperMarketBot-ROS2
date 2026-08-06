@@ -9,14 +9,12 @@ ALREADY running and publishing topics via the micro-ROS agent. Verify with:
     ros2 topic list              # /scan, /odom, /imu/data must be present
     ros2 topic info /scan --verbose
 
-Hardware prerequisite:
-  The ESP32 MicroRos.h must have MICRO_ROS_AGENT_IP set to your host PC's
-  IP on the shared WiFi network. Default in firmware: 192.168.1.106.
-  Run `ip addr show` on the host to find its IP, then update the ESP32
-  firmware or set a matching static IP.
+# Hardware prerequisite:
+#   The ESP32 must be connected directly via USB.
+#   By default, it will mount at /dev/ttyACM0.
 
 What this launch starts:
-  - micro-ROS agent (WiFi UDP, port 8888) — bridges ESP32 ↔ ROS2
+#   - micro-ROS agent (USB Serial) — bridges ESP32 ↔ ROS2
   - robot_state_publisher (URDF -> static TFs)
   - joint_state_publisher (zero-pose fallback for RViz)
   - slam_toolbox online_async against /scan + /odom
@@ -98,7 +96,7 @@ def generate_launch_description():
     declare_use_micro_ros_cmd = DeclareLaunchArgument(
         'use_micro_ros',
         default_value='true',
-        description='Start micro-ROS agent (WiFi UDP port 8888). Default true.')
+        description='Start micro-ROS agent (USB Serial). Default true.')
 
     declare_use_ekf_cmd = DeclareLaunchArgument(
         'use_ekf',
@@ -296,25 +294,7 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 6b. Unified relay — handles ESP32 odom + IMU timestamp rewriting.
-    #     The ESP32 stamps /odom and /imu/data with millis() (epoch 1970);
-    #     this relay shifts them to host wall-clock time.
-    #     Scan relay is NO LONGER NEEDED — the YDLIDAR driver publishes
-    #     /scan directly with correct timestamps and BEST_EFFORT QoS.
-    unified_relay_node = Node(
-        package='smb_nodes',
-        executable='unified_relay',
-        name='unified_relay',
-        parameters=[{
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'odom_in': '/odom',
-            'odom_out': '/odom_relay',
-            'imu_in': '/imu/data',
-            'imu_out': '/imu_relay',
-            'publish_tf': False,  # EKF handles odom→base_link TF
-        }],
-        output='screen',
-    )
+    # (Relay nodes removed. EKF and YDLIDAR driver now handle data directly)
 
     # 7. RViz2
     rviz_node = Node(
@@ -389,7 +369,6 @@ def generate_launch_description():
         jsp_node,
         ekf_node,
         slam_launch,
-        unified_relay_node,
         supervisor_node,
         nav2_launch,
         mqtt_bridge_node,
