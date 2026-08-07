@@ -23,7 +23,7 @@ bt_navigator:
     transform_tolerance: 1.0
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: /odom_relay
+    odom_topic: /odom
     bt_loop_duration: 10
     default_server_timeout: 20
     default_cancel_timeout: 50
@@ -41,7 +41,7 @@ controller_server:
     use_sim_time: False
     tf_buffer_duration: 30.0
     controller_frequency: 20.0
-    odom_topic: /odom_relay
+    odom_topic: /odom
     costmap_update_timeout: 0.30
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
