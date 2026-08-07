@@ -166,7 +166,7 @@ def generate_launch_description() -> LaunchDescription:
         name=container_name,
         namespace='',
         package='rclcpp_components',
-        executable='component_container_mt',
+        executable='component_container',
         composable_node_descriptions=composable_nodes,
         output='screen',
     )
