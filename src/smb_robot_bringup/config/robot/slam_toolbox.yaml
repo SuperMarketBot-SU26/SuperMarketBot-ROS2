@@ -88,7 +88,7 @@ slam_toolbox:
     tf_buffer_duration: 60.0
     scan_queue_size: 10        # Local USB serial, no UDP drops
     # transform_tolerance: how far in the past a TF lookup can be.
-    transform_tolerance: 0.2   # 0.2s tolerance is plenty for local USB serial
+    transform_tolerance: 1.0   # 0.2s tolerance is plenty for local USB serial
     throttle_scans: 1
     publish_occupancy_grid: true
     publish_tf: true
