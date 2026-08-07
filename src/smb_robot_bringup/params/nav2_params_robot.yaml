@@ -69,12 +69,16 @@ controller_server:
       max_vel_x: 1.20      # Increased for a heavier robot
       min_vel_theta: 2.00  # Pumped up to hit motors hard immediately
       max_vel_theta: 5.00  # Maxed out to ensure 100% PWM from ESP32
-      acc_lim_x: 2.5       # Boosted linear acceleration
-      acc_lim_theta: 5.0   # Massive rotational acceleration burst
+      acc_lim_x: 0.6       # Smoothed out linear acceleration to prevent wheel slip and jerking
+      acc_lim_theta: 1.2   # Smoothed out rotational acceleration
       desired_linear_vel: 1.20
-      lookahead_dist: 0.50 
+      use_velocity_scaled_lookahead_dist: true # Look further ahead when moving fast!
+      min_lookahead_dist: 0.4
+      max_lookahead_dist: 1.5
+      lookahead_time: 1.5 # 1.5s preview time
+      lookahead_dist: 0.80 # Fallback 
       use_regulated_linear_velocity_scaling: true
-      regulated_linear_scaling_min_radius: 0.5
+      regulated_linear_scaling_min_radius: 1.0 # Slow down earlier on wider turns to prevent drifting
       regulated_linear_scaling_min_speed: 0.15   # Synchronized with min_vel_x at 0.15 m/s
       use_rotate_to_heading: true
       rotate_to_heading_min_angle: 0.785
