@@ -12,4 +12,8 @@ install(DIRECTORY launch config params worlds maps waypoints
   OPTIONAL
 )
 
+install(PROGRAMS scripts/ultrasonic_guard.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()

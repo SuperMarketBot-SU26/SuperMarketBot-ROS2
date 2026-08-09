@@ -108,7 +108,7 @@ def generate_launch_description() -> LaunchDescription:
             # have those, but the smb_nodes.supervisor FSM (see
             # smb_robot_bringup launch) already handles the cmd_vel_nav ->
             # cmd_vel pass-through, so we keep the upstream remap.
-            remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+            remappings=remappings + [('cmd_vel', 'cmd_vel_nav_raw')],
         ),
         ComposableNode(
             package='nav2_planner',
@@ -122,7 +122,7 @@ def generate_launch_description() -> LaunchDescription:
             plugin='behavior_server::BehaviorServer',
             name='behavior_server',
             parameters=[configured_params],
-            remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+            remappings=remappings + [('cmd_vel', 'cmd_vel_nav_raw')],
         ),
         ComposableNode(
             package='nav2_bt_navigator',

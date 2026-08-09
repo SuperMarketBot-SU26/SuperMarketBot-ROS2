@@ -213,7 +213,14 @@ def generate_launch_description():
         }],
         output='screen',
     )
-
+    
+    # 1c. Ultrasonic Guard
+    ultrasonic_guard_node = Node(
+        package='smb_robot_bringup',
+        executable='ultrasonic_guard.py',
+        name='ultrasonic_guard',
+        output='screen'
+    )
     # 2. robot_state_publisher (URDF -> /tf_static)
     rsp_node = Node(
         package='robot_state_publisher',
@@ -376,6 +383,7 @@ def generate_launch_description():
         declare_mqtt_use_tls_cmd,
         declare_robot_code_cmd,
         ydlidar_node,
+        ultrasonic_guard_node,
         micro_ros_agent_node,
         odom_imu_relay_node,
         rsp_node,
