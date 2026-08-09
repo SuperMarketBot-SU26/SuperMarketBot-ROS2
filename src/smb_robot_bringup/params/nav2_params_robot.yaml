@@ -70,7 +70,7 @@ controller_server:
       min_vel_theta: 2.00  # Pumped up to hit motors hard immediately
       max_vel_theta: 5.00  # Maxed out to ensure 100% PWM from ESP32
       acc_lim_x: 0.6       # Smoothed out linear acceleration to prevent wheel slip and jerking
-      acc_lim_theta: 1.2   # Smoothed out rotational acceleration
+      acc_lim_theta: 3.2   # Dramatically increased to allow the robot to snap into turns faster and overcome static friction
       desired_linear_vel: 1.20
       use_velocity_scaled_lookahead_dist: true # Look further ahead when moving fast!
       min_lookahead_dist: 0.4
