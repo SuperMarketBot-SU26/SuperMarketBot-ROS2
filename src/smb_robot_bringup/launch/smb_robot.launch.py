@@ -294,7 +294,19 @@ def generate_launch_description():
         output='screen',
     )
 
-    # (Relay nodes removed. EKF and YDLIDAR driver now handle data directly)
+    # 6.5 odom_imu_relay to rewrite ESP32 1970 timestamps to wall-clock
+    odom_imu_relay_node = Node(
+        package='smb_nodes',
+        executable='odom_imu_relay',
+        name='odom_imu_relay',
+        parameters=[{
+            'odom_in_topic': '/odom',
+            'odom_out_topic': '/odom_relay',
+            'imu_in_topic': '/imu/data',
+            'imu_out_topic': '/imu_relay'
+        }],
+        output='screen'
+    )
 
     # 7. RViz2
     rviz_node = Node(
@@ -365,6 +377,7 @@ def generate_launch_description():
         declare_robot_code_cmd,
         ydlidar_node,
         micro_ros_agent_node,
+        odom_imu_relay_node,
         rsp_node,
         jsp_node,
         ekf_node,
