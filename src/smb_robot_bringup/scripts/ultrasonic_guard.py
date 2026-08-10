@@ -5,6 +5,7 @@ from geometry_msgs.msg import TwistStamped
 from sensor_msgs.msg import Range
 from rclpy.action import ActionClient
 from nav2_msgs.action import NavigateToPose
+from action_msgs.srv import CancelGoal
 import time
 
 class UltrasonicGuard(Node):
@@ -44,8 +45,8 @@ class UltrasonicGuard(Node):
             10
         )
         
-        # Action client to cancel Nav2 goals
-        self.nav_action_client = ActionClient(self, NavigateToPose, 'navigate_to_pose')
+        # Service client to cancel Nav2 goals globally
+        self.nav_cancel_client = self.create_client(CancelGoal, '/navigate_to_pose/_action/cancel_goal')
 
         self.get_logger().info(f"Ultrasonic Guard started. Stop dist: {self.stop_distance}m, Abort timeout: {self.abort_timeout}s")
 
@@ -86,20 +87,24 @@ class UltrasonicGuard(Node):
         self.pub_cmd_vel.publish(out_msg)
 
     def cancel_nav2_goal(self):
-        if not self.nav_action_client.wait_for_server(timeout_sec=1.0):
-            self.get_logger().error('Nav2 action server not available to cancel goal!')
+        if not self.nav_cancel_client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().error('Nav2 cancel service not available!')
             return
             
-        # Send a cancel request to all goals
-        cancel_future = self.nav_action_client._cancel_goal_async(None)
+        # Send an empty cancel request to cancel all active goals
+        cancel_req = CancelGoal.Request()
+        cancel_future = self.nav_cancel_client.call_async(cancel_req)
         cancel_future.add_done_callback(self.cancel_done_cb)
 
     def cancel_done_cb(self, future):
-        cancel_response = future.result()
-        if len(cancel_response.goals_canceling) > 0:
-            self.get_logger().info('Successfully cancelled Nav2 goal due to timeout.')
-        else:
-            self.get_logger().info('Goal cancel request accepted, but no active goals to cancel.')
+        try:
+            cancel_response = future.result()
+            if len(cancel_response.goals_canceling) > 0:
+                self.get_logger().info('Successfully cancelled Nav2 goal due to timeout.')
+            else:
+                self.get_logger().info('Goal cancel request accepted, but no active goals to cancel.')
+        except Exception as e:
+            self.get_logger().error(f'Failed to cancel goal: {e}')
 
 def main(args=None):
     rclpy.init(args=args)

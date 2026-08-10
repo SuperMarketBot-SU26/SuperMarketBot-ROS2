@@ -59,19 +59,19 @@ controller_server:
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: true
-      xy_goal_tolerance: 0.05  # Adjusted to 0.05m (5cm) for precise waypoint completion
+      xy_goal_tolerance: 0.25  # Increased from 0.05m to 0.25m to prevent terminal swerving/oscillations
       yaw_goal_tolerance: 3.14
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: False  # Disabled to eliminate terminal console spam and preserve CPU cycles for SLAM optimization
       min_vel_x: 0.15      # Increased to overcome static friction
       min_vel_y: 0.0
-      max_vel_x: 1.20      # Increased for a heavier robot
-      min_vel_theta: 2.00  # Pumped up to hit motors hard immediately
-      max_vel_theta: 5.00  # Maxed out to ensure 100% PWM from ESP32
+      max_vel_x: 0.90      # Lowered from 1.20 for smoother linear movement
+      min_vel_theta: 1.40  # Lowered 30% from 2.00
+      max_vel_theta: 3.50  # Lowered 30% from 5.00
       acc_lim_x: 0.6       # Smoothed out linear acceleration to prevent wheel slip and jerking
       acc_lim_theta: 3.2   # Dramatically increased to allow the robot to snap into turns faster and overcome static friction
-      desired_linear_vel: 1.20
+      desired_linear_vel: 0.90 # Lowered from 1.20
       use_velocity_scaled_lookahead_dist: true # Look further ahead when moving fast!
       min_lookahead_dist: 0.4
       max_lookahead_dist: 1.5
@@ -82,7 +82,7 @@ controller_server:
       regulated_linear_scaling_min_speed: 0.15   # Synchronized with min_vel_x at 0.15 m/s
       use_rotate_to_heading: true
       rotate_to_heading_min_angle: 0.785
-      rotate_to_heading_angular_vel: 5.0
+      rotate_to_heading_angular_vel: 3.5 # Lowered 30% from 5.0
       transform_tolerance: 1.0 # Restored transform tolerance to 1.0s
       use_collision_detection: true
       max_allowed_time_to_collision_up_to_carrot: 10.0 # 15cm braking window at 1.5cm/s: halt motor output right before physical obstruction without blocking maneuvering detours
