@@ -141,12 +141,12 @@ def generate_launch_description():
     # MQTT Bridge args
     declare_use_mqtt_bridge_cmd = DeclareLaunchArgument(
         'use_mqtt_bridge',
-        default_value='false',
+        default_value='true',
         description='Enable MQTT navigation bridge (backend → Nav2). Default false.')
 
     declare_mqtt_host_cmd = DeclareLaunchArgument(
         'mqtt_host',
-        default_value='',
+        default_value='60922debd474446a84747b871c4a8182.s1.eu.hivemq.cloud',
         description='HiveMQ Cloud broker hostname.')
 
     declare_mqtt_port_cmd = DeclareLaunchArgument(
@@ -156,12 +156,12 @@ def generate_launch_description():
 
     declare_mqtt_username_cmd = DeclareLaunchArgument(
         'mqtt_username',
-        default_value='',
+        default_value='Smartmarketbot',
         description='MQTT broker username.')
 
     declare_mqtt_password_cmd = DeclareLaunchArgument(
         'mqtt_password',
-        default_value='',
+        default_value='Passsep490',
         description='MQTT broker password.')
 
     declare_mqtt_use_tls_cmd = DeclareLaunchArgument(

@@ -55,7 +55,7 @@ class UltrasonicGuard(Node):
             if not self.obstacle_detected:
                 self.obstacle_detected = True
                 self.obstacle_start_time = time.time()
-                self.get_logger().warn(f"Obstacle detected at {msg.range:.2f}m! Forward motion blocked.")
+                self.get_logger().warning(f"Obstacle detected at {msg.range:.2f}m! Forward motion blocked.")
             else:
                 # Check timeout
                 if time.time() - self.obstacle_start_time > self.abort_timeout:

@@ -49,13 +49,14 @@ from datetime import datetime, timezone
 
 import paho.mqtt.client as mqtt
 import rclpy
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 from rclpy.duration import Duration
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from smb_msgs.srv import SupervisorCmd
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, String
+from sensor_msgs.msg import BatteryState
 
 
 def _yaw_to_quat(yaw: float):
@@ -109,9 +110,24 @@ class MqttBridge(Node):
         self._paused_start_index = 0  # Global index offset for resumed navigation
         self._mqtt_connected = False
 
+        # ---- Telemetry State ----
+        self._latest_x = None
+        self._latest_y = None
+        self._latest_heading = None
+        self._latest_battery = None
+        self._latest_mode = None
+        self._latest_estop = None
+        self._current_node_id = None
+
         # ---- Supervisor service client ----
         self._supervisor_client = self.create_client(
             SupervisorCmd, '/supervisor/cmd')
+
+        # ---- ROS 2 Subscriptions for Telemetry ----
+        self.create_subscription(PoseWithCovarianceStamped, '/amcl_pose', self._on_amcl_pose, 10)
+        self.create_subscription(BatteryState, '/battery_state', self._on_battery_state, 10)
+        self.create_subscription(String, '/supervisor/state', self._on_supervisor_state, 10)
+        self.create_subscription(Bool, '/emergency_stop', self._on_emergency_stop, 10)
 
         # ---- MQTT client setup ----
         self._mqtt_client = mqtt.Client(
@@ -151,9 +167,65 @@ class MqttBridge(Node):
         # ---- ROS 2 timer to drain the command queue (10 Hz) ----
         self._cmd_timer = self.create_timer(0.1, self._process_command_queue)
 
+        # ---- ROS 2 timer for Telemetry publishing (2 Hz) ----
+        self._telemetry_timer = self.create_timer(0.5, self._publish_telemetry)
+
         self.get_logger().info(
             f'smb_mqtt_bridge initialized '
             f'(command topic: {self._topic_command})')
+
+    # ======================================================================
+    # ROS 2 Subscriptions & Telemetry
+    # ======================================================================
+
+    def _on_amcl_pose(self, msg: PoseWithCovarianceStamped):
+        """Update robot pose from AMCL."""
+        self._latest_x = msg.pose.pose.position.x
+        self._latest_y = msg.pose.pose.position.y
+        # Convert quaternion to yaw
+        q = msg.pose.pose.orientation
+        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+        cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
+        self._latest_heading = math.atan2(siny_cosp, cosy_cosp)
+
+    def _on_battery_state(self, msg: BatteryState):
+        """Update battery state."""
+        self._latest_battery = int(msg.percentage * 100) if not math.isnan(msg.percentage) else None
+
+    def _on_supervisor_state(self, msg: String):
+        """Update supervisor state (Mode)."""
+        self._latest_mode = msg.data.upper()
+
+    def _on_emergency_stop(self, msg: Bool):
+        """Update emergency stop state."""
+        self._latest_estop = msg.data
+
+    def _publish_telemetry(self):
+        """Publish real-time telemetry to the backend."""
+        # Derive Status
+        status_str = "IDLE"
+        if self._latest_estop:
+            status_str = "ESTOP"
+        elif self._navigating:
+            if self._pause_requested:
+                status_str = "PAUSED"
+            else:
+                status_str = "NAVIGATING"
+
+        payload = {
+            "Battery": self._latest_battery,
+            "Location": None,  # BE can infer location if needed, or leave null
+            "Status": status_str,
+            "CurrentNodeId": self._current_node_id,
+            "Mode": self._latest_mode,
+            "IsOnline": True,
+            "XCoord": self._latest_x,
+            "YCoord": self._latest_y,
+            "Timestamp": _utc_iso(),
+            "HeadingRad": self._latest_heading,
+            "Estop": self._latest_estop
+        }
+        self._mqtt_publish(self._topic_telemetry, payload)
 
     # ======================================================================
     # MQTT callbacks (called from paho-mqtt's network thread)
@@ -570,6 +642,10 @@ class MqttBridge(Node):
 
                     # Execute role-based dwell behavior
                     self._execute_dwell(wp_data, mission_id, global_idx)
+
+                    # Update current node ID if present
+                    if 'nodeId' in wp_data:
+                        self._current_node_id = wp_data['nodeId']
 
                 elif result == TaskResult.CANCELED:
                     self.get_logger().warning(
