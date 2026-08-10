@@ -66,12 +66,12 @@ controller_server:
       debug_trajectory_details: False  # Disabled to eliminate terminal console spam and preserve CPU cycles for SLAM optimization
       min_vel_x: 0.15      # Increased to overcome static friction
       min_vel_y: 0.0
-      max_vel_x: 0.90      # Lowered from 1.20 for smoother linear movement
-      min_vel_theta: 1.40  # Lowered 30% from 2.00
-      max_vel_theta: 3.50  # Lowered 30% from 5.00
+      max_vel_x: 0.72      # Lowered 20% more from 0.90 for smoother linear movement
+      min_vel_theta: 1.00  # Lowered from 1.40
+      max_vel_theta: 2.80  # Lowered from 3.50
       acc_lim_x: 0.6       # Smoothed out linear acceleration to prevent wheel slip and jerking
-      acc_lim_theta: 3.2   # Dramatically increased to allow the robot to snap into turns faster and overcome static friction
-      desired_linear_vel: 0.90 # Lowered from 1.20
+      acc_lim_theta: 1.5   # Lowered from 3.2 to introduce more time when transitioning between linear and angular movement
+      desired_linear_vel: 0.72 # Lowered 20% more from 0.90
       use_velocity_scaled_lookahead_dist: true # Look further ahead when moving fast!
       min_lookahead_dist: 0.4
       max_lookahead_dist: 1.5
@@ -82,7 +82,7 @@ controller_server:
       regulated_linear_scaling_min_speed: 0.15   # Synchronized with min_vel_x at 0.15 m/s
       use_rotate_to_heading: true
       rotate_to_heading_min_angle: 0.785
-      rotate_to_heading_angular_vel: 3.5 # Lowered 30% from 5.0
+      rotate_to_heading_angular_vel: 2.80 # Lowered to match max_vel_theta
       transform_tolerance: 1.0 # Restored transform tolerance to 1.0s
       use_collision_detection: true
       max_allowed_time_to_collision_up_to_carrot: 10.0 # 15cm braking window at 1.5cm/s: halt motor output right before physical obstruction without blocking maneuvering detours
