@@ -145,7 +145,7 @@ def generate_launch_description() -> LaunchDescription:
         ComposableNode(
             package='nav2_lifecycle_manager',
             plugin='nav2_lifecycle_manager::LifecycleManager',
-            name='lifecycle_manager_navigation',
+            name='lifecycle_manager',
             parameters=[{
                 'autostart': autostart,
                 'node_names': lifecycle_nodes,

@@ -49,8 +49,8 @@ slam_toolbox:
     # a real environment (not a 10x10m box). Real robot has wheel-encoder
     # odometry that drifts a bit, so we want enough candidates.
     #
-    minimum_travel_distance: 0.02   # 2cm threshold: aggressively correct pose during linear movement
-    minimum_travel_heading: 0.01    # ~0.5 deg turn threshold: trigger rapid rotational updates
+    minimum_travel_distance: 0.05   # 5cm threshold
+    minimum_travel_heading: 0.017   # ~1 deg turn threshold
     minimum_time_interval: 0.1      # 10 Hz maximum update rate when stationary
     skip_odometry: false
 
@@ -88,7 +88,7 @@ slam_toolbox:
     tf_buffer_duration: 60.0
     scan_queue_size: 10        # Local USB serial, no UDP drops
     # transform_tolerance: how far in the past a TF lookup can be.
-    transform_tolerance: 1.0   # 0.2s tolerance is plenty for local USB serial
+    transform_tolerance: 1.0   # Restored to 1.0s to prevent TF lookup sync issues
     throttle_scans: 1
     publish_occupancy_grid: true
     publish_tf: true

@@ -283,7 +283,7 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'false',
             'params_file': LaunchConfiguration('nav2_params_file'),
-            'autostart': 'false',
+            'autostart': 'true',
         }.items(),
     )
 
