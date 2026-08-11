@@ -54,6 +54,9 @@ from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 from rclpy.duration import Duration
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.action import ActionClient
+from nav2_msgs.action import NavigateToPose
+from action_msgs.msg import GoalStatus
 from smb_msgs.srv import SupervisorCmd
 from std_msgs.msg import Bool, String
 from sensor_msgs.msg import BatteryState
@@ -118,6 +121,9 @@ class MqttBridge(Node):
         self._latest_mode = None
         self._latest_estop = None
         self._current_node_id = None
+
+        # ---- Action Clients ----
+        self._nav_to_pose_client = ActionClient(self, NavigateToPose, 'navigate_to_pose')
 
         # ---- Supervisor service client ----
         self._supervisor_client = self.create_client(
@@ -525,18 +531,10 @@ class MqttBridge(Node):
         self._navigating = True
 
         try:
-            # Lazily initialize the navigator
-            if self._navigator is None:
-                self.get_logger().info('Initializing BasicNavigator...')
-                self._navigator = BasicNavigator()
-
-            # Wait for Nav2 to be active
-            if not self._wait_for_nav2():
-                self._publish_nav_status(
-                    'ERROR', mission_id=mission_id,
-                    error_msg='Nav2 is not active')
-                return
-
+            # Wait for action server to be ready
+            self.get_logger().info('Waiting for Nav2 action server...')
+            self._nav_to_pose_client.wait_for_server()
+            
             # Tell supervisor we're in NAV mode
             self._call_supervisor('nav')
 
@@ -585,18 +583,34 @@ class MqttBridge(Node):
                     waypoint_name=wp_name, waypoint_index=global_idx,
                     role=wp_role)
 
-                # Navigate to this single waypoint
+                # Navigate to this single waypoint using native ActionClient
                 self.get_logger().info(
                     f'Navigating to waypoint [{global_idx}] "{wp_name}" '
                     f'(role={wp_role})')
-                self._navigator.goToPose(goal_poses[local_idx])
+                
+                goal_msg = NavigateToPose.Goal()
+                goal_msg.pose = goal_poses[local_idx]
+                send_goal_future = self._nav_to_pose_client.send_goal_async(goal_msg)
+                
+                while not send_goal_future.done():
+                    if self._cancel_requested or self._pause_requested:
+                        return
+                    time.sleep(0.1)
+                    
+                goal_handle = send_goal_future.result()
+                if not goal_handle.accepted:
+                    self.get_logger().error(f'Goal to {wp_name} was rejected by server')
+                    self._publish_nav_status('ERROR', mission_id=mission_id, error_msg='Goal rejected')
+                    return
+                    
+                result_future = goal_handle.get_result_async()
 
                 # Poll until complete or cancelled
-                while not self._navigator.isTaskComplete():
+                while not result_future.done():
                     if self._cancel_requested:
                         self.get_logger().info(
                             'Cancelling active Nav2 goal...')
-                        self._navigator.cancelTask()
+                        goal_handle.cancel_goal_async()
                         time.sleep(0.5)
                         self._publish_nav_status(
                             'CANCELLED', mission_id=mission_id)
@@ -605,7 +619,7 @@ class MqttBridge(Node):
                     if self._pause_requested:
                         self.get_logger().info(
                             'Pausing: cancelling active Nav2 goal...')
-                        self._navigator.cancelTask()
+                        goal_handle.cancel_goal_async()
                         time.sleep(0.5)
                         # Save remaining waypoints (including current one
                         # since we didn't complete it)
@@ -626,8 +640,8 @@ class MqttBridge(Node):
                     time.sleep(0.2)
 
                 # Check result
-                result = self._navigator.getResult()
-                if result == TaskResult.SUCCEEDED:
+                result = result_future.result()
+                if result.status == GoalStatus.STATUS_SUCCEEDED:
                     self.get_logger().info(
                         f'Arrived at waypoint [{global_idx}] "{wp_name}"')
                     last_completed_local = local_idx
@@ -647,14 +661,14 @@ class MqttBridge(Node):
                     if 'nodeId' in wp_data:
                         self._current_node_id = wp_data['nodeId']
 
-                elif result == TaskResult.CANCELED:
+                elif result.status == GoalStatus.STATUS_CANCELED:
                     self.get_logger().warning(
                         f'Goal to waypoint [{global_idx}] was canceled.')
                     self._publish_nav_status(
                         'CANCELLED', mission_id=mission_id)
                     return
 
-                elif result == TaskResult.FAILED:
+                elif result.status == GoalStatus.STATUS_ABORTED:
                     self.get_logger().error(
                         f'Navigation to waypoint [{global_idx}] "{wp_name}" '
                         'failed.')
@@ -779,7 +793,14 @@ class MqttBridge(Node):
                     all_active = False
                     continue
                 future = client.call_async(GetState.Request())
-                rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
+                end_time_future = time.time() + 2.0
+                while not future.done() and time.time() < end_time_future:
+                    time.sleep(0.1)
+                
+                if not future.done():
+                    all_active = False
+                    continue
+                
                 result = future.result()
                 if result is None or result.current_state.label != 'active':
                     all_active = False
@@ -936,8 +957,16 @@ class MqttBridge(Node):
 def main(args=None) -> int:
     rclpy.init(args=args)
     node = MqttBridge()
+    
+    # Use a dedicated MultiThreadedExecutor instead of the global default executor.
+    # This prevents 'Executor is already spinning' crashes because BasicNavigator
+    # hardcodes rclpy.spin_until_future_complete() which grabs the global executor.
+    from rclpy.executors import MultiThreadedExecutor
+    executor = MultiThreadedExecutor()
+    executor.add_node(node)
+    
     try:
-        rclpy.spin(node)
+        executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
@@ -945,7 +974,6 @@ def main(args=None) -> int:
         if rclpy.ok():
             rclpy.shutdown()
     return 0
-
 
 if __name__ == '__main__':
     raise SystemExit(main())

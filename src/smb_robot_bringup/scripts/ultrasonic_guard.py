@@ -13,7 +13,7 @@ class UltrasonicGuard(Node):
         super().__init__('ultrasonic_guard')
 
         # Configuration
-        self.declare_parameter('stop_distance_m', 0.40)
+        self.declare_parameter('stop_distance_m', 0.20)
         self.declare_parameter('abort_timeout_s', 30.0)
         
         self.stop_distance = self.get_parameter('stop_distance_m').value
@@ -21,6 +21,11 @@ class UltrasonicGuard(Node):
         
         self.obstacle_detected = False
         self.obstacle_start_time = 0.0
+
+        # Post-rotation wait state
+        self.was_rotating = False
+        self.post_rotation_wait_start = 0.0
+        self.wait_duration = 1.0
 
         # Subscriptions & Publishers
         self.sub_cmd_vel_nav = self.create_subscription(
@@ -69,20 +74,38 @@ class UltrasonicGuard(Node):
                 self.get_logger().info("Obstacle cleared. Resuming normal motion.")
 
     def cmd_vel_nav_cb(self, msg: TwistStamped):
-        # We only block forward motion (linear.x > 0). We allow backing up or pure rotation.
         out_msg = TwistStamped()
         out_msg.header = msg.header
-        out_msg.twist.linear.y = msg.twist.linear.y
-        out_msg.twist.linear.z = msg.twist.linear.z
-        out_msg.twist.angular.x = msg.twist.angular.x
-        out_msg.twist.angular.y = msg.twist.angular.y
-        out_msg.twist.angular.z = msg.twist.angular.z
         
-        if self.obstacle_detected and msg.twist.linear.x > 0.0:
+        # Determine if the robot is currently doing an in-place rotation
+        is_rotating = abs(msg.twist.angular.z) > 0.01 and abs(msg.twist.linear.x) < 0.01
+        
+        # State transition: just finished rotating
+        if self.was_rotating and not is_rotating:
+            self.post_rotation_wait_start = time.time()
+            self.get_logger().info(f"Rotation finished. Waiting {self.wait_duration}s before resuming...")
+            
+        self.was_rotating = is_rotating
+        
+        in_wait_period = (time.time() - self.post_rotation_wait_start) < self.wait_duration
+        
+        if in_wait_period:
+            # Block all motion during the 1s wait
             out_msg.twist.linear.x = 0.0
-            # If it's trying to move forward and turn, let it just turn
+            out_msg.twist.angular.z = 0.0
         else:
-            out_msg.twist.linear.x = msg.twist.linear.x
+            # We only block forward motion (linear.x > 0) for obstacles. We allow backing up or pure rotation.
+            out_msg.twist.linear.y = msg.twist.linear.y
+            out_msg.twist.linear.z = msg.twist.linear.z
+            out_msg.twist.angular.x = msg.twist.angular.x
+            out_msg.twist.angular.y = msg.twist.angular.y
+            out_msg.twist.angular.z = msg.twist.angular.z
+            
+            if self.obstacle_detected and msg.twist.linear.x > 0.0:
+                out_msg.twist.linear.x = 0.0
+                # If it's trying to move forward and turn, let it just turn
+            else:
+                out_msg.twist.linear.x = msg.twist.linear.x
             
         self.pub_cmd_vel.publish(out_msg)
 

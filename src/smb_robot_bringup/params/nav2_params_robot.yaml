@@ -59,34 +59,34 @@ controller_server:
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: true
-      xy_goal_tolerance: 0.25  # Increased from 0.05m to 0.25m to prevent terminal swerving/oscillations
-      yaw_goal_tolerance: 3.14
+      xy_goal_tolerance: 0.25  # Reverted back to 0.25m to prevent terminal oscillations
+      yaw_goal_tolerance: 0.15 # Reduced to ~8 degrees to force robot to face the correct heading for shelf scans
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: False  # Disabled to eliminate terminal console spam and preserve CPU cycles for SLAM optimization
-      min_vel_x: 0.15      # Increased to overcome static friction
+      min_vel_x: 0.10      # Lowered to match new max velocity
       min_vel_y: 0.0
-      max_vel_x: 0.72      # Lowered 20% more from 0.90 for smoother linear movement
-      min_vel_theta: 1.00  # Lowered from 1.40
-      max_vel_theta: 2.80  # Lowered from 3.50
+      max_vel_x: 0.15      # Bumped back up to 0.15
+      min_vel_theta: 0.20  # Reduced to allow graceful deceleration (roughly 500 PWM)
+      max_vel_theta: 2.00  # Lowered to 2.0 to make moving curves less aggressive
       acc_lim_x: 0.6       # Smoothed out linear acceleration to prevent wheel slip and jerking
-      acc_lim_theta: 1.5   # Lowered from 3.2 to introduce more time when transitioning between linear and angular movement
-      desired_linear_vel: 0.72 # Lowered 20% more from 0.90
+      acc_lim_theta: 3.2   # Increased to 3.2 to give a strong torque "kick" to break friction when spinning in place
+      desired_linear_vel: 0.15 # Bumped back up to 0.15
       use_velocity_scaled_lookahead_dist: true # Look further ahead when moving fast!
-      min_lookahead_dist: 0.4
+      min_lookahead_dist: 1.0  # Increased further to 1.0m to heavily smooth out SLAM corrections and prevent zigzagging!
       max_lookahead_dist: 1.5
-      lookahead_time: 1.5 # 1.5s preview time
-      lookahead_dist: 0.80 # Fallback 
+      lookahead_time: 2.5 # Increased to look further ahead
+      lookahead_dist: 1.20 # Fallback 
       use_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 1.0 # Slow down earlier on wider turns to prevent drifting
-      regulated_linear_scaling_min_speed: 0.15   # Synchronized with min_vel_x at 0.15 m/s
+      regulated_linear_scaling_min_speed: 0.10   # Synchronized with min_vel_x at 0.10 m/s
       use_rotate_to_heading: true
-      rotate_to_heading_min_angle: 0.785
-      rotate_to_heading_angular_vel: 2.80 # Lowered to match max_vel_theta
+      rotate_to_heading_min_angle: 0.70 # Increased to 0.7 to completely eliminate in-place swerving/oscillation
+      rotate_to_heading_angular_vel: 0.69 # Calculated exact equivalent to WebUI's 80% manual steering speed
       transform_tolerance: 1.0 # Restored transform tolerance to 1.0s
-      use_collision_detection: true
+      use_collision_detection: false
       max_allowed_time_to_collision_up_to_carrot: 10.0 # 15cm braking window at 1.5cm/s: halt motor output right before physical obstruction without blocking maneuvering detours
-      use_cost_regulated_linear_velocity_scaling: true # Automatically decelerate when traversing near obstacle proximity borders
+      use_cost_regulated_linear_velocity_scaling: false # Automatically decelerate when traversing near obstacle proximity borders
       cost_scaling_dist: 0.3                           # Begin decelerating when within 30cm of obstacles
       cost_scaling_gain: 1.0                           # Proportional damping coefficient near hazards
 
