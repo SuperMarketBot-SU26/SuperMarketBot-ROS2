@@ -257,3 +257,29 @@ Sau khi pull, chạy lại bringup và đọc block:
 
 Không chạy waypoint nếu `/odom`, `/odom_relay`, `/odometry/filtered` hoặc TF
 `odom <- base_link` báo `FAIL`/`MISSING`.
+
+## 11. Sự cố build `nav2_system_tests`
+
+Nếu log có:
+
+```text
+Could not find nav2_minimal_tb3_sim
+Failed <<< nav2_system_tests
+```
+
+đây là dependency của bộ test mô phỏng Navigation2 được vendor trong workspace,
+không phải dependency runtime của robot thật. Không cài thêm TurtleBot simulator
+vào image production chỉ để vượt qua lỗi này.
+
+`start_pi5_robot.sh` chỉ build các package production cần thiết:
+
+```text
+smb_msgs
+smb_robot
+smb_nodes
+smb_robot_bringup
+ydlidar_ros2_driver
+```
+
+Navigation2 runtime vẫn được dùng bình thường từ image/install hiện có. Sau khi
+build nhóm trên thành công, bringup mới được phép chạy và in block mapping audit.

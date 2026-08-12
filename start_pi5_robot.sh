@@ -48,8 +48,20 @@ elif find "${SCRIPT_DIR}/src" -type f -newer "${BUILD_STAMP}" -print -quit | gre
 fi
 
 if [ "${DO_BUILD}" = true ] || [ ! -f "${SCRIPT_DIR}/install/setup.bash" ] || [ "${SOURCE_CHANGED}" = true ]; then
-    echo "[start_pi5_robot] 📦 Building workspace packages (skipping heavy micro_ros_agent rebuild)..."
-    if ! colcon build --packages-skip micro_ros_agent; then
+    # This workspace vendors the complete Navigation2 source tree, including
+    # nav2_system_tests. Those tests depend on simulation-only packages such as
+    # nav2_minimal_tb3_sim and must never gate real-robot startup. The Docker
+    # image already provides/built the Nav2 runtime; only rebuild SMB production
+    # packages and the directly connected LiDAR driver after a pull.
+    SMB_BUILD_PACKAGES=(
+        smb_msgs
+        smb_robot
+        smb_nodes
+        smb_robot_bringup
+        ydlidar_ros2_driver
+    )
+    echo "[start_pi5_robot] 📦 Building production packages: ${SMB_BUILD_PACKAGES[*]}"
+    if ! colcon build --packages-select "${SMB_BUILD_PACKAGES[@]}"; then
         echo "[start_pi5_robot] ERROR: colcon build failed; refusing to launch a stale install tree."
         exit 1
     fi
