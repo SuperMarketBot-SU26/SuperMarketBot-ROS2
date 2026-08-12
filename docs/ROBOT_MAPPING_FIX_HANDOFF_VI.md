@@ -216,3 +216,44 @@ Chỉ thực hiện sau khi audit đứng yên đạt và khu vực test đã đ
 - Scan và robot model trùng hướng trong RViz.
 - Map mới không còn tường xoay/chồng sau ít nhất một vòng khép kín.
 - Robot đi tới waypoint bằng saved map/localization mà không tạo thêm map mới.
+
+## 10. Sự cố bringup ngày 12/08/2026 — thiếu frame `odom`
+
+Log mới có các dấu hiệu:
+
+```text
+Frame [odom] does not exist
+Invalid frame ID "map"
+Message Filter dropping message: frame 'laser_frame' ... queue is full
+```
+
+Chuỗi nguyên nhân là:
+
+```text
+Không có /odom hoặc /odom_relay
+  -> EKF chưa phát odom -> base_link
+  -> SLAM không xử lý được /scan
+  -> chưa có map -> odom và /map
+  -> Nav2/RViz báo frame map không tồn tại
+```
+
+Cảnh báo YDLIDAR `Real points 333/334 > fixed points 330` không phải nguyên nhân
+làm mất TF; nó chỉ báo số mẫu thực tế của một vòng quét dao động nhẹ.
+
+Các sửa đổi đi kèm:
+
+- RViz đọc trực tiếp `/scan`, không còn đọc topic `/scan_relay` đã bỏ.
+- Panel Nav2 dùng plugin ID của ROS 2 Lyrical:
+  `nav2_rviz_plugins/Navigation 2`.
+- `start_pi5_robot.sh` tự nhận biết source mới hơn build stamp và chạy lại
+  `colcon build`; không còn âm thầm chạy code cũ trong `install/` sau `git pull`.
+- Bringup tự chạy audit chỉ đọc 10 giây và in trạng thái từng topic/TF.
+
+Sau khi pull, chạy lại bringup và đọc block:
+
+```text
+=== SmartMarketBot mapping audit (robot stationary) ===
+```
+
+Không chạy waypoint nếu `/odom`, `/odom_relay`, `/odometry/filtered` hoặc TF
+`odom <- base_link` báo `FAIL`/`MISSING`.

@@ -37,10 +37,24 @@ for arg in "$@"; do
     fi
 done
 
-# 3. Automatically build workspace if --build flag was passed or install/setup.bash is missing
-if [ "${DO_BUILD}" = true ] || [ ! -f "${SCRIPT_DIR}/install/setup.bash" ]; then
+# 3. Rebuild after a git pull/source edit. Sourcing an existing install tree
+#    without rebuilding silently runs stale launch files and Python nodes.
+BUILD_STAMP="${SCRIPT_DIR}/build/.smb_last_successful_build"
+SOURCE_CHANGED=false
+if [ ! -f "${BUILD_STAMP}" ]; then
+    SOURCE_CHANGED=true
+elif find "${SCRIPT_DIR}/src" -type f -newer "${BUILD_STAMP}" -print -quit | grep -q .; then
+    SOURCE_CHANGED=true
+fi
+
+if [ "${DO_BUILD}" = true ] || [ ! -f "${SCRIPT_DIR}/install/setup.bash" ] || [ "${SOURCE_CHANGED}" = true ]; then
     echo "[start_pi5_robot] 📦 Building workspace packages (skipping heavy micro_ros_agent rebuild)..."
-    colcon build --packages-skip micro_ros_agent
+    if ! colcon build --packages-skip micro_ros_agent; then
+        echo "[start_pi5_robot] ERROR: colcon build failed; refusing to launch a stale install tree."
+        exit 1
+    fi
+    mkdir -p "$(dirname "${BUILD_STAMP}")"
+    touch "${BUILD_STAMP}"
     echo "[start_pi5_robot] Build complete!"
 fi
 
@@ -130,7 +144,7 @@ echo "  ESP32 Port  : ${ESP32_PORT:-None detected}"
 echo "  LiDAR Port  : ${LIDAR_PORT:-/dev/ttyUSB0 (default)}"
 echo "  RViz GUI    : disabled (headless Docker mode)"
 echo "  SLAM Engine : ${USE_SLAM}"
-echo "  Nav2 Stack  : ${USE_NAV2} (autostart disabled to await SLAM map)"
+echo "  Nav2 Stack  : ${USE_NAV2}"
 echo "  MQTT Bridge : ${USE_MQTT_BRIDGE} (robot_code=${ROBOT_CODE})"
 echo "=========================================================================="
 echo "[start_pi5_robot] Launching engine in active terminal..."

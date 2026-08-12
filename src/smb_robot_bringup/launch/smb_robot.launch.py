@@ -105,6 +105,12 @@ def generate_launch_description():
                     'odom→base_link TF. slam_toolbox needs this TF to produce '
                     'map→odom. Default true.')
 
+    declare_mapping_diagnostics_cmd = DeclareLaunchArgument(
+        'mapping_diagnostics',
+        default_value='true',
+        description='Run one read-only 10-second sensor/TF audit at startup. '
+                    'It never publishes cmd_vel or navigation goals.')
+
     declare_use_slam_cmd = DeclareLaunchArgument(
         'use_slam',
         default_value='true',
@@ -317,6 +323,21 @@ def generate_launch_description():
         output='screen'
     )
 
+    # One-shot, read-only startup audit. This makes a missing ESP32 /odom,
+    # relay, EKF output or TF edge explicit instead of surfacing later as a
+    # misleading SLAM "queue is full" warning.
+    mapping_diagnostics_node = Node(
+        package='smb_nodes',
+        executable='mapping_diagnostics',
+        name='mapping_diagnostics',
+        parameters=[{
+            'duration': 10.0,
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+        }],
+        condition=IfCondition(LaunchConfiguration('mapping_diagnostics')),
+        output='screen',
+    )
+
     # 7. RViz2
     rviz_node = Node(
         package='rviz2',
@@ -371,6 +392,7 @@ def generate_launch_description():
         declare_use_supervisor_cmd,
         declare_use_micro_ros_cmd,
         declare_use_ekf_cmd,
+        declare_mapping_diagnostics_cmd,
         declare_use_slam_cmd,
         declare_slam_params_cmd,
         declare_nav2_params_cmd,
@@ -388,6 +410,7 @@ def generate_launch_description():
         ultrasonic_guard_node,
         micro_ros_agent_node,
         unified_relay_node,
+        mapping_diagnostics_node,
         rsp_node,
         jsp_node,
         ekf_node,

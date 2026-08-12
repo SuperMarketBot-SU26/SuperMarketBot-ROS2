@@ -7,7 +7,7 @@ Panels:
     - /Global Options1
     Splitter Ratio: 0.5
   Tree Height: 70
-- Class: nav2_rviz_plugins/Nav2Panel
+- Class: nav2_rviz_plugins/Navigation 2
   Name: Navigation 2
   navigation_namespace: ''
   use_sim_time: 'false'
@@ -157,7 +157,7 @@ Visualization Manager:
       Filter size: 10
       History Policy: Keep Last
       Reliability Policy: Best Effort
-      Value: /scan_relay
+      Value: /scan
     Use Fixed Frame: true
     Use rainbow: true
     Value: true
