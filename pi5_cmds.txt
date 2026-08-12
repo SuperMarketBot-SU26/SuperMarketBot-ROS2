@@ -18,3 +18,7 @@ docker exec -it $(docker ps -q) bash -c "source /opt/ros/lyrical/setup.bash && s
 
 Save/Load map:
 docker exec -it $(docker ps -q) bash -c "source /opt/ros/lyrical/setup.bash && source /ros2_ws/install/setup.bash && python3 /ros2_ws/src/smb_robot_bringup/scripts/manage_map.py save -f /ros2_ws/src/smb_robot_bringup/maps/test"
+
+Test if ROS2 is publishing MQTT or not:
+cd ~/ros2_ws/src/smb_robot_bringup/scripts && python3 check_mqtt.py
+
