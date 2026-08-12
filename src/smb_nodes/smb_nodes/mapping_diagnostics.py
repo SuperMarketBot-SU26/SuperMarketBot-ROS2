@@ -12,6 +12,7 @@ import time
 import rclpy
 from nav_msgs.msg import Odometry
 from rclpy.duration import Duration
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, qos_profile_sensor_data
 from rclpy.time import Time
@@ -143,11 +144,11 @@ class MappingDiagnostics(Node):
 
     def _finish(self):
         self._timer.cancel()
-        print('\n=== SmartMarketBot mapping audit (robot stationary) ===')
+        print('\n=== SmartMarketBot mapping audit (robot stationary) ===', flush=True)
         for topic, stats in self._stats.items():
             if stats.count == 0:
                 print(f'[FAIL] {topic:<20} no messages '
-                      f'(publishers={self._topic_publishers(topic)})')
+                      f'(publishers={self._topic_publishers(topic)})', flush=True)
                 continue
             mean_age = statistics.fmean(stats.ages)
             max_abs_age = max(abs(value) for value in stats.ages)
@@ -156,7 +157,8 @@ class MappingDiagnostics(Node):
             state = ' OK ' if timing_ok else 'WARN'
             print(f'[{state}] {topic:<20} {stats.hz:6.1f} Hz  '
                   f'age(avg={mean_age:+.3f}s max|age|={max_abs_age:.3f}s)  '
-                  f'frame={frames}  publishers={self._topic_publishers(topic)}')
+                  f'frame={frames}  publishers={self._topic_publishers(topic)}',
+                  flush=True)
 
         for topic, poses in self._odom_poses.items():
             if len(poses) < 2:
@@ -167,27 +169,27 @@ class MappingDiagnostics(Node):
             drift_deg = abs(math.degrees(_angle_delta(yaw1, yaw0)))
             state = ' OK ' if drift_cm <= 2.0 and drift_deg <= 2.0 else 'WARN'
             print(f'[{state}] stationary drift {topic:<10} '
-                  f'{drift_cm:.2f} cm, {drift_deg:.2f} deg')
+                  f'{drift_cm:.2f} cm, {drift_deg:.2f} deg', flush=True)
 
         if self._gyro_z:
             gyro_mean = statistics.fmean(self._gyro_z)
             gyro_std = statistics.pstdev(self._gyro_z)
             state = ' OK ' if abs(gyro_mean) <= 0.02 and gyro_std <= 0.03 else 'WARN'
             print(f'[{state}] IMU gyro_z mean={gyro_mean:+.4f} rad/s '
-                  f'std={gyro_std:.4f} rad/s')
+                  f'std={gyro_std:.4f} rad/s', flush=True)
 
         if self._scan_valid_ratios:
             valid_pct = statistics.fmean(self._scan_valid_ratios) * 100.0
             state = ' OK ' if valid_pct >= 20.0 else 'WARN'
-            print(f'[{state}] LiDAR valid samples={valid_pct:.1f}%')
+            print(f'[{state}] LiDAR valid samples={valid_pct:.1f}%', flush=True)
 
         print(f'[ TF ] base_link <- laser_frame : '
-              f'{self._tf_status("base_link", "laser_frame")}')
+              f'{self._tf_status("base_link", "laser_frame")}', flush=True)
         print(f'[ TF ] odom <- base_link        : '
-              f'{self._tf_status("odom", "base_link")}')
+              f'{self._tf_status("odom", "base_link")}', flush=True)
         print(f'[ TF ] map <- odom              : '
-              f'{self._tf_status("map", "odom")}')
-        print('=== End audit; no cmd_vel or goal was published ===\n')
+              f'{self._tf_status("map", "odom")}', flush=True)
+        print('=== End audit; no cmd_vel or goal was published ===\n', flush=True)
         self.done = True
 
 
@@ -197,8 +199,11 @@ def main(args=None):
     try:
         while rclpy.ok() and not node.done:
             rclpy.spin_once(node, timeout_sec=0.2)
-    except KeyboardInterrupt:
-        pass
+    except (KeyboardInterrupt, ExternalShutdownException):
+        # A partial report is still more useful than silently exiting. This is
+        # read-only and does not publish any command.
+        if not node.done:
+            node._finish()
     finally:
         node.destroy_node()
         if rclpy.ok():

@@ -147,7 +147,7 @@ def generate_launch_description():
     # MQTT Bridge args
     declare_use_mqtt_bridge_cmd = DeclareLaunchArgument(
         'use_mqtt_bridge',
-        default_value='true',
+        default_value='false',
         description='Enable MQTT navigation bridge (backend → Nav2). Default false.')
 
     declare_mqtt_host_cmd = DeclareLaunchArgument(

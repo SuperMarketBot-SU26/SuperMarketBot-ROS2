@@ -38,8 +38,11 @@ slam_toolbox:
     map_start_x: 0.0
     map_start_y: 0.0
     map_start_yaw: 0.0
-    map_file_name: "/ros2_ws/src/smb_robot_bringup/maps/room_map"
-    map_start_at_dock: true
+    # Fresh mapping must not deserialize a pose graph that may not exist.
+    # Set map_file_name + map_start_at_dock only in a dedicated localization
+    # profile after a real map has been saved.
+    map_file_name: ""
+    map_start_at_dock: false
 
     # Match the YDLIDAR X3 spec + bridge-side filter range
     max_laser_range: 6.0

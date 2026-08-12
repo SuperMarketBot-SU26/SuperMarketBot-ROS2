@@ -283,3 +283,23 @@ ydlidar_ros2_driver
 
 Navigation2 runtime vẫn được dùng bình thường từ image/install hiện có. Sau khi
 build nhóm trên thành công, bringup mới được phép chạy và in block mapping audit.
+
+## 12. Kết quả bringup lúc 07:23 ngày 12/08/2026
+
+- Build production thành công.
+- X3 mở `/dev/ttyUSB0`, health tốt và quét khoảng 8 Hz.
+- micro-ROS agent mở `/dev/ttyACM0`, nhưng trong đoạn log chưa có sự kiện tạo
+  XRCE client/session từ ESP32 và chưa thấy `/odom`.
+- Người vận hành bấm Ctrl+C sau khoảng 6 giây nên audit 10 giây chưa hoàn tất.
+- Nav2 và MQTT đã bị bật do default cũ, làm log bị nhiễu và Nav2 chờ `/map`.
+- SLAM cố đọc `/ros2_ws/src/smb_robot_bringup/maps/room_map` không tồn tại vì
+  `map_start_at_dock` từng được bật sai cho chế độ mapping mới.
+
+Đã chốt lại chế độ khởi động:
+
+- `start_pi5_robot.sh` mặc định **không chạy Nav2**; chỉ bật bằng `--nav2` sau
+  khi audit đạt và đã có map.
+- MQTT mặc định tắt; chỉ bật bằng `--mqtt`/`--mqtt-bridge`.
+- Fresh mapping không deserialize `room_map`.
+- Audit flush từng dòng và in báo cáo một phần ngay cả khi người vận hành bấm
+  Ctrl+C trước 10 giây.

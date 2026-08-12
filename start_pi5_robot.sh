@@ -15,7 +15,9 @@ fi
 
 # 2. Parse arguments and check for --build request
 DO_BUILD=false
-USE_NAV2="true"
+# Mapping/recovery is the safe default on physical hardware. Nav2 must be
+# enabled explicitly only after the odom/TF audit and a map are available.
+USE_NAV2="false"
 USE_SLAM="true"
 USE_MQTT_BRIDGE="${USE_MQTT_BRIDGE:-false}"
 
@@ -26,6 +28,10 @@ for arg in "$@"; do
     if [ "$arg" == "--no-nav2" ] || [ "$arg" == "--teleop" ]; then
         USE_NAV2="false"
         echo "[start_pi5_robot] Flag detected: Disabling Nav2 (Ideal for pure teleop driving)"
+    fi
+    if [ "$arg" == "--nav2" ]; then
+        USE_NAV2="true"
+        echo "[start_pi5_robot] Flag detected: Enabling Nav2"
     fi
     if [ "$arg" == "--no-slam" ]; then
         USE_SLAM="false"
