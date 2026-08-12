@@ -415,8 +415,8 @@ class MqttBridge(Node):
             self.get_logger().error(
                 'NAVIGATE_WAYPOINTS: failed to convert waypoints to poses')
             self._publish_nav_status(
-                'ERROR', mission_id=mission_id,
-                error_msg='Failed to convert waypoints')
+                'FAILED', mission_id=mission_id,
+                error='Failed to convert waypoints')
             return
 
         # Start navigation in a separate thread
@@ -577,7 +577,8 @@ class MqttBridge(Node):
                 if self._cancel_requested:
                     self.get_logger().info('Navigation cancelled by request.')
                     self._publish_nav_status(
-                        'CANCELLED', mission_id=mission_id)
+                        'CANCELLED', mission_id=mission_id,
+                        waypoint_index=global_idx)
                     return
 
                 if self._pause_requested:
@@ -688,30 +689,30 @@ class MqttBridge(Node):
                     self.get_logger().warning(
                         f'Goal to waypoint [{global_idx}] was canceled.')
                     self._publish_nav_status(
-                        'CANCELLED', mission_id=mission_id)
+                        'CANCELLED', mission_id=mission_id,
+                        waypoint_index=global_idx)
                     return
 
                 elif result.status == GoalStatus.STATUS_ABORTED:
                     self.get_logger().error(
-                        f'Navigation to waypoint [{global_idx}] "{wp_name}" '
-                        'failed.')
+                        f'Goal to waypoint [{global_idx}] was aborted by Nav2.')
                     self._publish_nav_status(
-                        'ERROR', mission_id=mission_id,
-                        waypoint_name=wp_name, waypoint_index=global_idx,
-                        error_msg=f'Nav2 failed at waypoint {global_idx}')
+                        'FAILED', mission_id=mission_id,
+                        waypoint_index=global_idx,
+                        error='Goal aborted by Nav2')
                     return
 
             # All waypoints completed
             self.get_logger().info(
                 f'Mission {mission_id} completed — all '
                 f'{len(goal_poses)} waypoint(s) visited.')
-            self._publish_nav_status('COMPLETED', mission_id=mission_id)
+            self._publish_nav_status('COMPLETED', mission_id=mission_id, waypoint_index=len(goal_poses) - 1)
 
         except Exception as e:
             self.get_logger().error(f'Navigation error: {e}')
             self._publish_nav_status(
-                'ERROR', mission_id=mission_id,
-                error_msg=str(e))
+                'FAILED', mission_id=mission_id,
+                error=str(e))
         finally:
             self._navigating = False
             # Return supervisor to IDLE
@@ -871,7 +872,7 @@ class MqttBridge(Node):
     def _publish_nav_status(self, status, *, mission_id='',
                             waypoint_name=None, waypoint_index=None,
                             role=None, playlist=None, dwell_time=None,
-                            error_msg=None):
+                            error=None):
         """Publish navigation status to MQTT.
 
         Format matches the backend's NavigationStatusMessage model exactly.
@@ -892,8 +893,8 @@ class MqttBridge(Node):
             msg['playlist'] = playlist
         if dwell_time is not None:
             msg['dwellTimeSeconds'] = dwell_time
-        if error_msg is not None:
-            msg['error'] = error_msg
+        if error is not None:
+            msg['error'] = error
 
         self._mqtt_publish(self._topic_nav_status, msg)
         self.get_logger().info(
