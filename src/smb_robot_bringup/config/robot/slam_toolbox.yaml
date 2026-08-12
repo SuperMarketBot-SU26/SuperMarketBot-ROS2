@@ -78,8 +78,8 @@ slam_toolbox:
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: HuberLoss
-    distance_variance_penalty: 0.4      # Tuned to 0.4: firm balance between stabilized odometry translation and dense scan convergence
-    angle_variance_penalty: 0.0001      # Reduced to 0.0001 (100x reduction): virtually eliminate odometry rotational resistance so Ceres scan matcher aggressively rotates and locks LiDAR scans onto room geometry
+    distance_variance_penalty: 0.2      # Standard value. Constrains how far Ceres can slide the scan from odometry.
+    angle_variance_penalty: 0.2         # CRITICAL FIX: Increased from 0.0001 back to 0.2. A value of 0.0001 allowed Ceres to arbitrarily spin the map by 30 degrees in featureless corridors, creating the massive ghosting effect.
     use_scan_matching: true
     use_scan_barycenter: true
 
