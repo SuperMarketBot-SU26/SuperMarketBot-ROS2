@@ -22,10 +22,7 @@ class UltrasonicGuard(Node):
         self.obstacle_detected = False
         self.obstacle_start_time = 0.0
 
-        # Post-rotation wait state
-        self.was_rotating = False
-        self.post_rotation_wait_start = 0.0
-        self.wait_duration = 0.5
+        # Post-rotation wait state (REMOVED)
 
         # Subscriptions & Publishers
         self.sub_cmd_vel_nav = self.create_subscription(
@@ -80,32 +77,19 @@ class UltrasonicGuard(Node):
         # Determine if the robot is currently doing an in-place rotation
         is_rotating = abs(msg.twist.angular.z) > 0.01 and abs(msg.twist.linear.x) < 0.01
         
-        # State transition: just finished rotating
-        if self.was_rotating and not is_rotating:
-            self.post_rotation_wait_start = time.time()
-            self.get_logger().info(f"Rotation finished. Waiting {self.wait_duration}s before resuming...")
-            
-        self.was_rotating = is_rotating
+        # (Post-rotation delay removed)
+        # We only block forward motion (linear.x > 0) for obstacles. We allow backing up or pure rotation.
+        out_msg.twist.linear.y = msg.twist.linear.y
+        out_msg.twist.linear.z = msg.twist.linear.z
+        out_msg.twist.angular.x = msg.twist.angular.x
+        out_msg.twist.angular.y = msg.twist.angular.y
+        out_msg.twist.angular.z = msg.twist.angular.z
         
-        in_wait_period = (time.time() - self.post_rotation_wait_start) < self.wait_duration
-        
-        if in_wait_period:
-            # Block all motion during the 1s wait
+        if self.obstacle_detected and msg.twist.linear.x > 0.0:
             out_msg.twist.linear.x = 0.0
-            out_msg.twist.angular.z = 0.0
+            # If it's trying to move forward and turn, let it just turn
         else:
-            # We only block forward motion (linear.x > 0) for obstacles. We allow backing up or pure rotation.
-            out_msg.twist.linear.y = msg.twist.linear.y
-            out_msg.twist.linear.z = msg.twist.linear.z
-            out_msg.twist.angular.x = msg.twist.angular.x
-            out_msg.twist.angular.y = msg.twist.angular.y
-            out_msg.twist.angular.z = msg.twist.angular.z
-            
-            if self.obstacle_detected and msg.twist.linear.x > 0.0:
-                out_msg.twist.linear.x = 0.0
-                # If it's trying to move forward and turn, let it just turn
-            else:
-                out_msg.twist.linear.x = msg.twist.linear.x
+            out_msg.twist.linear.x = msg.twist.linear.x
             
         self.pub_cmd_vel.publish(out_msg)
 

@@ -49,7 +49,7 @@ ekf_filter_node:
       0.0,    0.0,    0.06, 0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.03, 0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.03, 0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
-      0.0,    0.0,    0.0,    0.0,    0.0,    0.015, 0.0,    0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+      0.0,    0.0,    0.0,    0.0,    0.0,    0.005, 0.0,    0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.025, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.025, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.04, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -85,7 +85,7 @@ ekf_filter_node:
       true,  true,  false,  # X Y Z — fuse precise X, Y coordinates from ESP32 localization
       false, false, true,   # R P Y — fuse Yaw orientation from ESP32 hardware EKF (ImuFusion.h)
       false, false, false,  # Vx Vy Vz — disabled: avoid positional double-counting that causes kinematic overshooting
-      false, false, true,   # Vroll Vpitch Vyaw — enable Vyaw angular velocity tracking for instantaneous orientation prediction during turning
+      false, false, false,  # Vroll Vpitch Vyaw — disabled: ESP32 already integrates this perfectly into Yaw. Fusing both causes covariance collapse.
       false, false, false]  # Ax Ay Az — linear acceleration
 
     odom0_differential: false
