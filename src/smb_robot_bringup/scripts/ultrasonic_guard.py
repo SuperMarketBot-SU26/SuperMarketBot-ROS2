@@ -13,7 +13,7 @@ class UltrasonicGuard(Node):
         super().__init__('ultrasonic_guard')
 
         # Configuration
-        self.declare_parameter('stop_distance_m', 0.20)
+        self.declare_parameter('stop_distance_m', 0.30)
         self.declare_parameter('abort_timeout_s', 30.0)
         
         self.stop_distance = self.get_parameter('stop_distance_m').value
@@ -25,7 +25,7 @@ class UltrasonicGuard(Node):
         # Post-rotation wait state
         self.was_rotating = False
         self.post_rotation_wait_start = 0.0
-        self.wait_duration = 1.0
+        self.wait_duration = 0.5
 
         # Subscriptions & Publishers
         self.sub_cmd_vel_nav = self.create_subscription(
