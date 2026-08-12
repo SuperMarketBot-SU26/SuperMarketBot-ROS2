@@ -18,7 +18,9 @@ DO_BUILD=false
 # Mapping/recovery is the safe default on physical hardware. Nav2 must be
 # enabled explicitly only after the odom/TF audit and a map are available.
 USE_NAV2="false"
-USE_SLAM="true"
+# Preflight is the default. Starting SLAM without odom -> base_link can never
+# produce a map and only fills the LaserScan message-filter queue.
+USE_SLAM="false"
 USE_MQTT_BRIDGE="${USE_MQTT_BRIDGE:-false}"
 
 for arg in "$@"; do
@@ -36,6 +38,10 @@ for arg in "$@"; do
     if [ "$arg" == "--no-slam" ]; then
         USE_SLAM="false"
         echo "[start_pi5_robot] Flag detected: Disabling SLAM"
+    fi
+    if [ "$arg" == "--slam" ] || [ "$arg" == "--mapping" ]; then
+        USE_SLAM="true"
+        echo "[start_pi5_robot] Flag detected: Enabling fresh SLAM mapping"
     fi
     if [ "$arg" == "--mqtt-bridge" ] || [ "$arg" == "--mqtt" ]; then
         USE_MQTT_BRIDGE="true"

@@ -303,3 +303,59 @@ build nhóm trên thành công, bringup mới được phép chạy và in block
 - Fresh mapping không deserialize `room_map`.
 - Audit flush từng dòng và in báo cáo một phần ngay cả khi người vận hành bấm
   Ctrl+C trước 10 giây.
+
+## 13. Audit xác nhận ESP32 chưa vào ROS graph
+
+Audit lúc 07:32 cho kết quả:
+
+```text
+[ OK ] /scan                  9.8 Hz
+[FAIL] /odom                  publishers=0
+[FAIL] /imu/data              publishers=0
+[FAIL] /odometry/filtered     no messages
+[ TF ] base_link <- laser_frame  OK
+[ TF ] odom <- base_link         MISSING
+```
+
+Kết luận:
+
+- Pi, X3, `/scan` và URDF static TF đang hoạt động.
+- `unified_relay` và EKF đã chạy nhưng chỉ có publisher rỗng vì không nhận dữ
+  liệu gốc.
+- micro-ROS agent đã mở `/dev/ttyACM0` nhưng không ghi nhận XRCE client/session
+  từ ESP32 trong toàn bộ đoạn log.
+- Không chỉnh EKF hoặc SLAM để che lỗi này; cần xác nhận/flash firmware ESP32
+  commit có native USB CDC transport trước.
+
+Chế độ chạy được tách rõ:
+
+```bash
+# Preflight: mặc định không SLAM, không Nav2, không MQTT
+./start_pi5_robot.sh --build
+
+# Chỉ sau khi preflight có /odom và TF odom -> base_link
+./start_pi5_robot.sh --slam
+
+# Nav2 chỉ sau khi đã có/lưu map và cấu hình localization
+./start_pi5_robot.sh --nav2
+```
+
+Không chạy đồng thời `--slam --nav2` trong lúc đang chẩn đoán odometry.
+
+### Sửa transport tương ứng trong firmware
+
+Audit này cũng dẫn tới một lỗi cụ thể trong `MicroRos.h`: callback transport
+nhận timeout handshake từ Micro XRCE-DDS nhưng bản cũ ép mọi lần đọc xuống tối
+đa 2 ms. `rmw_uros_ping_agent(500, 2)` vì thế có thể thất bại trước khi agent
+trên Pi trả lời.
+
+Firmware mới:
+
+- tôn trọng timeout handshake, giới hạn an toàn tối đa 1000 ms;
+- không gọi `USB CDC.end()` khi đóng/retry transport, tránh làm
+  `/dev/ttyACM*` biến mất và khiến agent giữ file descriptor cũ;
+- vẫn chạy micro-ROS ở task riêng, priority thấp hơn `taskControl`, nên thời gian
+  chờ handshake không chặn vòng an toàn motor.
+
+Phải build và flash lại `SuperMarketBot-IOT` sau thay đổi này. Khi Pi đang chạy
+`micro_ros_agent`, không mở Arduino Serial Monitor trên cùng cổng.
