@@ -301,16 +301,18 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 6.5 odom_imu_relay to rewrite ESP32 1970 timestamps to wall-clock
-    odom_imu_relay_node = Node(
+    # 6.5 One coordinated odom+IMU relay. It preserves valid micro-ROS epoch
+    #     stamps and applies a shared offset only for old boot-relative stamps.
+    unified_relay_node = Node(
         package='smb_nodes',
-        executable='odom_imu_relay',
-        name='odom_imu_relay',
+        executable='unified_relay',
+        name='unified_relay',
         parameters=[{
-            'odom_in_topic': '/odom',
-            'odom_out_topic': '/odom_relay',
-            'imu_in_topic': '/imu/data',
-            'imu_out_topic': '/imu_relay'
+            'odom_in': '/odom',
+            'odom_out': '/odom_relay',
+            'imu_in': '/imu/data',
+            'imu_out': '/imu_relay',
+            'publish_tf': False,
         }],
         output='screen'
     )
@@ -385,7 +387,7 @@ def generate_launch_description():
         ydlidar_node,
         ultrasonic_guard_node,
         micro_ros_agent_node,
-        odom_imu_relay_node,
+        unified_relay_node,
         rsp_node,
         jsp_node,
         ekf_node,

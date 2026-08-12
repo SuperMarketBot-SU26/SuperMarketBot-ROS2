@@ -15,15 +15,15 @@ You (`ros2_ws` maintainer) don't have the robot. Teammate (in `SuperMarketBot-IO
 | Topic | Direction | Type | QoS | Rate | `frame_id` (header) | `child_frame_id` | Notes |
 |---|---|---|---|---|---|---|---|
 | `/scan` | firmware → ROS2 | `sensor_msgs/msg/LaserScan` | `BEST_EFFORT`, depth=10 | 10 Hz | `laser_frame` | — | YDLIDAR X3 (or sim equivalent). `range_min=0.12m`, `range_max=6.0m` for indoor supermarket. |
-| `/odom` | firmware → ROS2 | `nav_msgs/msg/Odometry` | `RELIABLE` | 30 Hz | `odom` | `base_link` | From wheel encoders + IMU EKF fusion. Covariance: x/y 0.25 m², yaw 0.05 rad². |
-| `/imu/data` | firmware → ROS2 | `sensor_msgs/msg/Imu` | `RELIABLE` | 30 Hz | `imu_link` | — | Orientation only (no accel). Orientation covariance: `[-1, -1, 0.05, -1, -1, -1]`. |
+| `/odom` | firmware → ROS2 | `nav_msgs/msg/Odometry` | `RELIABLE` | 50 Hz | `odom` | `base_link` | Raw wheel-encoder odometry only. It does **not** contain MPU6050 heading. This independence is required so the host EKF can fuse wheel pose with gyro Z without counting the IMU twice. |
+| `/imu/data` | firmware → ROS2 | `sensor_msgs/msg/Imu` | `BEST_EFFORT` | 50 Hz | `imu_link` | — | Raw MPU6050 angular velocity Z in rad/s. The MPU6050 has no absolute yaw reference, so orientation is unavailable and `orientation_covariance[0] = -1`. Linear acceleration is currently unavailable. |
 | `/cmd_vel` | ROS2 → firmware | `geometry_msgs/msg/Twist` | `RELIABLE` | 10–50 Hz | — | — | Units: `linear.x` = m/s, `angular.z` = rad/s. Output of `smb_nodes.supervisor` — this is the only topic the firmware (or `ros_gz_bridge` in sim) subscribes to for velocity commands. The supervisor publishes a zero Twist while in ESTOP and otherwise passes through whatever was most recently received from `/cmd_vel_nav` (Nav2, `TwistStamped`) or `/cmd_vel_manual` (teleop, `Twist`). Teleop must publish to `/cmd_vel_manual`, **not** `/cmd_vel` directly — see `smb_nodes/supervisor.py` module docstring for why sharing the topic with the output creates a self-loopback that defeats the watchdog and bypasses the ESTOP gate. |
 | `/cmd_vel_nav` | Nav2 → supervisor | `geometry_msgs/msg/TwistStamped` | `RELIABLE` | 10–50 Hz | `child_frame_id` in header (unused) | — | Internal between Nav2 and the supervisor. Nav2 main/rolling publish `TwistStamped`; the supervisor normalizes incoming `TwistStamped` to a plain `Twist` before republishing on `/cmd_vel`. (Legacy publishers writing `Twist` to this topic would need a launch arg remap or a wrapper node — DDS does not allow two subscriptions on the same topic with different types.) |
 | `/cmd_vel_manual` | teleop → supervisor | `geometry_msgs/msg/Twist` | `RELIABLE` | 10–50 Hz | — | — | Manual/teleop input (e.g., `teleop_twist_keyboard`, `joy_teleop`) — must remap their default `cmd_vel` output to this topic. The supervisor's `manual_cmd_vel_in_topic` parameter defaults here; the firmware never subscribes to this directly (it listens to `/cmd_vel`, the supervisor's gated output). |
 | `/tf` | both | `tf2_msgs/msg/TFMessage` | — | various | — | — | Dynamic transforms. |
 | `/tf_static` | ROS2 → ROS2 | `tf2_msgs/msg/TFMessage` | `TRANSIENT_LOCAL` | latched | — | — | `robot_state_publisher` publishes `base_link → laser_frame`, `base_link → imu_link`. |
 | `/map` | ROS2 internal | `nav_msgs/msg/OccupancyGrid` | `TRANSIENT_LOCAL` | on change | `map` | — | From slam_toolbox. |
-| `/amcl_pose` | ROS2 internal | `geometry_msgs/msg/PoseWithCovarianceStamped` | `RELIABLE` | on change | `map` | — | From slam_toolbox. Consumed by EKF. |
+| `/amcl_pose` | ROS2 internal | `geometry_msgs/msg/PoseWithCovarianceStamped` | `RELIABLE` | on change | `map` | — | Absolute pose from the localization layer when running a saved map. It must not be fed into the local `world_frame: odom` EKF used by this bringup. |
 | `/odometry/filtered` | ROS2 internal | `nav_msgs/msg/Odometry` | `RELIABLE` | 30 Hz | `odom` | `base_link` | From `robot_localization` EKF. **Use this as odom source for navigation**, not raw `/odom`. |
 
 ---
@@ -76,8 +76,8 @@ What the **sim** MUST publish (via Gazebo sensors / ros_gz_bridge):
 What the **real ESP32** MUST publish (via `MicroRos.h`):
 
 - `/scan` — populated from `g_x3Scan` (YDLIDAR X3 driver), `sensor_msgs/LaserScan`, frame `laser_frame`, range 0.12–8m (filtered to 0.15–6m on bridge side).
-- `/odom` — populated from `g_pose` (encoder + IMU EKF), `nav_msgs/Odometry`, frame `odom`, child `base_link`, 30 Hz.
-- `/imu/data` — derived from EKF heading + gyro Z, `sensor_msgs/Imu`, frame `imu_link`, 30 Hz.
+- `/odom` — populated from `g_wheelOdomPose` (encoder-only), `nav_msgs/Odometry`, frame `odom`, child `base_link`, 50 Hz.
+- `/imu/data` — raw calibrated gyro Z; orientation explicitly unavailable, `sensor_msgs/Imu`, frame `imu_link`, 50 Hz.
 - (subscribed) `/cmd_vel` → drives `botDrive(...)`.
 
 What **both** subscribe to via the same launch:

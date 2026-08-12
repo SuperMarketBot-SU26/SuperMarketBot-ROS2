@@ -7,9 +7,8 @@
 #   - All other parameters identical; tune controller frequency, tolerances,
 #     and costmap ranges during real-robot bringup.
 #
-# NOTE: odom_topic is /odom directly (ESP32 PWM odometry).
-#       Phase 2 (robot_localization EKF) will produce /odometry/filtered
-#       as the fused output. Switch odom_topic to /odometry/filtered then.
+# Nav2 consumes the wheel+gyro fused result from robot_localization. Raw
+# ESP32 wheel odometry remains on /odom for diagnostics only.
 #
 # Frame conventions (matches docs/TOPIC_CONTRACT.md):
 #   robot_base_frame  = base_link
@@ -23,7 +22,7 @@ bt_navigator:
     transform_tolerance: 1.0
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: /odom
+    odom_topic: /odometry/filtered
     bt_loop_duration: 10
     default_server_timeout: 20
     default_cancel_timeout: 50
@@ -41,7 +40,7 @@ controller_server:
     use_sim_time: False
     tf_buffer_duration: 30.0
     controller_frequency: 20.0     # 20 Hz: good balance between responsiveness and motor smoothness
-    odom_topic: /odom
+    odom_topic: /odometry/filtered
     costmap_update_timeout: 0.30
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5

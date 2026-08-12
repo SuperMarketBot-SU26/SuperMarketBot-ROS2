@@ -20,8 +20,10 @@ ydlidar_ros2_driver_node:
     sample_rate: 3
     abnormal_check_count: 4
     fixed_resolution: true
-    reversion: true
-    inverted: true
+    # X3 uses the same 115200/single-channel scan convention as the vendor X2
+    # profile. Mounting yaw belongs in URDF; do not mirror/rotate samples here.
+    reversion: false
+    inverted: false
     auto_reconnect: true
     isSingleChannel: true
     intensity_bit: 0

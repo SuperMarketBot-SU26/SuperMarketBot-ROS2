@@ -189,8 +189,9 @@
   </link>
 
   <!-- Laser frame: center-mounted on chassis (x = 0.0) and connected directly to Pi 5 USB (not through ESP32).
-       LiDAR angle_min=0° points along URDF +X = physical forward.
-       No extra rotation: YDLidar X3 angle 0° is already in the forward direction.
+       The physical sensor connector/zero ray is mounted 90° clockwise from
+       base_link +X, so this fixed joint applies the only required yaw offset.
+       Driver-level reversion/inversion must remain disabled.
        Driver publishes scan with frame_id="laser_frame"; robot_state_publisher
        provides the TF map → odom → base_link → laser_frame. -->
   <xacro:property name="lidar_offset_x" value="0.0"/>

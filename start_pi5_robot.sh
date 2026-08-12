@@ -59,6 +59,7 @@ pkill -9 -f "ydlidar_ros2_driver" 2>/dev/null || true
 pkill -9 -f "smb_robot.launch.py" 2>/dev/null || true
 pkill -9 -f "smb.launch.py" 2>/dev/null || true
 pkill -9 -f "unified_relay" 2>/dev/null || true
+pkill -9 -f "odom_imu_relay" 2>/dev/null || true
 pkill -9 -f "supervisor" 2>/dev/null || true
 pkill -9 -f "smb_mqtt_bridge" 2>/dev/null || true
 sleep 1

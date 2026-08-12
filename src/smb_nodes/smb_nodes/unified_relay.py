@@ -31,12 +31,12 @@ Publishes:
   - ``/imu_relay``   (RELIABLE / VOLATILE / depth=20)    → matches EKF
   - ``/tf``          (odom → base_link, if publish_tf=true)
 
-All output stamps are rewritten to coordinated host-clock times.
+Valid agent-synchronized timestamps are preserved. Boot-relative timestamps
+from older/fallback firmware are shifted with one coordinated host-clock offset.
 """
 
-import math
-
 import rclpy
+from builtin_interfaces.msg import Time
 from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 from rclpy.executors import ExternalShutdownException
@@ -70,12 +70,13 @@ class UnifiedRelay(Node):
         self._base_frame = self.get_parameter('base_frame').value
 
         # ---- State: Clock synchronization ----
-        # The ESP32 stamps messages with millis() since boot (1970).
-        # We must shift these to ROS 2 wall-clock time. If we just use now(),
-        # variable transmission latency (USB serial) breaks the relative timing
-        # between odom and IMU. By calculating a fixed offset (ROS_time - ESP32_time),
-        # we preserve the exact relative timing generated on the microcontroller.
+        # New firmware publishes agent-synchronized Unix time. Older/fallback
+        # firmware publishes millis() since boot. Preserve valid Unix stamps;
+        # otherwise apply one shared fixed offset to odom and IMU so their
+        # relative timing survives USB callback jitter.
         self._time_offset_ns = None
+        self._latest_source_ns = None
+        self._reported_clock_mode = None
 
         # ---- QoS profiles ----
         # Input: match ESP32 micro-ros-arduino defaults
@@ -121,9 +122,54 @@ class UnifiedRelay(Node):
             f'  (scan relay removed — YDLIDAR publishes /scan directly)'
         )
 
+    @staticmethod
+    def _stamp_to_ns(stamp):
+        return int(stamp.sec) * 1_000_000_000 + int(stamp.nanosec)
+
+    @staticmethod
+    def _ns_to_stamp(stamp_ns):
+        stamp = Time()
+        stamp.sec = int(stamp_ns // 1_000_000_000)
+        stamp.nanosec = int(stamp_ns % 1_000_000_000)
+        return stamp
+
     def _get_coordinated_stamp(self, esp32_stamp):
-        """Convert ESP32 timestamp to host wall-clock time directly to prevent future-stamping."""
-        return self.get_clock().now().to_msg()
+        """Return a host-compatible stamp without destroying sensor timing."""
+        source_ns = self._stamp_to_ns(esp32_stamp)
+        now_ns = self.get_clock().now().nanoseconds
+
+        # 2020-01-01 in Unix nanoseconds. Synced micro-ROS stamps newer than
+        # this and close to host time are already the best timestamp available.
+        valid_epoch_ns = 1_577_836_800 * 1_000_000_000
+        if source_ns >= valid_epoch_ns and abs(now_ns - source_ns) <= 2_000_000_000:
+            if self._reported_clock_mode != 'synced':
+                self.get_logger().info('ESP32 clock is agent-synchronized; preserving source stamps')
+                self._reported_clock_mode = 'synced'
+            self._time_offset_ns = None
+            self._latest_source_ns = source_ns
+            return esp32_stamp
+
+        # Detect an ESP32 reboot/clock reset. Small cross-topic reordering is
+        # allowed; a backwards jump greater than two seconds resets the epoch.
+        if (self._latest_source_ns is not None and
+                source_ns + 2_000_000_000 < self._latest_source_ns):
+            self._time_offset_ns = None
+        self._latest_source_ns = max(source_ns, self._latest_source_ns or source_ns)
+
+        if self._time_offset_ns is None:
+            self._time_offset_ns = now_ns - source_ns
+            if self._reported_clock_mode != 'offset':
+                self.get_logger().warning(
+                    'ESP32 clock is boot-relative/stale; applying one shared host-time offset')
+                self._reported_clock_mode = 'offset'
+
+        shifted_ns = source_ns + self._time_offset_ns
+        # If the host clock itself jumps, re-anchor instead of publishing a TF
+        # several seconds into the future/past.
+        if abs(now_ns - shifted_ns) > 2_000_000_000:
+            self._time_offset_ns = now_ns - source_ns
+            shifted_ns = now_ns
+        return self._ns_to_stamp(shifted_ns)
 
     def _on_odom(self, msg: Odometry) -> None:
         """Relay odom with synchronized host-clock stamp."""

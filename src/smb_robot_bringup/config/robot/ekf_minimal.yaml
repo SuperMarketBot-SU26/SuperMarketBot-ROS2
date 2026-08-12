@@ -5,22 +5,13 @@
 # firmware only publishes topics, not transforms. Without EKF, SLAM has no
 # `odom → base_link` TF and cannot produce `map → odom` → no map → no Nav2.
 #
-# Stamp note: ESP32 stamps /odom and /imu/data with millis()/1000 (year 1970),
-# which the EKF rejects. We subscribe to /odom_relay and /imu_relay
-# (re-published by smb_nodes/odom_imu_relay with host-clock stamps).
+# Timestamp note: we subscribe to /odom_relay and /imu_relay. unified_relay
+# preserves valid agent-synchronized stamps and applies one shared offset only
+# when firmware falls back to millis()-since-boot.
 #
-# v2.4 (2026-07-28): ADD imu0 = /imu_relay fusion (gyro_z angular velocity
-# for heading correction). The firmware-side IMU EKF (ImuFusion.h) already
-# fuses gyro + wheel at 20 Hz on the ESP32, so /imu_relay's orientation and
-# /odom_relay's heading are correlated. We consume ONLY angular_velocity.z
-# from /imu_relay (orientation ignored) to avoid double-counting heading
-# inside this EKF.
-#
-# This is a single-source-for-position + IMU-aided-heading EKF. Full sensor
-# fusion (multiple wheel+IMU+GPS at the EKF level) is in the IOT-repo
-# ekf_config.yaml and is the target for Phase 2. For now, this minimal
-# config combines /odom for translation (post v2.4 firmware: signed)
-# + /imu/data gyro for heading drift correction.
+# Current firmware publishes independent sources: /odom is encoder-only pose,
+# while /imu/data exposes raw gyro_z and explicitly marks orientation unknown.
+# This EKF is the single authority for odom -> base_link.
 
 ekf_filter_node:
   ros__parameters:
@@ -31,14 +22,14 @@ ekf_filter_node:
     map_frame: map
 
     # Frequency
-    frequency: 60.0            # 60 Hz high-speed state publication for smooth 60 FPS RViz tracking
-    sensor_timeout: 0.05       # 50ms timeout (tuned for 50Hz stable USB serial, no WiFi jitter)
+    frequency: 30.0            # Faster than the LiDAR, without starving Nav2/SLAM on Pi 5
+    sensor_timeout: 0.20       # tolerate one or two missed 50 Hz micro-ROS frames
     two_d_mode: true           # planar robot, ignore Z / roll / pitch
     publish_tf: true           # publish odom → base_link TF
-    print_diagnostics: false
+    print_diagnostics: true
     debug: false
 
-    # Process noise (loose — single-source, no IMU correction)
+    # Process noise for wheel pose + independent gyro-rate fusion.
     # NOTE: rcl_yaml_parser on lyrical treats `[0.05, 0, 0, ...]` as a
     # mixed-type sequence and rejects it ("Sequence should be of same type.
     # Value type 'integer' do not belong"). Use `0.0` not `0` so the entire
@@ -82,11 +73,24 @@ ekf_filter_node:
 
     odom0: /odom_relay
     odom0_config: [
-      true,  true,  false,  # X Y Z — fuse precise X, Y coordinates from ESP32 localization
-      false, false, true,   # R P Y — fuse Yaw orientation from ESP32 hardware EKF (ImuFusion.h)
+      true,  true,  false,  # X Y Z — wheel-encoder pose
+      false, false, true,   # R P Y — wheel-encoder yaw (independent from MPU6050)
       false, false, false,  # Vx Vy Vz — disabled: avoid positional double-counting that causes kinematic overshooting
-      false, false, false,  # Vroll Vpitch Vyaw — disabled: ESP32 already integrates this perfectly into Yaw. Fusing both causes covariance collapse.
+      false, false, false,  # Vroll Vpitch Vyaw — wheel message does not provide a separate trusted rate
       false, false, false]  # Ax Ay Az — linear acceleration
 
     odom0_differential: false
     odom0_relative: false
+
+    # Independent raw MPU6050 gyro. Orientation is intentionally ignored:
+    # the sensor has no absolute yaw reference and firmware marks it unavailable.
+    imu0: /imu_relay
+    imu0_config: [
+      false, false, false,  # X Y Z
+      false, false, false,  # Roll Pitch Yaw
+      false, false, false,  # Vx Vy Vz
+      false, false, true,   # Vroll Vpitch Vyaw
+      false, false, false]  # Ax Ay Az
+    imu0_differential: false
+    imu0_relative: false
+    imu0_remove_gravitational_acceleration: false
