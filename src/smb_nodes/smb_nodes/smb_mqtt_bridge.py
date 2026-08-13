@@ -60,6 +60,8 @@ from action_msgs.msg import GoalStatus
 from smb_msgs.srv import SupervisorCmd
 from std_msgs.msg import Bool, String
 from sensor_msgs.msg import BatteryState
+import tf2_ros
+from tf2_ros import TransformException
 
 
 def _yaw_to_quat(yaw: float):
@@ -129,9 +131,15 @@ class MqttBridge(Node):
         self._supervisor_client = self.create_client(
             SupervisorCmd, '/supervisor/cmd')
 
-        # ---- ROS 2 Subscriptions for Telemetry ----
-        self.create_subscription(PoseWithCovarianceStamped, '/amcl_pose', self._on_amcl_pose, 10)
-        self.create_subscription(BatteryState, '/battery_state', self._on_battery_state, 10)
+        from rclpy.callback_groups import ReentrantCallbackGroup
+        self._cb_group = ReentrantCallbackGroup()
+        
+        # ---- TF2 Listener for Robot Pose ----
+        self._tf_buffer = tf2_ros.Buffer()
+        # In ROS 2 python, pass spin_thread=True to use an isolated thread for TF
+        self._tf_listener = tf2_ros.TransformListener(self._tf_buffer, self, spin_thread=True)
+
+        self.create_subscription(BatteryState, '/battery_state', self._on_battery_state, 10, callback_group=self._cb_group)
         self.create_subscription(String, '/supervisor/state', self._on_supervisor_state, 10)
         self.create_subscription(Bool, '/emergency_stop', self._on_emergency_stop, 10)
 
@@ -171,10 +179,10 @@ class MqttBridge(Node):
                 'Set mqtt_host parameter to connect to a broker.')
 
         # ---- ROS 2 timer to drain the command queue (10 Hz) ----
-        self._cmd_timer = self.create_timer(0.1, self._process_command_queue)
+        self._cmd_timer = self.create_timer(0.1, self._process_command_queue, callback_group=self._cb_group)
 
         # ---- ROS 2 timer for Telemetry publishing (2 Hz) ----
-        self._telemetry_timer = self.create_timer(0.5, self._publish_telemetry)
+        self._telemetry_timer = self.create_timer(0.5, self._publish_telemetry, callback_group=self._cb_group)
 
         self.get_logger().info(
             f'smb_mqtt_bridge initialized '
@@ -184,15 +192,27 @@ class MqttBridge(Node):
     # ROS 2 Subscriptions & Telemetry
     # ======================================================================
 
-    def _on_amcl_pose(self, msg: PoseWithCovarianceStamped):
-        """Update robot pose from AMCL."""
-        self._latest_x = msg.pose.pose.position.x
-        self._latest_y = msg.pose.pose.position.y
-        # Convert quaternion to yaw
-        q = msg.pose.pose.orientation
-        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
-        cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
-        self._latest_heading = math.atan2(siny_cosp, cosy_cosp)
+    def _update_pose_from_tf(self):
+        """Update robot pose from TF (map -> base_link)."""
+        try:
+            now = rclpy.time.Time()
+            trans = self._tf_buffer.lookup_transform(
+                'map',
+                'base_link',
+                now,
+                timeout=Duration(seconds=0.1)
+            )
+            self._latest_x = trans.transform.translation.x
+            self._latest_y = trans.transform.translation.y
+            
+            q = trans.transform.rotation
+            siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+            cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
+            self._latest_heading = math.atan2(siny_cosp, cosy_cosp)
+        except Exception as ex:
+            # If TF is not available yet (e.g. SLAM not started), keep values as null
+            self.get_logger().error(f"TF Lookup failed with {type(ex).__name__}: {ex}")
+            pass
 
     def _on_battery_state(self, msg: BatteryState):
         """Update battery state."""
@@ -208,6 +228,9 @@ class MqttBridge(Node):
 
     def _publish_telemetry(self):
         """Publish real-time telemetry to the backend."""
+        # Query latest TF before publishing
+        self._update_pose_from_tf()
+
         # Derive Status
         status_str = "IDLE"
         if self._latest_estop:
@@ -392,8 +415,8 @@ class MqttBridge(Node):
             self.get_logger().error(
                 'NAVIGATE_WAYPOINTS: failed to convert waypoints to poses')
             self._publish_nav_status(
-                'ERROR', mission_id=mission_id,
-                error_msg='Failed to convert waypoints')
+                'FAILED', mission_id=mission_id,
+                error='Failed to convert waypoints')
             return
 
         # Start navigation in a separate thread
@@ -554,7 +577,8 @@ class MqttBridge(Node):
                 if self._cancel_requested:
                     self.get_logger().info('Navigation cancelled by request.')
                     self._publish_nav_status(
-                        'CANCELLED', mission_id=mission_id)
+                        'CANCELLED', mission_id=mission_id,
+                        waypoint_index=global_idx)
                     return
 
                 if self._pause_requested:
@@ -665,30 +689,30 @@ class MqttBridge(Node):
                     self.get_logger().warning(
                         f'Goal to waypoint [{global_idx}] was canceled.')
                     self._publish_nav_status(
-                        'CANCELLED', mission_id=mission_id)
+                        'CANCELLED', mission_id=mission_id,
+                        waypoint_index=global_idx)
                     return
 
                 elif result.status == GoalStatus.STATUS_ABORTED:
                     self.get_logger().error(
-                        f'Navigation to waypoint [{global_idx}] "{wp_name}" '
-                        'failed.')
+                        f'Goal to waypoint [{global_idx}] was aborted by Nav2.')
                     self._publish_nav_status(
-                        'ERROR', mission_id=mission_id,
-                        waypoint_name=wp_name, waypoint_index=global_idx,
-                        error_msg=f'Nav2 failed at waypoint {global_idx}')
+                        'FAILED', mission_id=mission_id,
+                        waypoint_index=global_idx,
+                        error='Goal aborted by Nav2')
                     return
 
             # All waypoints completed
             self.get_logger().info(
                 f'Mission {mission_id} completed — all '
                 f'{len(goal_poses)} waypoint(s) visited.')
-            self._publish_nav_status('COMPLETED', mission_id=mission_id)
+            self._publish_nav_status('COMPLETED', mission_id=mission_id, waypoint_index=len(goal_poses) - 1)
 
         except Exception as e:
             self.get_logger().error(f'Navigation error: {e}')
             self._publish_nav_status(
-                'ERROR', mission_id=mission_id,
-                error_msg=str(e))
+                'FAILED', mission_id=mission_id,
+                error=str(e))
         finally:
             self._navigating = False
             # Return supervisor to IDLE
@@ -848,7 +872,7 @@ class MqttBridge(Node):
     def _publish_nav_status(self, status, *, mission_id='',
                             waypoint_name=None, waypoint_index=None,
                             role=None, playlist=None, dwell_time=None,
-                            error_msg=None):
+                            error=None):
         """Publish navigation status to MQTT.
 
         Format matches the backend's NavigationStatusMessage model exactly.
@@ -869,8 +893,8 @@ class MqttBridge(Node):
             msg['playlist'] = playlist
         if dwell_time is not None:
             msg['dwellTimeSeconds'] = dwell_time
-        if error_msg is not None:
-            msg['error'] = error_msg
+        if error is not None:
+            msg['error'] = error
 
         self._mqtt_publish(self._topic_nav_status, msg)
         self.get_logger().info(
