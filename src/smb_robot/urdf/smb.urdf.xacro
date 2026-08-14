@@ -18,9 +18,9 @@
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="smb">
 
-  <xacro:property name="chassis_length" value="0.30"/>
-  <xacro:property name="chassis_width"  value="0.22"/>
-  <xacro:property name="chassis_height" value="0.13"/>
+  <xacro:property name="chassis_length" value="0.27"/>
+  <xacro:property name="chassis_width"  value="0.145"/>
+  <xacro:property name="chassis_height" value="0.075"/>
   <xacro:property name="wheel_radius"   value="0.04"/>
   <xacro:property name="wheel_thickness" value="0.02"/>
   <xacro:property name="track"          value="0.22"/>
@@ -38,7 +38,7 @@
        points lie on the same ground plane. The wheel_radius property above
        is reused for the caster sphere. -->
 
-  <xacro:property name="lidar_offset_z" value="0.075"/>
+  <xacro:property name="lidar_offset_z" value="0.36"/>
   <xacro:property name="imu_offset_z"   value="0.05"/>
 
   <!-- Masses kept low so the sim runs smoothly; chassis dominates the dynamics. -->
@@ -250,5 +250,38 @@
       </geometry>
     </collision>
   </link>
+
+  <!-- Ultrasonic Sensors -->
+  <!-- Front -->
+  <joint name="us_front_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_front_link"/>
+    <origin xyz="0.135 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="us_front_link"/>
+
+  <!-- Rear -->
+  <joint name="us_rear_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_rear_link"/>
+    <origin xyz="-0.135 0 0" rpy="0 0 3.14159"/>
+  </joint>
+  <link name="us_rear_link"/>
+
+  <!-- Left -->
+  <joint name="us_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_left_link"/>
+    <origin xyz="0 0.0725 0" rpy="0 0 1.5708"/>
+  </joint>
+  <link name="us_left_link"/>
+
+  <!-- Right -->
+  <joint name="us_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_right_link"/>
+    <origin xyz="0 -0.0725 0" rpy="0 0 -1.5708"/>
+  </joint>
+  <link name="us_right_link"/>
 
 </robot>

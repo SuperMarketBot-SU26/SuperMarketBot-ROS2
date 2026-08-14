@@ -41,7 +41,7 @@ import math
 import rclpy
 from nav_msgs.msg import Odometry
 from rclpy.node import Node
-from sensor_msgs.msg import Imu
+from sensor_msgs.msg import Imu, Range
 
 
 def quat_to_yaw(qx, qy, qz, qw):
@@ -104,6 +104,19 @@ class OdomImuRelay(Node):
             self.create_subscription(Imu, imu_in, self._on_imu, qos_sub)
             self.get_logger().info(f'subscribe /imu {imu_in} -> {imu_out}')
 
+        # Ultrasonic relays
+        self._us_pubs = {}
+        for topic in ['front', 'rear', 'left', 'right']:
+            in_topic = f'/us_{topic}_dist'
+            out_topic = f'/us_{topic}_relay'
+            self._us_pubs[topic] = self.create_publisher(Range, out_topic, qos_pub)
+            # Create a closure or lambda with default arg to bind the topic name
+            self.create_subscription(
+                Range, in_topic, 
+                lambda msg, t=topic: self._on_range(msg, t), 
+                qos_sub)
+            self.get_logger().info(f'subscribe {in_topic} -> {out_topic}')
+
         self.get_logger().info(
             f'odom_imu_relay started: '
             f'/odom {odom_in} -> {odom_out}, '
@@ -132,6 +145,16 @@ class OdomImuRelay(Node):
         msg.header.stamp = self.get_clock().now().to_msg()
         if self._imu_pub is not None:
             self._imu_pub.publish(msg)
+
+    def _on_range(self, msg: Range, topic: str) -> None:
+        msg.header.stamp = self.get_clock().now().to_msg()
+        # Force missing metadata that the ESP32 might have left uninitialized
+        msg.radiation_type = Range.ULTRASOUND
+        msg.field_of_view = 0.26
+        msg.min_range = 0.02
+        msg.max_range = 2.0
+        if topic in self._us_pubs:
+            self._us_pubs[topic].publish(msg)
 
 
 def main():
