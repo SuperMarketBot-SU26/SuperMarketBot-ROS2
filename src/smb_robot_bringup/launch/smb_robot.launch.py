@@ -40,7 +40,7 @@ from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
 from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
@@ -97,6 +97,11 @@ def generate_launch_description():
         'use_micro_ros',
         default_value='true',
         description='Start micro-ROS agent (USB Serial). Default true.')
+
+    declare_use_rosbridge_cmd = DeclareLaunchArgument(
+        'use_rosbridge',
+        default_value='true',
+        description='Start rosbridge_server for web UIs. Default true.')
 
     declare_use_ekf_cmd = DeclareLaunchArgument(
         'use_ekf',
@@ -362,6 +367,21 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_ekf')),
     )
 
+    # 10. rosbridge_server — WebSocket API for web UIs (ros-map-tool.html)
+    try:
+        from ament_index_python.packages import PackageNotFoundError
+        rosbridge_dir = get_package_share_directory('rosbridge_server')
+        rosbridge_launch = IncludeLaunchDescription(
+            AnyLaunchDescriptionSource([
+                rosbridge_dir,
+                '/launch/rosbridge_websocket_launch.xml',
+            ]),
+            condition=IfCondition(LaunchConfiguration('use_rosbridge')),
+        )
+    except PackageNotFoundError:
+        from launch.actions import LogInfo
+        rosbridge_launch = LogInfo(msg="[WARN] rosbridge_server package not found. Web UI will not connect. Please install ros-lyrical-rosbridge-suite.")
+
     return LaunchDescription([
         declare_use_sim_time_cmd,
         declare_rviz_cmd,
@@ -370,6 +390,7 @@ def generate_launch_description():
         declare_use_micro_ros_cmd,
         declare_use_ekf_cmd,
         declare_use_slam_cmd,
+        declare_use_rosbridge_cmd,
         declare_slam_params_cmd,
         declare_nav2_params_cmd,
         declare_serial_port_cmd,
@@ -394,4 +415,5 @@ def generate_launch_description():
         nav2_launch,
         mqtt_bridge_node,
         rviz_node,
+        rosbridge_launch,
     ])

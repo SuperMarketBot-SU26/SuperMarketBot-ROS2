@@ -26,7 +26,7 @@ from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, OpaqueFunction
 from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
@@ -149,6 +149,11 @@ def generate_launch_description():
         description='If true, start smb_nodes.supervisor (FSM gating /cmd_vel). '
                     'On = estop+state machine available, '
                     'Off = direct controllers must publish /cmd_vel themselves.')
+
+    declare_use_rosbridge_cmd = DeclareLaunchArgument(
+        'use_rosbridge',
+        default_value='true',
+        description='Start rosbridge_server for web UIs. Default true.')
 
     # 1. Gazebo Sim.
     #    gz sim 10 (Ionic) uses positional `[file]` for the world; only one of
@@ -287,6 +292,21 @@ def generate_launch_description():
         output='screen',
     )
 
+    # 5d. rosbridge_server — WebSocket API for web UIs (ros-map-tool.html)
+    try:
+        from ament_index_python.packages import PackageNotFoundError
+        rosbridge_dir = get_package_share_directory('rosbridge_server')
+        rosbridge_launch = IncludeLaunchDescription(
+            AnyLaunchDescriptionSource([
+                rosbridge_dir,
+                '/launch/rosbridge_websocket_launch.xml',
+            ]),
+            condition=IfCondition(LaunchConfiguration('use_rosbridge')),
+        )
+    except PackageNotFoundError:
+        from launch.actions import LogInfo
+        rosbridge_launch = LogInfo(msg="[WARN] rosbridge_server package not found. Web UI will not connect. Please install ros-lyrical-rosbridge-suite.")
+
     # 6. Teleop keyboard (gated by `teleop:=true` arg).
     #    Press Ctrl-C in this terminal to stop the whole launch; the robot
     #    will respond to /cmd_vel in another terminal that runs:
@@ -320,6 +340,7 @@ def generate_launch_description():
         declare_headless_cmd,
         declare_use_nav2_cmd,
         declare_use_supervisor_cmd,
+        declare_use_rosbridge_cmd,
         declare_teleop_cmd,
         OpaqueFunction(function=_make_gz_sim),
         rsp_node,
@@ -329,4 +350,5 @@ def generate_launch_description():
         supervisor_node,
         odom_imu_relay_node,
         nav2_launch,
+        rosbridge_launch,
     ])

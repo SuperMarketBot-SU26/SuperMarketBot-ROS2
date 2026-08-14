@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-robot-state-publisher \
     ros-${ROS_DISTRO}-tf2-ros \
     ros-${ROS_DISTRO}-tf2-tools \
+    ros-${ROS_DISTRO}-rosbridge-server \
     net-tools \
     iproute2 \
     usbutils \
