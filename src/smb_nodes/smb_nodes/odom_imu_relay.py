@@ -148,6 +148,7 @@ class OdomImuRelay(Node):
 
     def _on_range(self, msg: Range, topic: str) -> None:
         msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = f'us_{topic}_link'
         # Force missing metadata that the ESP32 might have left uninitialized
         msg.radiation_type = Range.ULTRASOUND
         msg.field_of_view = 0.26

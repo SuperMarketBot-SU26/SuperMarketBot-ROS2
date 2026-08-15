@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-tf2-ros \
     ros-${ROS_DISTRO}-tf2-tools \
     ros-${ROS_DISTRO}-rosbridge-server \
+    ros-${ROS_DISTRO}-backward-ros \
     net-tools \
     iproute2 \
     usbutils \
