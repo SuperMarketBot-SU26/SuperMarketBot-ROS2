@@ -70,7 +70,7 @@ controller_server:
       min_vel_theta: 0.10  # Reduced to allow graceful deceleration
       max_vel_theta: 0.30  # Lowered
       acc_lim_x: 0.1       # Much smoother acceleration
-      acc_lim_theta: 0.5   # Smoother rotational transitions
+      acc_lim_theta: 0.25   # Reduced from 0.5 to 0.25 to avoid wheel slip when starting/stopping rotation
       desired_linear_vel: 0.03 # Set to 0.03 m/s as requested
       use_velocity_scaled_lookahead_dist: true # Look further ahead when moving fast!
       min_lookahead_dist: 1.5  # Increased from 1.0m to 1.5m to further smooth out SLAM corrections
@@ -82,7 +82,7 @@ controller_server:
       regulated_linear_scaling_min_speed: 0.01   # Synchronized with min_vel_x at 0.01 m/s
       use_rotate_to_heading: true
       rotate_to_heading_min_angle: 0.70 # Increased to 0.7 to completely eliminate in-place swerving/oscillation
-      rotate_to_heading_angular_vel: 0.69 # Calculated exact equivalent to WebUI's 80% manual steering speed
+      rotate_to_heading_angular_vel: 0.30 # Reduced from 0.69 to 0.30 to prevent wheel slip during in-place rotation
       transform_tolerance: 1.0 # Restored transform tolerance to 1.0s
       use_collision_detection: false
       max_allowed_time_to_collision_up_to_carrot: 10.0 # 15cm braking window at 1.5cm/s: halt motor output right before physical obstruction without blocking maneuvering detours
