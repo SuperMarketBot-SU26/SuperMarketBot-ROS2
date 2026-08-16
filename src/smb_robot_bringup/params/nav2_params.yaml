@@ -72,7 +72,7 @@ controller_server:
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: true
-      xy_goal_tolerance: 0.15
+      xy_goal_tolerance: 0.10
       yaw_goal_tolerance: 3.14
     FollowPath:
       # Regulated Pure Pursuit — simpler than DWB, more stable for diff-drive.
@@ -83,15 +83,15 @@ controller_server:
       debug_trajectory_details: True
       use_collision_checking: True
       max_allowed_time_to_collision_up_to_carrot: 10.0
-      min_vel_x: 0.015
+      min_vel_x: 0.01
       min_vel_y: 0.0
-      max_vel_x: 0.15
+      max_vel_x: 0.03
       min_vel_theta: 0.025
       max_vel_theta: 0.5
       acc_lim_x: 0.25
       acc_lim_theta: 0.5
       # xy_goal_tolerance / yaw_goal_tolerance / stateful inherit from defaults.
-      desired_linear_vel: 0.15
+      desired_linear_vel: 0.03
       lookahead_dist: 0.50
       use_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 0.5

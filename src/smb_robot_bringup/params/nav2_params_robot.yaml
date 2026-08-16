@@ -59,19 +59,19 @@ controller_server:
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       stateful: true
-      xy_goal_tolerance: 0.25  # Reverted back to 0.25m to prevent terminal oscillations
+      xy_goal_tolerance: 0.15  # Reduced to 0.15m (Note: lower values might cause oscillations)
       yaw_goal_tolerance: 3.14 # Temporarily disabled (180 degrees) so it ignores final heading entirely
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: False  # Disabled to eliminate terminal console spam and preserve CPU cycles for SLAM optimization
-      min_vel_x: 0.02      # Adjusted for new max velocity
+      min_vel_x: 0.01      # Adjusted for new max velocity
       min_vel_y: 0.0
-      max_vel_x: 0.04      # Set to 0.04 m/s (4cm/s) as requested
-      min_vel_theta: 0.20  # Reduced to allow graceful deceleration (roughly 500 PWM)
-      max_vel_theta: 0.60  # Lowered from 1.0 to 0.6 to make moving curves much less aggressive
-      acc_lim_x: 0.3       # Halved from 0.6 for much smoother acceleration/deceleration
-      acc_lim_theta: 1.5   # Reduced from 3.2 for smoother rotational transitions
-      desired_linear_vel: 0.04 # Set to 0.04 m/s as requested
+      max_vel_x: 0.03      # Set to 0.03 m/s as requested
+      min_vel_theta: 0.10  # Reduced to allow graceful deceleration
+      max_vel_theta: 0.30  # Lowered
+      acc_lim_x: 0.1       # Much smoother acceleration
+      acc_lim_theta: 0.5   # Smoother rotational transitions
+      desired_linear_vel: 0.03 # Set to 0.03 m/s as requested
       use_velocity_scaled_lookahead_dist: true # Look further ahead when moving fast!
       min_lookahead_dist: 1.5  # Increased from 1.0m to 1.5m to further smooth out SLAM corrections
       max_lookahead_dist: 2.0
@@ -79,7 +79,7 @@ controller_server:
       lookahead_dist: 1.50 # Fallback
       use_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 1.0 # Slow down earlier on wider turns to prevent drifting
-      regulated_linear_scaling_min_speed: 0.02   # Synchronized with min_vel_x at 0.02 m/s
+      regulated_linear_scaling_min_speed: 0.01   # Synchronized with min_vel_x at 0.01 m/s
       use_rotate_to_heading: true
       rotate_to_heading_min_angle: 0.70 # Increased to 0.7 to completely eliminate in-place swerving/oscillation
       rotate_to_heading_angular_vel: 0.69 # Calculated exact equivalent to WebUI's 80% manual steering speed

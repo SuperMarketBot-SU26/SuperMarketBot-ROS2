@@ -49,9 +49,9 @@ slam_toolbox:
     # a real environment (not a 10x10m box). Real robot has wheel-encoder
     # odometry that drifts a bit, so we want enough candidates.
     #
-    minimum_travel_distance: 0.05   # 5cm threshold
-    minimum_travel_heading: 0.017   # ~1 deg turn threshold
-    minimum_time_interval: 0.1      # 10 Hz maximum update rate when stationary
+    minimum_travel_distance: 0.1    # Reduced to 10cm for faster SLAM updates when moving
+    minimum_travel_heading: 0.087   # Reduced to ~5 deg
+    minimum_time_interval: 0.5      # Reduced from 5.0s to 0.5s to ensure SLAM corrects odometry continuously even when moving slowly
     skip_odometry: false
 
     # Scan matching
