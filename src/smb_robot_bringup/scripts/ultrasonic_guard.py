@@ -10,7 +10,7 @@ class UltrasonicGuard(Node):
         super().__init__('ultrasonic_guard')
 
         # Emergency stop threshold
-        self.declare_parameter('stop_distance_m', 0.30)
+        self.declare_parameter('stop_distance_m', 0.15)
         self.stop_distance = self.get_parameter('stop_distance_m').value
         
         # Keep track of actual distances to decide which way to spin
@@ -53,14 +53,13 @@ class UltrasonicGuard(Node):
         out_msg = TwistStamped()
         out_msg.header = msg.header
         
-        # NO-REVERSE Constraint: Never allow linear.x < 0
-        cmd_linear_x = max(0.0, msg.twist.linear.x)
+        cmd_linear_x = msg.twist.linear.x
         cmd_angular_z = msg.twist.angular.z
 
         # Active Override Logic: If front is blocked, act as an emergency brake
         if self.distances['front'] < self.stop_distance:
             self.get_logger().warning(f"Front blocked! Distance: {self.distances['front']:.2f}m (< {self.stop_distance}m). Overriding Nav2!", throttle_duration_sec=1.0)
-            # Stop forward motion, but allow Nav2 to spin the robot away (recovery behavior)
+            # Stop forward motion, but allow Nav2 to reverse (<0) or spin the robot away (recovery behavior)
             out_msg.twist.linear.x = min(0.0, cmd_linear_x)
             out_msg.twist.angular.z = cmd_angular_z
                 
