@@ -132,6 +132,27 @@ class RobotAgentHandler(BaseHTTPRequestHandler):
                 response = {"error": f"Failed to upload map: {str(e)}"}
                 self.wfile.write(json.dumps(response).encode('utf-8'))
                 
+        elif self.path == '/api/robot/save_map':
+            self._set_headers()
+            try:
+                # Execute the map saving script inside the running container
+                # This saves directly to /ros2_ws/maps/active_map so it's ready for AMCL boot
+                cmd = [
+                    'docker', 'exec', 'smb-ros2', 'bash', '-c',
+                    'source /opt/ros/lyrical/setup.bash && source /ros2_ws/install/setup.bash && python3 /ros2_ws/src/smb_robot_bringup/scripts/manage_map.py save -f /ros2_ws/maps/active_map'
+                ]
+                result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                
+                if result.returncode == 0:
+                    response = {"message": "Map saved successfully as active_map!"}
+                else:
+                    response = {"error": f"Map save failed: {result.stderr.decode('utf-8')}"}
+                
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+            except Exception as e:
+                response = {"error": str(e)}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+                
         elif self.path == '/api/robot/stop':
             self._set_headers()
             try:

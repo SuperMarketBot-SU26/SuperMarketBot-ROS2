@@ -25,3 +25,6 @@ cd ~/ros2_ws/src/smb_robot_bringup/scripts && python3 check_mqtt.py
 Map copy from pi to laptop:
 scp -r snake@snake.local:~/ros2_ws/src/smb_robot_bringup/maps ~/Desktop/
 
+Restart pi agent:
+sudo systemctl restart smb-agent
+
