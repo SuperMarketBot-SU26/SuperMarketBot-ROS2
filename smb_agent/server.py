@@ -25,9 +25,22 @@ class RobotAgentHandler(BaseHTTPRequestHandler):
             try:
                 # Check if the named Docker container 'smb-ros2' is running
                 result = subprocess.run(['docker', 'ps', '-q', '-f', 'name=smb-ros2'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                is_running = len(result.stdout.strip()) > 0
+                container_running = len(result.stdout.strip()) > 0
                 
-                response = {"status": "running" if is_running else "stopped"}
+                status_str = "stopped"
+                if container_running:
+                    # Container is up, but is ROS 2 fully initialized?
+                    # We check if rosbridge is up, since it's the last thing to launch
+                    check_result = subprocess.run(
+                        ['docker', 'exec', 'smb-ros2', 'bash', '-c', 'source /opt/ros/lyrical/setup.bash && ros2 node list'],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                    )
+                    if b'rosbridge_websocket' in check_result.stdout:
+                        status_str = "running"
+                    else:
+                        status_str = "starting"
+                
+                response = {"status": status_str}
                 self.wfile.write(json.dumps(response).encode('utf-8'))
             except Exception as e:
                 response = {"error": str(e)}
