@@ -185,6 +185,20 @@ class RobotAgentHandler(BaseHTTPRequestHandler):
             except Exception as e:
                 response = {"error": str(e)}
                 self.wfile.write(json.dumps(response).encode('utf-8'))
+                
+        elif self.path == '/api/robot/shutdown':
+            self._set_headers()
+            try:
+                # Forcefully stop ROS container first to be safe
+                subprocess.run(['docker', 'rm', '-f', 'smb-ros2'], check=False)
+                # Issue the system poweroff command
+                subprocess.Popen(['sudo', 'systemctl', 'poweroff'])
+                
+                response = {"message": "Robot is shutting down..."}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+            except Exception as e:
+                response = {"error": str(e)}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
