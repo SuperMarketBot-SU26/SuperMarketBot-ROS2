@@ -2,6 +2,7 @@
 import os
 import subprocess
 import json
+import base64
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class RobotAgentHandler(BaseHTTPRequestHandler):
@@ -39,19 +40,83 @@ class RobotAgentHandler(BaseHTTPRequestHandler):
         if self.path == '/api/robot/start':
             self._set_headers()
             try:
-                # Run the Docker container in the background without -it (no TTY in systemd)
+                # Read payload to get mode
+                content_length = int(self.headers.get('Content-Length', 0))
+                mode = "slam"
+                if content_length > 0:
+                    post_data = self.rfile.read(content_length)
+                    data = json.loads(post_data.decode('utf-8'))
+                    mode = data.get("mode", "slam")
+
                 ws_path = os.path.expanduser('~/ros2_ws')
+                maps_dir = os.path.join(ws_path, 'maps')
+                
+                # Setup bash command based on mode
+                bash_args = "./start_pi5_robot.sh"
+                if mode == "amcl":
+                    map_yaml = os.path.join(maps_dir, 'active_map.yaml')
+                    if not os.path.exists(map_yaml):
+                        response = {"error": "No map loaded on the Pi! Please upload a map first."}
+                        self.wfile.write(json.dumps(response).encode('utf-8'))
+                        return
+                    # The path inside the docker container will be /ros2_ws/maps/active_map.yaml
+                    bash_args += " --amcl --map /ros2_ws/maps/active_map.yaml"
+
                 log_file = open(os.path.join(ws_path, 'smb_agent', 'robot_start.log'), 'w')
                 
                 # We name the container smb-ros2 so we can easily stop it and check status
-                docker_cmd = f"docker run --rm -v {ws_path}:/ros2_ws --network host --privileged --name smb-ros2 supermarket-bot-ros2:latest bash -c 'cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./start_pi5_robot.sh'"
+                docker_cmd = f"docker run --rm -v {ws_path}:/ros2_ws --network host --privileged --name smb-ros2 supermarket-bot-ros2:latest bash -c 'cd /ros2_ws && source /opt/ros/lyrical/setup.bash && {bash_args}'"
                 
                 subprocess.Popen(docker_cmd, shell=True, stdout=log_file, stderr=subprocess.STDOUT, start_new_session=True)
                 
-                response = {"message": "Robot OS starting..."}
+                response = {"message": f"Robot OS starting in {mode.upper()} mode..."}
                 self.wfile.write(json.dumps(response).encode('utf-8'))
             except Exception as e:
                 response = {"error": str(e)}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+                
+        elif self.path == '/api/robot/upload_map':
+            self._set_headers()
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                post_data = self.rfile.read(content_length)
+                data = json.loads(post_data.decode('utf-8'))
+                
+                yaml_b64 = data.get("yaml_b64")
+                pgm_b64 = data.get("pgm_b64")
+                
+                if not yaml_b64 or not pgm_b64:
+                    raise ValueError("Missing yaml_b64 or pgm_b64 in payload")
+                
+                # Remove data URI prefix if present
+                if "," in yaml_b64: yaml_b64 = yaml_b64.split(",")[1]
+                if "," in pgm_b64: pgm_b64 = pgm_b64.split(",")[1]
+                
+                yaml_bytes = base64.b64decode(yaml_b64)
+                pgm_bytes = base64.b64decode(pgm_b64)
+                
+                maps_dir = os.path.expanduser('~/ros2_ws/maps')
+                os.makedirs(maps_dir, exist_ok=True)
+                
+                # HACK: overwrite the image name in the YAML to strictly match active_map.pgm
+                yaml_str = yaml_bytes.decode('utf-8')
+                new_yaml_lines = []
+                for line in yaml_str.splitlines():
+                    if line.startswith("image:"):
+                        new_yaml_lines.append("image: active_map.pgm")
+                    else:
+                        new_yaml_lines.append(line)
+                
+                with open(os.path.join(maps_dir, 'active_map.yaml'), 'w') as f:
+                    f.write("\n".join(new_yaml_lines))
+                    
+                with open(os.path.join(maps_dir, 'active_map.pgm'), 'wb') as f:
+                    f.write(pgm_bytes)
+                    
+                response = {"message": "Map successfully uploaded and saved to Pi."}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+            except Exception as e:
+                response = {"error": f"Failed to upload map: {str(e)}"}
                 self.wfile.write(json.dumps(response).encode('utf-8'))
                 
         elif self.path == '/api/robot/stop':

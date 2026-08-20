@@ -17,24 +17,37 @@ fi
 DO_BUILD=false
 USE_NAV2="true"
 USE_SLAM="true"
+USE_AMCL="false"
 USE_MQTT_BRIDGE="${USE_MQTT_BRIDGE:-false}"
+MAP_FILE=""
 
-for arg in "$@"; do
-    if [ "$arg" == "--build" ] || [ "$arg" == "-b" ]; then
+while [[ "$#" -gt 0 ]]; do
+    if [ "$1" == "--build" ] || [ "$1" == "-b" ]; then
         DO_BUILD=true
     fi
-    if [ "$arg" == "--no-nav2" ] || [ "$arg" == "--teleop" ]; then
+    if [ "$1" == "--no-nav2" ] || [ "$1" == "--teleop" ]; then
         USE_NAV2="false"
         echo "[start_pi5_robot] Flag detected: Disabling Nav2 (Ideal for pure teleop driving)"
     fi
-    if [ "$arg" == "--no-slam" ]; then
+    if [ "$1" == "--no-slam" ]; then
         USE_SLAM="false"
         echo "[start_pi5_robot] Flag detected: Disabling SLAM"
     fi
-    if [ "$arg" == "--mqtt-bridge" ] || [ "$arg" == "--mqtt" ]; then
+    if [ "$1" == "--amcl" ]; then
+        USE_AMCL="true"
+        USE_SLAM="false"
+        echo "[start_pi5_robot] Flag detected: Enabling AMCL (Localization mode)"
+    fi
+    if [ "$1" == "--map" ]; then
+        shift
+        MAP_FILE="$1"
+        echo "[start_pi5_robot] Flag detected: Map file = $MAP_FILE"
+    fi
+    if [ "$1" == "--mqtt-bridge" ] || [ "$1" == "--mqtt" ]; then
         USE_MQTT_BRIDGE="true"
         echo "[start_pi5_robot] Flag detected: Enabling MQTT navigation bridge"
     fi
+    shift
 done
 
 # 3. Automatically build workspace if --build flag was passed or install/setup.bash is missing
@@ -139,6 +152,8 @@ exec ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
     rviz:=false \
     use_nav2:="${USE_NAV2}" \
     use_slam:="${USE_SLAM}" \
+    use_amcl:="${USE_AMCL}" \
+    map:="${MAP_FILE}" \
     serial_baud:=921600 \
     ${SERIAL_ARG} \
     ${LIDAR_ARG} \

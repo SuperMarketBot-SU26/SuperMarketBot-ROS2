@@ -52,7 +52,7 @@
          publishes static transforms only — joints are continuous/revolute/fixed
          with no dynamics). The dummy chassis makes KDL happy. -->
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <mass value="${chassis_mass}"/>
       <!-- Box inertia for 0.30 x 0.22 x 0.13 m @ 2.0 kg:
            Ixx = m/12 * (y^2 + z^2) = 2/12 * (0.0484 + 0.0169) = 0.0109
@@ -64,7 +64,7 @@
         izz="0.0231"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
       </geometry>
@@ -73,7 +73,7 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
       </geometry>
@@ -90,7 +90,7 @@
   </joint>
   <link name="left_wheel">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <mass value="${wheel_mass}"/>
       <!-- Solid cylinder r=0.04, h=0.02, m=0.1:
            Ixx = Iyy = m/12 * (3r^2 + h^2) = 0.1/12 * (0.0048 + 0.0004) = 0.0000433
@@ -101,7 +101,7 @@
         izz="0.00008"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
       </geometry>
@@ -110,7 +110,7 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
       </geometry>
@@ -127,7 +127,7 @@
   </joint>
   <link name="right_wheel">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <mass value="${wheel_mass}"/>
       <inertia
         ixx="0.0000433" ixy="0" ixz="0"
@@ -135,7 +135,7 @@
         izz="0.00008"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
       </geometry>
@@ -144,7 +144,7 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
       </geometry>
@@ -159,11 +159,11 @@
   <joint name="caster_front_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_front"/>
-    <origin xyz="${caster_offset_x} 0 -${wheel_radius}" rpy="0 0 0"/>
+    <origin xyz="${caster_offset_x} 0 -${wheel_radius}" rpy="0 0 -1.5708"/>
   </joint>
   <link name="caster_front">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <mass value="${caster_mass}"/>
       <!-- Solid sphere r=0.04, m=0.05: I = 2/5 m r^2 = 0.4 * 0.05 * 0.0016 = 0.000032 -->
       <inertia
@@ -172,7 +172,7 @@
         izz="0.000032"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <sphere radius="${wheel_radius}"/>
       </geometry>
@@ -181,7 +181,7 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <sphere radius="${wheel_radius}"/>
       </geometry>
@@ -201,12 +201,12 @@
   </joint>
   <link name="laser_frame">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <mass value="0.1"/>
       <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <cylinder radius="0.025" length="0.025"/>
       </geometry>
@@ -215,7 +215,7 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <cylinder radius="0.025" length="0.025"/>
       </geometry>
@@ -226,16 +226,16 @@
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="0 0 ${imu_offset_z}" rpy="0 0 0"/>
+    <origin xyz="0 0 ${imu_offset_z}" rpy="0 0 -1.5708"/>
   </joint>
   <link name="imu_link">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <mass value="0.01"/>
       <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <box size="0.02 0.02 0.005"/>
       </geometry>
@@ -244,7 +244,7 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 -1.5708"/>
       <geometry>
         <box size="0.02 0.02 0.005"/>
       </geometry>
@@ -256,7 +256,7 @@
   <joint name="us_front_joint" type="fixed">
     <parent link="base_link"/>
     <child link="us_front_link"/>
-    <origin xyz="0.135 0 0" rpy="0 0 0"/>
+    <origin xyz="0.135 0 0" rpy="0 0 -1.5708"/>
   </joint>
   <link name="us_front_link"/>
 

@@ -118,6 +118,16 @@ def generate_launch_description():
                     'robot moves outside the scanned area, causing map→odom '
                     'drift and erratic motion. Default true.')
 
+    declare_use_amcl_cmd = DeclareLaunchArgument(
+        'use_amcl',
+        default_value='false',
+        description='Start AMCL for static map localization.')
+
+    declare_map_cmd = DeclareLaunchArgument(
+        'map',
+        default_value='',
+        description='Full path to map yaml file to load for AMCL.')
+
     declare_slam_params_cmd = DeclareLaunchArgument(
         'slam_params_file',
         default_value=slam_config_default,
@@ -266,9 +276,42 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_slam')),
         launch_arguments={
             'slam_params_file': LaunchConfiguration('slam_params_file'),
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'autostart': 'true',
+            'use_sim_time': LaunchConfiguration('use_sim_time')
         }.items(),
+    )
+
+    # 4b. AMCL & Map Server (Localization) - active if use_amcl is true
+    #     The lifecycle_manager configures and activates them.
+    from launch_ros.descriptions import ParameterFile
+    configured_params = ParameterFile(LaunchConfiguration('nav2_params_file'), allow_substs=True)
+    
+    map_server_node = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        name='map_server',
+        output='screen',
+        parameters=[configured_params, {'yaml_filename': LaunchConfiguration('map')}],
+        condition=IfCondition(LaunchConfiguration('use_amcl')),
+    )
+
+    amcl_node = Node(
+        package='nav2_amcl',
+        executable='amcl',
+        name='amcl',
+        output='screen',
+        parameters=[configured_params],
+        condition=IfCondition(LaunchConfiguration('use_amcl')),
+    )
+
+    lifecycle_manager_localization = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_localization',
+        output='screen',
+        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time'),
+                     'autostart': True,
+                     'node_names': ['map_server', 'amcl']}],
+        condition=IfCondition(LaunchConfiguration('use_amcl')),
     )
 
     # 5. Nav2 — minimal bringup (same as smb_sim.launch.py uses).
@@ -289,6 +332,8 @@ def generate_launch_description():
             'use_sim_time': 'false',
             'params_file': LaunchConfiguration('nav2_params_file'),
             'autostart': 'true',
+            'use_amcl': LaunchConfiguration('use_amcl'),
+            'map': LaunchConfiguration('map'),
         }.items(),
     )
 
@@ -403,6 +448,8 @@ def generate_launch_description():
         declare_mqtt_password_cmd,
         declare_mqtt_use_tls_cmd,
         declare_robot_code_cmd,
+        declare_use_amcl_cmd,
+        declare_map_cmd,
         ydlidar_node,
         ultrasonic_guard_node,
         micro_ros_agent_node,
@@ -411,6 +458,9 @@ def generate_launch_description():
         jsp_node,
         ekf_node,
         slam_launch,
+        map_server_node,
+        amcl_node,
+        lifecycle_manager_localization,
         supervisor_node,
         nav2_launch,
         mqtt_bridge_node,
