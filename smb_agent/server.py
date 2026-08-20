@@ -144,7 +144,23 @@ class RobotAgentHandler(BaseHTTPRequestHandler):
                 result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 
                 if result.returncode == 0:
-                    response = {"message": "Map saved successfully as active_map!"}
+                    maps_dir = os.path.expanduser('~/ros2_ws/maps')
+                    yaml_path = os.path.join(maps_dir, 'active_map.yaml')
+                    pgm_path = os.path.join(maps_dir, 'active_map.pgm')
+                    
+                    yaml_b64 = ""
+                    pgm_b64 = ""
+                    if os.path.exists(yaml_path) and os.path.exists(pgm_path):
+                        with open(yaml_path, 'r') as f:
+                            yaml_b64 = base64.b64encode(f.read().encode('utf-8')).decode('utf-8')
+                        with open(pgm_path, 'rb') as f:
+                            pgm_b64 = base64.b64encode(f.read()).decode('utf-8')
+                            
+                    response = {
+                        "message": "Map saved successfully to Pi!",
+                        "yaml_b64": yaml_b64,
+                        "pgm_b64": pgm_b64
+                    }
                 else:
                     response = {"error": f"Map save failed: {result.stderr.decode('utf-8')}"}
                 
