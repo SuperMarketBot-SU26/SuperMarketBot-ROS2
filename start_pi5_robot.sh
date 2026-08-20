@@ -147,13 +147,18 @@ echo "  MQTT Bridge : ${USE_MQTT_BRIDGE} (robot_code=${ROBOT_CODE})"
 echo "=========================================================================="
 echo "[start_pi5_robot] Launching engine in active terminal..."
 
+MAP_ARG=""
+if [ -n "$MAP_FILE" ]; then
+    MAP_ARG="map:=$MAP_FILE"
+fi
+
 # 7. Execute launch directly in foreground for maximum stability & zero background hanging
 exec ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
     rviz:=false \
     use_nav2:="${USE_NAV2}" \
     use_slam:="${USE_SLAM}" \
     use_amcl:="${USE_AMCL}" \
-    map:="${MAP_FILE}" \
+    ${MAP_ARG} \
     serial_baud:=921600 \
     ${SERIAL_ARG} \
     ${LIDAR_ARG} \

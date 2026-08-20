@@ -332,8 +332,6 @@ def generate_launch_description():
             'use_sim_time': 'false',
             'params_file': LaunchConfiguration('nav2_params_file'),
             'autostart': 'true',
-            'use_amcl': LaunchConfiguration('use_amcl'),
-            'map': LaunchConfiguration('map'),
         }.items(),
     )
 
