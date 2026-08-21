@@ -132,6 +132,38 @@ class RobotAgentHandler(BaseHTTPRequestHandler):
                 response = {"error": f"Failed to upload map: {str(e)}"}
                 self.wfile.write(json.dumps(response).encode('utf-8'))
                 
+        elif self.path == '/api/robot/update_pgm':
+            self._set_headers()
+            try:
+                content_length = int(self.headers['Content-Length'])
+                post_data = self.rfile.read(content_length)
+                payload = json.loads(post_data.decode('utf-8'))
+                
+                pgm_base64 = payload.get('pgm_base64', '')
+                if not pgm_base64:
+                    self.wfile.write(json.dumps({"error": "Missing pgm_base64"}).encode('utf-8'))
+                    return
+                    
+                pgm_bytes = base64.b64decode(pgm_base64.split(',')[-1] if ',' in pgm_base64 else pgm_base64)
+                maps_dir = os.path.expanduser('~/ros2_ws/maps')
+                
+                with open(os.path.join(maps_dir, 'active_map.pgm'), 'wb') as f:
+                    f.write(pgm_bytes)
+                    
+                # Try to live reload Nav2 map_server
+                reload_cmd = [
+                    'docker', 'exec', 'smb-ros2', 'bash', '-c',
+                    "source /opt/ros/lyrical/setup.bash && ros2 service call /map_server/load_map nav2_msgs/srv/LoadMap \"{map_url: '/ros2_ws/maps/active_map.yaml'}\""
+                ]
+                # We don't check for errors because the container might not be running or Nav2 might not be active
+                subprocess.run(reload_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                
+                response = {"message": "Map updated and Nav2 reload triggered."}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+            except Exception as e:
+                response = {"error": f"Failed to update map: {str(e)}"}
+                self.wfile.write(json.dumps(response).encode('utf-8'))
+                
         elif self.path == '/api/robot/save_map':
             self._set_headers()
             try:
