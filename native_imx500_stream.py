@@ -98,18 +98,19 @@ try:
         else:
             corners, ids, rejected = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=aruco_params)
             
-        if ids is not None:
+        if ids is not None and len(ids) > 0:
             # Update current shelf ID if valid
-            detected_id = ids[0][0]
+            detected_id = int(ids.ravel()[0])
             if detected_id in shelf_mapping:
-                current_shelf_id = int(detected_id)
+                current_shelf_id = detected_id
                 current_shelf_category = shelf_mapping[current_shelf_id]
             # Draw green bounding box around ArUco marker
             cv2.aruco.drawDetectedMarkers(frame, corners, ids, (0, 255, 0))
             # Draw name above marker
-            cx = int(corners[0][0][0][0])
-            cy = int(corners[0][0][0][1])
-            cv2.putText(frame, f"Locked: {current_shelf_category}", (cx, max(10, cy - 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            if len(corners) > 0:
+                cx = int(corners[0][0][0][0])
+                cy = int(corners[0][0][0][1])
+                cv2.putText(frame, f"Locked: {current_shelf_category}", (cx, max(10, cy - 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         
         # --- AI INFERENCE (Throttled to ~5 FPS to save CPU/NPU) ---
         if model is not None and (start_time - last_inference_time) >= 0.2:
