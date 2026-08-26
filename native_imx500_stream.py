@@ -58,6 +58,7 @@ if HAS_YOLO:
         print(f"⚠️ YOLO model not found at {model_path}. AI disabled.")
 
 last_inference_time = 0.0
+cached_objects = []
 
 print("🎥 Starting IMX500 Camera Stream to Web UI (~15 FPS)...")
 try:
@@ -74,9 +75,6 @@ try:
             
             # Run YOLO
             results = model(frame, conf=conf_threshold, verbose=False)[0]
-            
-            # Draw bounding boxes directly on the frame for the Web UI!
-            frame = results.plot()
             
             # Process payload
             h, w = frame.shape[:2]
@@ -101,6 +99,9 @@ try:
                     "box": [x1, y1, x2, y2],
                     "isEmptySlot": is_empty
                 })
+                
+            # Cache the objects to draw them on every frame smoothly
+            cached_objects = detected_objects
                 
             num_products = len([o for o in detected_objects if not o["isEmptySlot"]])
             num_empty = len([o for o in detected_objects if o["isEmptySlot"]])
@@ -140,6 +141,16 @@ try:
             # Publish JSON to ROS 2 topic
             analysis_topic.publish(roslibpy.Message({'data': json.dumps(payload, ensure_ascii=False)}))
         
+        # --- DRAW CACHED BOUNDING BOXES ON EVERY FRAME ---
+        for obj in cached_objects:
+            x1, y1, x2, y2 = obj["box"]
+            color = (0, 0, 255) if obj["isEmptySlot"] else (255, 0, 0) # Red for empty, Blue for product
+            # Draw box
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+            # Draw label
+            label_text = f"{obj['label']} {obj['confidence']:.2f}"
+            cv2.putText(frame, label_text, (x1, max(y1 - 5, 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
         # --- COMPRESS AND PUBLISH VIDEO STREAM ---
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
         
