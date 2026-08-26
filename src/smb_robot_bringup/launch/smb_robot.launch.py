@@ -329,7 +329,7 @@ def generate_launch_description():
             'odom_out': '/odom_relay',
             'imu_in': '/imu/data',
             'imu_out': '/imu_relay',
-            'publish_tf': False,
+            'publish_tf': True,
         }],
         output='screen'
     )
@@ -441,7 +441,6 @@ def generate_launch_description():
         mapping_diagnostics_node,
         rsp_node,
         jsp_node,
-        ekf_node,
         slam_launch,
         supervisor_node,
         nav2_launch,

@@ -1,0 +1,14 @@
+package.xml
+setup.cfg
+setup.py
+resource/smb_ai_camera
+smb_ai_camera/__init__.py
+smb_ai_camera/pi_camera_node.py
+smb_ai_camera/shelf_patrol_capture.py
+smb_ai_camera.egg-info/PKG-INFO
+smb_ai_camera.egg-info/SOURCES.txt
+smb_ai_camera.egg-info/dependency_links.txt
+smb_ai_camera.egg-info/entry_points.txt
+smb_ai_camera.egg-info/requires.txt
+smb_ai_camera.egg-info/top_level.txt
+smb_ai_camera.egg-info/zip-safe

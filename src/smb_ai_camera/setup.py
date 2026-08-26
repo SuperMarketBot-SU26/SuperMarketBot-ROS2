@@ -15,7 +15,7 @@ setup(
     zip_safe=True,
     maintainer='Khoa Tran',
     maintainer_email='khoatnnse183385@fpt.edu.vn',
-    description='Pi Camera & Shelf Patrol OOS Vision Pipeline for SuperMarketBot.',
+    description='Pi Camera and Shelf Patrol OOS Vision Pipeline for SuperMarketBot.',
     license='MIT',
     extras_require={'test': ['pytest']},
     entry_points={

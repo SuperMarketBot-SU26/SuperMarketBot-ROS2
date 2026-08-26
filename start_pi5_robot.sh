@@ -71,6 +71,7 @@ if [ "${DO_BUILD}" = true ] || [ ! -f "${SCRIPT_DIR}/install/setup.bash" ] || [ 
         smb_nodes
         smb_robot_bringup
         ydlidar_ros2_driver
+        smb_ai_camera
     )
     echo "[start_pi5_robot] 📦 Building production packages: ${SMB_BUILD_PACKAGES[*]}"
     if ! colcon build --packages-select "${SMB_BUILD_PACKAGES[@]}"; then
@@ -83,8 +84,8 @@ if [ "${DO_BUILD}" = true ] || [ ! -f "${SCRIPT_DIR}/install/setup.bash" ] || [ 
 fi
 
 # Source local workspace build environment
-if [ -f "${SCRIPT_DIR}/install/setup.bash" ]; then
-    source "${SCRIPT_DIR}/install/setup.bash"
+if [ -f "${SCRIPT_DIR}/install/local_setup.bash" ]; then
+    source "${SCRIPT_DIR}/install/local_setup.bash"
 else
     echo "[start_pi5_robot] ERROR: install/setup.bash still not found after build!"
     exit 1
