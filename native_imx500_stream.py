@@ -12,6 +12,8 @@ Requirements (Install on Pi OS natively):
 import time
 import base64
 import cv2
+import json
+import os
 try:
     from picamera2 import Picamera2
 except ImportError:
@@ -19,8 +21,14 @@ except ImportError:
     exit(1)
 import roslibpy
 
+try:
+    from ultralytics import YOLO
+    HAS_YOLO = True
+except ImportError:
+    print("⚠️ WARNING: ultralytics is not installed. AI inference will be disabled. (Run: pip install ultralytics)")
+    HAS_YOLO = False
+
 print("🔌 Connecting to ROS 2 Docker WebSocket (ws://localhost:9090)...")
-# Connects to the rosbridge_server running inside your Docker container
 ros = roslibpy.Ros(host='localhost', port=9090)
 ros.run()
 
@@ -30,38 +38,116 @@ if not ros.is_connected:
 
 print("✅ Connected to ROS 2! Initializing IMX500 via picamera2...")
 picam2 = Picamera2()
-# Reduced resolution to 640x360 to completely eliminate network/websocket lag for the Web UI
 config = picam2.create_preview_configuration(main={"size": (640, 360), "format": "RGB888"})
 picam2.configure(config)
 picam2.start()
 
-# Set queue_length=1 and queue_size=1 to drop old frames instead of buffering them (fixes the 3-5s delay)
 image_topic = roslibpy.Topic(ros, '/camera/image_raw/compressed', 'sensor_msgs/msg/CompressedImage', queue_length=1, queue_size=1)
+analysis_topic = roslibpy.Topic(ros, '/shelf/analysis', 'std_msgs/msg/String')
+
+# Load AI Model
+model_path = os.path.expanduser('~/ros2_ws/ROS2_Vision_Handover_Package/best.pt')
+conf_threshold = 0.25
+shelf_id = 4
+model = None
+if HAS_YOLO:
+    if os.path.exists(model_path):
+        print(f"🧠 Loading YOLO model from {model_path}...")
+        model = YOLO(model_path)
+    else:
+        print(f"⚠️ YOLO model not found at {model_path}. AI disabled.")
+
+last_inference_time = 0.0
 
 print("🎥 Starting IMX500 Camera Stream to Web UI (~15 FPS)...")
 try:
     while ros.is_connected:
         start_time = time.time()
         
-        # Capture from IMX500
+        # Capture from IMX500 (Natively BGR in numpy)
         frame = picam2.capture_array()
         
-        # Picamera2 with format="RGB888" is likely returning BGR natively when cast to numpy. 
-        # By doing no conversion, we avoid swapping Red and Blue.
+        # --- AI INFERENCE (Throttled to ~5 FPS to save CPU/NPU) ---
+        if model is not None and (start_time - last_inference_time) >= 0.2:
+            last_inference_time = start_time
+            inf_start_t = time.time()
+            
+            # Run YOLO
+            results = model(frame, conf=conf_threshold, verbose=False)[0]
+            
+            # Draw bounding boxes directly on the frame for the Web UI!
+            frame = results.plot()
+            
+            # Process payload
+            h, w = frame.shape[:2]
+            total_frame_area = float(h * w)
+            total_bbox_area = 0.0
+            detected_objects = []
+            
+            for box in results.boxes:
+                cls_id = int(box.cls[0].item())
+                class_name = model.names.get(cls_id, f"obj_{cls_id}")
+                conf = float(box.conf[0].item())
+                xyxy = box.xyxy[0].tolist()
+                x1, y1, x2, y2 = map(int, xyxy)
+                is_empty = (class_name == "empty_slot")
+                
+                if not is_empty:
+                    total_bbox_area += float((x2 - x1) * (y2 - y1))
+                    
+                detected_objects.append({
+                    "label": class_name,
+                    "confidence": round(conf, 3),
+                    "box": [x1, y1, x2, y2],
+                    "isEmptySlot": is_empty
+                })
+                
+            num_products = len([o for o in detected_objects if not o["isEmptySlot"]])
+            num_empty = len([o for o in detected_objects if o["isEmptySlot"]])
+            
+            coverage_ratio = min(1.0, (total_bbox_area / (total_frame_area * 0.70)))
+            raw_density_pct = round(coverage_ratio * 100.0, 1)
+            
+            if num_products == 0:
+                density_pct = 0.0
+                stock_status = "Out of Stock"
+            elif num_empty >= 2 or num_products < 2:
+                density_pct = max(10.0, min(raw_density_pct, 40.0))
+                stock_status = "Low Stock"
+            elif num_products >= 4 and num_empty == 0:
+                density_pct = max(raw_density_pct, min(95.0, 60.0 + num_products * 8.0))
+                stock_status = "Well Stocked" if density_pct >= 70.0 else "Normal"
+            else:
+                density_pct = max(35.0, raw_density_pct)
+                stock_status = "Normal"
+                
+            payload = {
+                "shelfId": shelf_id,
+                "shelfCategory": "Kệ 4 - Mì Ăn Liền & Đóng Gói",
+                "densityPct": density_pct,
+                "densityPercentage": density_pct,
+                "emptyPercentage": round(max(0.0, 100.0 - density_pct), 1),
+                "stockStatus": stock_status,
+                "isOutOfStock": (stock_status == "Out of Stock"),
+                "isLowStock": (stock_status == "Low Stock"),
+                "totalObjects": num_products,
+                "totalEmptySlots": num_empty,
+                "inferenceTimeMs": round((time.time() - inf_start_t) * 1000, 1),
+                "detectedObjects": detected_objects,
+                "timestamp": int(time.time() * 1000)
+            }
+            
+            # Publish JSON to ROS 2 topic
+            analysis_topic.publish(roslibpy.Message({'data': json.dumps(payload, ensure_ascii=False)}))
         
-        # Compress to JPEG for Web UI with lower quality to reduce payload size
+        # --- COMPRESS AND PUBLISH VIDEO STREAM ---
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
         
         if ret:
-            # rosbridge_suite expects base64 strings for uint8[] arrays
             img_base64 = base64.b64encode(buffer).decode('utf-8')
-            
             msg = {
                 'header': {
-                    'stamp': {
-                        'sec': int(time.time()),
-                        'nanosec': int((time.time() % 1) * 1e9)
-                    },
+                    'stamp': {'sec': int(time.time()), 'nanosec': int((time.time() % 1) * 1e9)},
                     'frame_id': 'camera_optical_frame'
                 },
                 'format': 'jpeg',
@@ -69,7 +155,6 @@ try:
             }
             image_topic.publish(roslibpy.Message(msg))
             
-        # Maintain ~15 FPS
         elapsed = time.time() - start_time
         time.sleep(max(0, (1.0 / 15.0) - elapsed))
 
@@ -78,4 +163,5 @@ except KeyboardInterrupt:
 finally:
     picam2.stop()
     image_topic.unadvertise()
+    analysis_topic.unadvertise()
     ros.terminate()
