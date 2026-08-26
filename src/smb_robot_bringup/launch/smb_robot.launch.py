@@ -180,6 +180,17 @@ def generate_launch_description():
         default_value='RB001',
         description='Robot identifier for MQTT topic routing.')
 
+    # Camera & OOS Vision args (Task #8 & Task #12)
+    declare_use_camera_cmd = DeclareLaunchArgument(
+        'use_camera',
+        default_value='true',
+        description='Enable Pi Camera publisher and Shelf Patrol OOS Capture node. Default true.')
+
+    declare_backend_url_cmd = DeclareLaunchArgument(
+        'backend_url',
+        default_value='https://quarterly-annually-framing-dennis.trycloudflare.com',
+        description='Backend API URL for shelf patrol AI vision upload.')
+
     ekf_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml')
 
     # ---- Nodes ----
@@ -370,19 +381,34 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 8. robot_localization EKF — single-source (odom only) to publish
-    #    odom → base_link TF. slam_toolbox needs this TF to produce map → odom.
-    #    Phase 2 will replace this with full sensor fusion (wheel + IMU + AMCL).
-    ekf_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
+    # 10. Pi Camera Publisher & Shelf Patrol Capture (Task #8 & #12)
+    camera_node = Node(
+        package='smb_ai_camera',
+        executable='pi_camera_node',
+        name='pi_camera_node',
         output='screen',
-        parameters=[
-            os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml'),
-            {'use_sim_time': LaunchConfiguration('use_sim_time')},
-        ],
-        condition=IfCondition(LaunchConfiguration('use_ekf')),
+        parameters=[{
+            'device_id': 0,
+            'width': 1280,
+            'height': 720,
+            'fps': 15,
+            'frame_id': 'camera_optical_frame',
+            'use_picamera2': False,
+        }],
+        condition=IfCondition(LaunchConfiguration('use_camera')),
+    )
+
+    patrol_node = Node(
+        package='smb_ai_camera',
+        executable='shelf_patrol_capture',
+        name='shelf_patrol_capture',
+        output='screen',
+        parameters=[{
+            'backend_url': LaunchConfiguration('backend_url'),
+            'robot_code': LaunchConfiguration('robot_code'),
+            'settle_delay_sec': 0.5,
+        }],
+        condition=IfCondition(LaunchConfiguration('use_camera')),
     )
 
     return LaunchDescription([
@@ -406,6 +432,8 @@ def generate_launch_description():
         declare_mqtt_password_cmd,
         declare_mqtt_use_tls_cmd,
         declare_robot_code_cmd,
+        declare_use_camera_cmd,
+        declare_backend_url_cmd,
         ydlidar_node,
         ultrasonic_guard_node,
         micro_ros_agent_node,
@@ -418,5 +446,7 @@ def generate_launch_description():
         supervisor_node,
         nav2_launch,
         mqtt_bridge_node,
+        camera_node,
+        patrol_node,
         rviz_node,
     ])
