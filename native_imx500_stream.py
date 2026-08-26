@@ -48,7 +48,30 @@ analysis_topic = roslibpy.Topic(ros, '/shelf/analysis', 'std_msgs/msg/String')
 # Load AI Model
 model_path = os.path.expanduser('~/ros2_ws/ROS2_Vision_Handover_Package/best.pt')
 conf_threshold = 0.25
-shelf_id = 4
+# --- ArUco Setup ---
+try:
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    aruco_params = cv2.aruco.DetectorParameters()
+    try:
+        # OpenCV 4.7+
+        aruco_detector = cv2.aruco.ArucoDetector(aruco_dict, aruco_params)
+    except AttributeError:
+        aruco_detector = None # Fallback to older API
+except AttributeError:
+    aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
+    aruco_params = cv2.aruco.DetectorParameters_create()
+    aruco_detector = None
+
+shelf_mapping = {
+    1: "Kệ 1 - Nước Giải Khát",
+    2: "Kệ 2 - Đồ Hộp",
+    3: "Kệ 3 - Gia Vị",
+    4: "Kệ 4 - Mì Ăn Liền & Đóng Gói"
+}
+
+current_shelf_id = -1
+current_shelf_category = "Unknown Shelf (Đưa ArUco vào camera)"
+
 model = None
 if HAS_YOLO:
     if os.path.exists(model_path):
@@ -60,13 +83,33 @@ if HAS_YOLO:
 last_inference_time = 0.0
 cached_objects = []
 
-print("🎥 Starting IMX500 Camera Stream to Web UI (~15 FPS)...")
+print("🎥 Starting IMX500 Camera Stream with YOLO & ArUco (~15 FPS)...")
 try:
     while ros.is_connected:
         start_time = time.time()
         
         # Capture from IMX500 (Natively BGR in numpy)
         frame = picam2.capture_array()
+        
+        # --- ARUCO DETECTION (Running every frame) ---
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if aruco_detector is not None:
+            corners, ids, rejected = aruco_detector.detectMarkers(gray)
+        else:
+            corners, ids, rejected = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=aruco_params)
+            
+        if ids is not None:
+            # Update current shelf ID if valid
+            detected_id = ids[0][0]
+            if detected_id in shelf_mapping:
+                current_shelf_id = int(detected_id)
+                current_shelf_category = shelf_mapping[current_shelf_id]
+            # Draw green bounding box around ArUco marker
+            cv2.aruco.drawDetectedMarkers(frame, corners, ids, (0, 255, 0))
+            # Draw name above marker
+            cx = int(corners[0][0][0][0])
+            cy = int(corners[0][0][0][1])
+            cv2.putText(frame, f"Locked: {current_shelf_category}", (cx, max(10, cy - 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         
         # --- AI INFERENCE (Throttled to ~5 FPS to save CPU/NPU) ---
         if model is not None and (start_time - last_inference_time) >= 0.2:
@@ -123,8 +166,8 @@ try:
                 stock_status = "Normal"
                 
             payload = {
-                "shelfId": shelf_id,
-                "shelfCategory": "Kệ 4 - Mì Ăn Liền & Đóng Gói",
+                "shelfId": current_shelf_id,
+                "shelfCategory": current_shelf_category,
                 "densityPct": density_pct,
                 "densityPercentage": density_pct,
                 "emptyPercentage": round(max(0.0, 100.0 - density_pct), 1),
