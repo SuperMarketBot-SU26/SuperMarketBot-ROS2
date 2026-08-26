@@ -183,8 +183,8 @@ def generate_launch_description():
     # Camera & OOS Vision args (Task #8 & Task #12)
     declare_use_camera_cmd = DeclareLaunchArgument(
         'use_camera',
-        default_value='true',
-        description='Enable Pi Camera publisher and Shelf Patrol OOS Capture node. Default true.')
+        default_value='false',
+        description='Enable Pi Camera publisher and Shelf Patrol OOS Capture node. Default false (run natively instead).')
 
     declare_backend_url_cmd = DeclareLaunchArgument(
         'backend_url',
@@ -393,7 +393,7 @@ def generate_launch_description():
             'height': 720,
             'fps': 15,
             'frame_id': 'camera_optical_frame',
-            'use_picamera2': False,
+            'use_picamera2': True,
         }],
         condition=IfCondition(LaunchConfiguration('use_camera')),
     )
@@ -409,6 +409,12 @@ def generate_launch_description():
             'settle_delay_sec': 0.5,
         }],
         condition=IfCondition(LaunchConfiguration('use_camera')),
+    )
+
+    # 11. ROSBridge WebSocket Server (for Web UI connection)
+    rosbridge_node = ExecuteProcess(
+        cmd=['ros2', 'launch', 'rosbridge_server', 'rosbridge_websocket_launch.xml'],
+        output='screen'
     )
 
     return LaunchDescription([
@@ -448,4 +454,5 @@ def generate_launch_description():
         camera_node,
         patrol_node,
         rviz_node,
+        rosbridge_node,
     ])

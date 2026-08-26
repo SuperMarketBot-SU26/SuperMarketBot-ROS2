@@ -65,22 +65,33 @@ class PiCameraNode(Node):
                 self.get_logger().info("✅ Picamera2 hardware pipeline initialized successfully.")
                 return
             except Exception as e:
-                self.get_logger().warn(f"Picamera2 init failed ({e}), falling back to OpenCV V4L2...")
+                self.get_logger().warning(f"Picamera2 init failed ({e}), falling back to OpenCV V4L2 auto-probing...")
 
-        # OpenCV V4L2 Fallback
-        self.cap = cv2.VideoCapture(self.device_id, cv2.CAP_V4L2)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-        self.cap.set(cv2.CAP_PROP_FPS, self.fps)
+        # OpenCV V4L2 Auto-Probing
+        # On Pi 5, /dev/video0 is often a hardware codec, and the actual camera might be video1, video2, or video4.
+        # We must verify that cap.read() actually returns a frame.
+        devices_to_probe = [self.device_id, 0, 1, 2, 4, 8]
+        
+        for dev_id in devices_to_probe:
+            self.get_logger().info(f"Probing /dev/video{dev_id}...")
+            self.cap = cv2.VideoCapture(dev_id, cv2.CAP_V4L2)
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            self.cap.set(cv2.CAP_PROP_FPS, self.fps)
 
-        if not self.cap.isOpened():
-            # Try default backend if V4L2 fails
-            self.cap = cv2.VideoCapture(self.device_id)
+            if self.cap.isOpened():
+                # Verify that it actually returns a frame
+                ret, frame = self.cap.read()
+                if ret and frame is not None:
+                    self.get_logger().info(f"✅ OpenCV VideoCapture found WORKING camera on /dev/video{dev_id}")
+                    self.device_id = dev_id
+                    return
+                else:
+                    self.get_logger().warning(f"Device /dev/video{dev_id} opened, but returned no frames.")
+            self.cap.release()
 
-        if self.cap.isOpened():
-            self.get_logger().info(f"✅ OpenCV VideoCapture opened on /dev/video{self.device_id}")
-        else:
-            self.get_logger().error(f"❌ Failed to open video device /dev/video{self.device_id}")
+        self.cap = None
+        self.get_logger().error("❌ Failed to find ANY working video device that returns frames!")
 
     def capture_and_publish(self):
         frame = None
@@ -90,7 +101,7 @@ class PiCameraNode(Node):
                 # Picamera2 RGB -> BGR for OpenCV standard
                 frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             except Exception as e:
-                self.get_logger().warn(f"Picamera2 capture error: {e}")
+                self.get_logger().warning(f"Picamera2 capture error: {e}")
         elif self.cap and self.cap.isOpened():
             ret, frame = self.cap.read()
             if not ret or frame is None:
