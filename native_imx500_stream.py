@@ -119,8 +119,8 @@ try:
                 cy = int(corners[0][0][0][1])
                 cv2.putText(frame, f"Locked: {current_shelf_category}", (cx, max(10, cy - 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         
-        # --- AI INFERENCE (Throttled to ~5 FPS to save CPU/NPU) ---
-        if model is not None and (start_time - last_inference_time) >= 0.2:
+        # --- AI INFERENCE (Throttled to max 20 FPS to save CPU, but depends on model speed) ---
+        if model is not None and (start_time - last_inference_time) >= 0.05:
             last_inference_time = start_time
             inf_start_t = time.time()
             
