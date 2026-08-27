@@ -28,13 +28,20 @@ except ImportError:
     print("⚠️ WARNING: ultralytics is not installed. AI inference will be disabled. (Run: pip install ultralytics)")
     HAS_YOLO = False
 
+import time
 print("🔌 Connecting to ROS 2 Docker WebSocket (ws://localhost:9090)...")
 ros = roslibpy.Ros(host='localhost', port=9090)
-ros.run()
 
-if not ros.is_connected:
-    print("❌ Failed to connect to rosbridge. Make sure Docker is running!")
-    exit(1)
+# Wait infinitely for rosbridge to start (survives Docker restarts)
+while True:
+    try:
+        ros.run()
+        if ros.is_connected:
+            break
+    except Exception:
+        pass
+    time.sleep(1.0)
+    print("⏳ Waiting for rosbridge to become available...")
 
 print("✅ Connected to ROS 2! Initializing IMX500 via picamera2...")
 picam2 = Picamera2()

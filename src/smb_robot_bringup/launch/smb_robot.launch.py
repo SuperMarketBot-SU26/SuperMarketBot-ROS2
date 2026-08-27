@@ -417,6 +417,7 @@ def generate_launch_description():
         output='screen'
     )
 
+
     return LaunchDescription([
         declare_use_sim_time_cmd,
         declare_rviz_cmd,

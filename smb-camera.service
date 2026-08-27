@@ -1,0 +1,18 @@
+[Unit]
+Description=SuperMarketBot Native AI Camera (YOLO + ArUco)
+After=network.target
+
+[Service]
+Type=simple
+User=snake
+WorkingDirectory=/home/snake/ros2_ws
+# Use systemd's built-in restart mechanism instead of a bash loop
+ExecStart=/usr/bin/python3 /home/snake/ros2_ws/native_imx500_stream.py
+Restart=always
+RestartSec=3
+
+# Prevent python from buffering stdout so logs appear in journalctl immediately
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
