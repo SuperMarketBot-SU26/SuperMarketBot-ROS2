@@ -20,7 +20,7 @@ DO_BUILD=false
 USE_NAV2="false"
 # Preflight is the default. Starting SLAM without odom -> base_link can never
 # produce a map and only fills the LaserScan message-filter queue.
-USE_SLAM="false"
+USE_SLAM="true"
 USE_MQTT_BRIDGE="${USE_MQTT_BRIDGE:-false}"
 
 for arg in "$@"; do
