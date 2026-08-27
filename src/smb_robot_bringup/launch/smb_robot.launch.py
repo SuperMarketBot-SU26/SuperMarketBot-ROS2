@@ -381,6 +381,13 @@ def generate_launch_description():
         output='screen',
     )
 
+    shelf_aggregator_node = Node(
+        package='smb_nodes',
+        executable='shelf_aggregator_node',
+        name='shelf_aggregator_node',
+        output='screen'
+    )
+
     # 10. Pi Camera Publisher & Shelf Patrol Capture (Task #8 & #12)
     camera_node = Node(
         package='smb_ai_camera',
@@ -452,6 +459,7 @@ def generate_launch_description():
         supervisor_node,
         nav2_launch,
         mqtt_bridge_node,
+        shelf_aggregator_node,
         camera_node,
         patrol_node,
         rviz_node,

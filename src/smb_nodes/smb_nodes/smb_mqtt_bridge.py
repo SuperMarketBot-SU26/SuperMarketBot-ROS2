@@ -134,6 +134,7 @@ class MqttBridge(Node):
         self.create_subscription(BatteryState, '/battery_state', self._on_battery_state, 10)
         self.create_subscription(String, '/supervisor/state', self._on_supervisor_state, 10)
         self.create_subscription(Bool, '/emergency_stop', self._on_emergency_stop, 10)
+        self.create_subscription(String, '/shelf/density_report', self._on_shelf_report, 10)
 
         # ---- MQTT client setup ----
         self._mqtt_client = mqtt.Client(
@@ -203,8 +204,22 @@ class MqttBridge(Node):
         self._latest_mode = msg.data.upper()
 
     def _on_emergency_stop(self, msg: Bool):
-        """Update emergency stop state."""
         self._latest_estop = msg.data
+
+    def _on_shelf_report(self, msg: String):
+        """Forward aggregated shelf density reports to MQTT."""
+        if not self._mqtt_connected:
+            return
+            
+        topic = f'smartmarketbot/robot/{self._robot_code}/shelf_report'
+        try:
+            # Re-wrap it in the standard Backend envelope if required,
+            # or just send it directly if the backend expects plain JSON.
+            payload = json.loads(msg.data)
+            self._mqtt_client.publish(topic, json.dumps(payload))
+            self.get_logger().info(f"Sent shelf report to MQTT: {payload}")
+        except Exception as e:
+            self.get_logger().error(f"Failed to publish shelf report: {e}")
 
     def _publish_telemetry(self):
         """Publish real-time telemetry to the backend."""
