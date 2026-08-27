@@ -134,42 +134,8 @@ class UnifiedRelay(Node):
         return stamp
 
     def _get_coordinated_stamp(self, esp32_stamp):
-        """Return a host-compatible stamp without destroying sensor timing."""
-        source_ns = self._stamp_to_ns(esp32_stamp)
-        now_ns = self.get_clock().now().nanoseconds
-
-        # 2020-01-01 in Unix nanoseconds. Synced micro-ROS stamps newer than
-        # this and close to host time are already the best timestamp available.
-        valid_epoch_ns = 1_577_836_800 * 1_000_000_000
-        if source_ns >= valid_epoch_ns and abs(now_ns - source_ns) <= 2_000_000_000:
-            if self._reported_clock_mode != 'synced':
-                self.get_logger().info('ESP32 clock is agent-synchronized; preserving source stamps')
-                self._reported_clock_mode = 'synced'
-            self._time_offset_ns = None
-            self._latest_source_ns = source_ns
-            return esp32_stamp
-
-        # Detect an ESP32 reboot/clock reset. Small cross-topic reordering is
-        # allowed; a backwards jump greater than two seconds resets the epoch.
-        if (self._latest_source_ns is not None and
-                source_ns + 2_000_000_000 < self._latest_source_ns):
-            self._time_offset_ns = None
-        self._latest_source_ns = max(source_ns, self._latest_source_ns or source_ns)
-
-        if self._time_offset_ns is None:
-            self._time_offset_ns = now_ns - source_ns
-            if self._reported_clock_mode != 'offset':
-                self.get_logger().warning(
-                    'ESP32 clock is boot-relative/stale; applying one shared host-time offset')
-                self._reported_clock_mode = 'offset'
-
-        shifted_ns = source_ns + self._time_offset_ns
-        # If the host clock itself jumps, re-anchor instead of publishing a TF
-        # several seconds into the future/past.
-        if abs(now_ns - shifted_ns) > 2_000_000_000:
-            self._time_offset_ns = now_ns - source_ns
-            shifted_ns = now_ns
-        return self._ns_to_stamp(shifted_ns)
+        """Return a host-compatible stamp. Mimics old odom_imu_relay behavior by using now() to eliminate TF jitter."""
+        return self.get_clock().now().to_msg()
 
     def _on_odom(self, msg: Odometry) -> None:
         """Relay odom with synchronized host-clock stamp."""
