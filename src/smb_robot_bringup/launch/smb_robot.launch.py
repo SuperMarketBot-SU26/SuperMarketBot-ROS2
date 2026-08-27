@@ -193,6 +193,11 @@ def generate_launch_description():
 
     ekf_config_default = os.path.join(pkg_bringup, 'config', 'robot', 'ekf_minimal.yaml')
 
+    declare_ekf_params_cmd = DeclareLaunchArgument(
+        'ekf_params_file',
+        default_value=ekf_config_default,
+        description='EKF parameters YAML file.')
+
     # ---- Nodes ----
 
     # 1. micro-ROS agent — bridges ESP32 USB Serial ↔ ROS2 for odom + IMU.
@@ -262,6 +267,16 @@ def generate_launch_description():
             'rate': 30,
         }],
         output='screen',
+    )
+
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[LaunchConfiguration('ekf_params_file'),
+                   {'use_sim_time': LaunchConfiguration('use_sim_time')}],
+        condition=IfCondition(LaunchConfiguration('use_ekf'))
     )
 
     # 4. slam_toolbox online_async — assumes /scan and /odom from micro-ROS agent.
@@ -432,6 +447,7 @@ def generate_launch_description():
         declare_use_supervisor_cmd,
         declare_use_micro_ros_cmd,
         declare_use_ekf_cmd,
+        declare_ekf_params_cmd,
         declare_mapping_diagnostics_cmd,
         declare_use_slam_cmd,
         declare_slam_params_cmd,
@@ -452,6 +468,7 @@ def generate_launch_description():
         ultrasonic_guard_node,
         micro_ros_agent_node,
         unified_relay_node,
+        ekf_node,
         mapping_diagnostics_node,
         rsp_node,
         jsp_node,
