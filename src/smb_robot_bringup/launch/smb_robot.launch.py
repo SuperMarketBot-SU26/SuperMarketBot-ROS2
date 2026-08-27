@@ -38,7 +38,7 @@ import subprocess
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -285,17 +285,21 @@ def generate_launch_description():
     #    before /scan is flowing, message_filters rejects every scan with
     #    "timestamp earlier than transform cache" and slam never produces
     #    /map. Activate it manually once `ros2 topic hz /scan` reports ~10 Hz.
-    slam_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            get_package_share_directory('slam_toolbox'),
-            '/launch/online_async_launch.py',
-        ]),
-        condition=IfCondition(LaunchConfiguration('use_slam')),
-        launch_arguments={
-            'slam_params_file': LaunchConfiguration('slam_params_file'),
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'autostart': 'true',
-        }.items(),
+    slam_launch = TimerAction(
+        period=15.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    get_package_share_directory('slam_toolbox'),
+                    '/launch/online_async_launch.py',
+                ]),
+                condition=IfCondition(LaunchConfiguration('use_slam')),
+                launch_arguments={
+                    'slam_params_file': LaunchConfiguration('slam_params_file'),
+                    'use_sim_time': LaunchConfiguration('use_sim_time'),
+                }.items(),
+            )
+        ]
     )
 
     # 5. Nav2 — minimal bringup (same as smb_sim.launch.py uses).
