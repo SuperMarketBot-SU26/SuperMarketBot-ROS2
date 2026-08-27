@@ -264,23 +264,30 @@ def generate_launch_description():
         output='screen',
     )
 
+    from launch.actions import TimerAction
+
     # 4. slam_toolbox online_async — assumes /scan and /odom from micro-ROS agent.
     #    autostart=false on purpose: the ESP32 takes ~10-30s after the agent
     #    starts to complete its XRCE handshake. If slam auto-activates
     #    before /scan is flowing, message_filters rejects every scan with
     #    "timestamp earlier than transform cache" and slam never produces
-    #    /map. Activate it manually once `ros2 topic hz /scan` reports ~10 Hz.
-    slam_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            get_package_share_directory('slam_toolbox'),
-            '/launch/online_async_launch.py',
-        ]),
-        condition=IfCondition(LaunchConfiguration('use_slam')),
-        launch_arguments={
-            'slam_params_file': LaunchConfiguration('slam_params_file'),
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'autostart': 'true',
-        }.items(),
+    #    /map. We delay the startup by 15 seconds to ensure odom tf is stable.
+    slam_launch = TimerAction(
+        period=15.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    get_package_share_directory('slam_toolbox'),
+                    '/launch/online_async_launch.py',
+                ]),
+                condition=IfCondition(LaunchConfiguration('use_slam')),
+                launch_arguments={
+                    'slam_params_file': LaunchConfiguration('slam_params_file'),
+                    'use_sim_time': LaunchConfiguration('use_sim_time'),
+                    'autostart': 'true',
+                }.items(),
+            )
+        ]
     )
 
     # 5. Nav2 — minimal bringup (same as smb_sim.launch.py uses).
