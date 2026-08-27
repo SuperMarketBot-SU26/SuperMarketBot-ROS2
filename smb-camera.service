@@ -1,6 +1,7 @@
 [Unit]
 Description=SuperMarketBot Native AI Camera (YOLO + ArUco)
 After=network.target
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple

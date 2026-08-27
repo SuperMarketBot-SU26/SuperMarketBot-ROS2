@@ -31,17 +31,17 @@ except ImportError:
 import time
 print("🔌 Connecting to ROS 2 Docker WebSocket (ws://localhost:9090)...")
 ros = roslibpy.Ros(host='localhost', port=9090)
+ros.run()
 
-# Wait infinitely for rosbridge to start (survives Docker restarts)
-while True:
-    try:
-        ros.run()
-        if ros.is_connected:
-            break
-    except Exception:
-        pass
-    time.sleep(1.0)
-    print("⏳ Waiting for rosbridge to become available...")
+# Wait up to 10 seconds for rosbridge to start
+timeout = 10
+start_wait = time.time()
+while not ros.is_connected and (time.time() - start_wait) < timeout:
+    time.sleep(0.5)
+
+if not ros.is_connected:
+    print("❌ Failed to connect to rosbridge after 10s. Exiting so systemd can restart us...")
+    exit(1)
 
 print("✅ Connected to ROS 2! Initializing IMX500 via picamera2...")
 picam2 = Picamera2()
@@ -151,11 +151,29 @@ try:
                     "isEmptySlot": is_empty
                 })
                 
-            # Cache the objects to draw them on every frame smoothly
-            cached_objects = detected_objects
+            # --- Cross-Class NMS: Remove empty_slot boxes that are significantly overlapped by products ---
+            raw_products = [o for o in detected_objects if not o["isEmptySlot"]]
+            raw_empties  = [o for o in detected_objects if o["isEmptySlot"]]
+            
+            def _is_empty_suppressed(empty_box, products):
+                empty_area = float((empty_box[2] - empty_box[0]) * (empty_box[3] - empty_box[1]))
+                if empty_area <= 0: return True
+                total_covered = 0.0
+                for prod in products:
+                    ix1, iy1 = max(empty_box[0], prod["box"][0]), max(empty_box[1], prod["box"][1])
+                    ix2, iy2 = min(empty_box[2], prod["box"][2]), min(empty_box[3], prod["box"][3])
+                    if ix2 > ix1 and iy2 > iy1:
+                        inter = float((ix2 - ix1) * (iy2 - iy1))
+                        if inter / empty_area > 0.60: return True
+                        total_covered += inter
+                return (total_covered / empty_area) > 0.70
                 
-            num_products = len([o for o in detected_objects if not o["isEmptySlot"]])
-            num_empty = len([o for o in detected_objects if o["isEmptySlot"]])
+            filtered_empties = [e for e in raw_empties if not _is_empty_suppressed(e["box"], raw_products)]
+            final_objects = raw_products + filtered_empties
+            cached_objects = final_objects # Update the cache so the drawing only draws valid boxes
+            
+            num_products = len(raw_products)
+            num_empty = len(filtered_empties)
             
             coverage_ratio = min(1.0, (total_bbox_area / (total_frame_area * 0.70)))
             raw_density_pct = round(coverage_ratio * 100.0, 1)
@@ -173,6 +191,7 @@ try:
                 density_pct = max(35.0, raw_density_pct)
                 stock_status = "Normal"
                 
+            inf_time_ms = round((time.time() - inf_start_t) * 1000, 1)
             payload = {
                 "shelfId": current_shelf_id,
                 "shelfCategory": current_shelf_category,
