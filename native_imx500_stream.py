@@ -172,24 +172,34 @@ try:
             final_objects = raw_products + filtered_empties
             cached_objects = final_objects # Update the cache so the drawing only draws valid boxes
             
+            total_product_area = sum(float((p["box"][2] - p["box"][0]) * (p["box"][3] - p["box"][1])) for p in raw_products)
+            total_empty_area = sum(float((e["box"][2] - e["box"][0]) * (e["box"][3] - e["box"][1])) for e in filtered_empties)
+            
+            if total_product_area + total_empty_area > 0:
+                raw_density_pct = (total_product_area / (total_product_area + total_empty_area)) * 100.0
+            else:
+                raw_density_pct = 0.0
+                
             num_products = len(raw_products)
             num_empty = len(filtered_empties)
-            
-            coverage_ratio = min(1.0, (total_bbox_area / (total_frame_area * 0.70)))
-            raw_density_pct = round(coverage_ratio * 100.0, 1)
             
             if num_products == 0:
                 density_pct = 0.0
                 stock_status = "Out of Stock"
-            elif num_empty >= 2 or num_products < 2:
-                density_pct = max(10.0, min(raw_density_pct, 40.0))
-                stock_status = "Low Stock"
             elif num_products >= 4 and num_empty == 0:
-                density_pct = max(raw_density_pct, min(95.0, 60.0 + num_products * 8.0))
-                stock_status = "Well Stocked" if density_pct >= 70.0 else "Normal"
+                # If there are many products and no empty slots seen, it's very full
+                density_pct = max(80.0, min(100.0, 75.0 + num_products * 2.0))
+                stock_status = "Well Stocked"
             else:
-                density_pct = max(35.0, raw_density_pct)
-                stock_status = "Normal"
+                density_pct = round(raw_density_pct, 1)
+                if density_pct >= 70.0:
+                    stock_status = "Well Stocked"
+                elif density_pct >= 40.0:
+                    stock_status = "Normal"
+                else:
+                    stock_status = "Low Stock"
+                    
+            density_pct = round(density_pct, 1)
                 
             inf_time_ms = round((time.time() - inf_start_t) * 1000, 1)
             payload = {
