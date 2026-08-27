@@ -25,6 +25,7 @@ slam_toolbox:
     odom_frame: odom
     map_frame: map
     base_frame: base_link
+    transform_timeout: 1.5
     # /scan messages arrive with header.frame_id = `laser_frame` because
     # the URDF links laser_frame to base_link via robot_state_publisher.
     # YDLIDAR X3 is connected directly to Pi 5 via USB (not through ESP32).
