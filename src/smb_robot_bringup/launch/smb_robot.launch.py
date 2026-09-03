@@ -129,6 +129,12 @@ def generate_launch_description():
         default_value=nav2_config_default,
         description='Nav2 params YAML.')
 
+    declare_map_yaml_file_cmd = DeclareLaunchArgument(
+        'map_yaml_file',
+        default_value='/ros2_ws/maps/active_map.yaml',
+        description='Path to the map yaml file for map_server.')
+
+
     declare_serial_port_cmd = DeclareLaunchArgument(
         'serial_port',
         default_value='/dev/ttyACM0',
@@ -302,6 +308,49 @@ def generate_launch_description():
         ]
     )
 
+    # 4.5 AMCL and Map Server for Localization (when use_slam is false)
+    from launch.conditions import UnlessCondition
+    amcl_node = Node(
+        package='nav2_amcl',
+        executable='amcl',
+        name='amcl',
+        output='screen',
+        parameters=[LaunchConfiguration('nav2_params_file')],
+        condition=UnlessCondition(LaunchConfiguration('use_slam'))
+    )
+
+    map_server_node = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        name='map_server',
+        output='screen',
+        parameters=[LaunchConfiguration('nav2_params_file'),
+                    {'yaml_filename': LaunchConfiguration('map_yaml_file')}],
+        condition=UnlessCondition(LaunchConfiguration('use_slam'))
+    )
+
+    lifecycle_manager_localization = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_localization',
+        output='screen',
+        parameters=[{'autostart': True,
+                     'node_names': ['map_server', 'amcl'],
+                     'use_sim_time': LaunchConfiguration('use_sim_time')}],
+        condition=UnlessCondition(LaunchConfiguration('use_slam'))
+    )
+
+    # 4.6 Map Republisher — bridges transient_local /map to volatile /map_volatile
+    #     so remote RViz clients can reliably receive the map over the network.
+    map_republisher_node = Node(
+        package='smb_nodes',
+        executable='map_republisher',
+        name='map_republisher',
+        output='screen',
+        condition=UnlessCondition(LaunchConfiguration('use_slam'))
+    )
+
+
     # 5. Nav2 — minimal bringup (same as smb_sim.launch.py uses).
     #    Loaded into a single component_container process for efficiency.
     #    use_sim_time=false because robot uses wall-clock.
@@ -456,6 +505,7 @@ def generate_launch_description():
         declare_use_slam_cmd,
         declare_slam_params_cmd,
         declare_nav2_params_cmd,
+        declare_map_yaml_file_cmd,
         declare_serial_port_cmd,
         declare_serial_baud_cmd,
         declare_lidar_port_cmd,
@@ -477,6 +527,10 @@ def generate_launch_description():
         rsp_node,
         jsp_node,
         slam_launch,
+        amcl_node,
+        map_server_node,
+        lifecycle_manager_localization,
+        map_republisher_node,
         supervisor_node,
         nav2_launch,
         mqtt_bridge_node,

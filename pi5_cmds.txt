@@ -7,6 +7,9 @@ docker run -it --rm -v ~/ros2_ws:/ros2_ws --network host --privileged supermarke
 run & build (new):
 docker run -it --rm -v ~/ros2_ws:/ros2_ws --network host --privileged supermarket-bot-ros2:latest bash -c "cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./start_pi5_robot.sh --build"
 
+run & build AMCL:
+docker run -it --rm -v ~/ros2_ws:/ros2_ws --network host --privileged supermarket-bot-ros2:latest bash -c "cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./start_pi5_robot.sh --build --no-slam --nav2"
+
 Run rviz2:
 rviz2 -d ~/ros2_ws/src/smb_robot_bringup/config/common/smb.rviz
 

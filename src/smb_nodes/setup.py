@@ -28,6 +28,7 @@ setup(
             'mapping_diagnostics = smb_nodes.mapping_diagnostics:main',
             'smb_mqtt_bridge = smb_nodes.smb_mqtt_bridge:main',
             'shelf_aggregator_node = smb_nodes.shelf_aggregator_node:main',
+            'map_republisher = smb_nodes.map_republisher:main',
         ],
     },
 )
