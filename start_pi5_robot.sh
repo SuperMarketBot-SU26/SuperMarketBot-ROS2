@@ -21,7 +21,7 @@ USE_NAV2="false"
 # Preflight is the default. Starting SLAM without odom -> base_link can never
 # produce a map and only fills the LaserScan message-filter queue.
 USE_SLAM="true"
-USE_MQTT_BRIDGE="${USE_MQTT_BRIDGE:-false}"
+USE_MQTT_BRIDGE="${USE_MQTT_BRIDGE:-true}"
 
 for arg in "$@"; do
     if [ "$arg" == "--build" ] || [ "$arg" == "-b" ]; then
@@ -42,6 +42,10 @@ for arg in "$@"; do
     if [ "$arg" == "--slam" ] || [ "$arg" == "--mapping" ]; then
         USE_SLAM="true"
         echo "[start_pi5_robot] Flag detected: Enabling fresh SLAM mapping"
+    fi
+    if [ "$arg" == "--no-mqtt" ] || [ "$arg" == "--no-mqtt-bridge" ]; then
+        USE_MQTT_BRIDGE="false"
+        echo "[start_pi5_robot] Flag detected: Disabling MQTT navigation bridge"
     fi
     if [ "$arg" == "--mqtt-bridge" ] || [ "$arg" == "--mqtt" ]; then
         USE_MQTT_BRIDGE="true"
@@ -148,10 +152,10 @@ if [ -f "${SCRIPT_DIR}/.env" ]; then
     source "${SCRIPT_DIR}/.env"
     set +a
 fi
-MQTT_HOST="${MQTT_HOST:-3fa4fdf2e8444e6f84df0d24ce7fd301.s1.eu.hivemq.cloud}"
+MQTT_HOST="${MQTT_HOST:-60922debd474446a84747b871c4a8182.s1.eu.hivemq.cloud}"
 MQTT_PORT="${MQTT_PORT:-8883}"
-MQTT_USERNAME="${MQTT_USERNAME:-supermarketbot}"
-MQTT_PASSWORD="${MQTT_PASSWORD:-SuperMarketBot2024!}"
+MQTT_USERNAME="${MQTT_USERNAME:-Smartmarketbot}"
+MQTT_PASSWORD="${MQTT_PASSWORD:-Passsep490}"
 ROBOT_CODE="${ROBOT_CODE:-RB001}"
 
 MQTT_ARGS=""
@@ -164,6 +168,8 @@ if [ "${USE_MQTT_BRIDGE}" = "true" ]; then
         MQTT_ARGS="${MQTT_ARGS} mqtt_username:=${MQTT_USERNAME} mqtt_password:=${MQTT_PASSWORD}"
     fi
     MQTT_ARGS="${MQTT_ARGS} robot_code:=${ROBOT_CODE}"
+else
+    MQTT_ARGS="use_mqtt_bridge:=false"
 fi
 
 # 6. Display launch summary
@@ -187,7 +193,7 @@ fi
 if [ "${USE_MQTT_BRIDGE}" = "true" ]; then
     echo "  MQTT Bridge : ENABLED (broker=${MQTT_HOST}:${MQTT_PORT}, robot=${ROBOT_CODE})"
 else
-    echo "  MQTT Bridge : DISABLED (chưa bật, thêm cờ --mqtt để kích hoạt)"
+    echo "  MQTT Bridge : DISABLED (đã tắt bằng cờ --no-mqtt)"
 fi
 echo "=========================================================================="
 echo "[start_pi5_robot] Launching engine in active terminal..."
