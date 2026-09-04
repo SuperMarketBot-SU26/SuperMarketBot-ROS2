@@ -73,13 +73,13 @@ ekf_filter_node:
 
     odom0: /odom_relay
     odom0_config: [
-      false, false, false,  # X Y Z — do NOT fuse absolute pose: SLAM toolbox owns map->odom; fusing absolute pose here double-counts and causes jitter
-      false, false, false,  # R P Y — yaw is owned by IMU gyro below
-      true,  false, false,  # Vx Vy Vz — fuse linear velocity only (clean encoder-derived speed)
-      false, false, false,  # Vroll Vpitch Vyaw — wheel message does not provide angular rate
-      false, false, false]  # Ax Ay Az — linear acceleration
+      true,  true,  false,  # X Y Z — wheel-encoder pose
+      false, false, true,   # R P Y — wheel-encoder yaw
+      false, false, false,  # Vx Vy Vz
+      false, false, false,  # Vroll Vpitch Vyaw
+      false, false, false]  # Ax Ay Az
 
-    odom0_differential: false  # absolute pose source; differential=true would amplify timestamp noise
+    odom0_differential: false
     odom0_relative: false
 
     # Independent raw MPU6050 gyro. Orientation is intentionally ignored:
