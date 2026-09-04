@@ -525,7 +525,6 @@ def generate_launch_description():
         ekf_node,
         mapping_diagnostics_node,
         rsp_node,
-        jsp_node,
         slam_launch,
         amcl_node,
         map_server_node,
