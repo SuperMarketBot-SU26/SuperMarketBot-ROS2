@@ -1,0 +1,14 @@
+[Unit]
+Description=SuperMarketBot Agent Server (Port 5000)
+After=network.target
+
+[Service]
+Type=simple
+User=nhatkhoa1124
+WorkingDirectory=/home/nhatkhoa1124/ros2_ws
+ExecStart=/usr/bin/python3 /home/nhatkhoa1124/ros2_ws/robot_agent_server.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

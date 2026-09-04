@@ -180,6 +180,7 @@ exec ros2 launch smb_robot_bringup smb.launch.py mode:=robot \
     rviz:=false \
     use_nav2:="${USE_NAV2}" \
     use_slam:="${USE_SLAM}" \
+    map_yaml_file:="${SCRIPT_DIR}/maps/active_map.yaml" \
     serial_baud:=921600 \
     ${SERIAL_ARG} \
     ${LIDAR_ARG} \
