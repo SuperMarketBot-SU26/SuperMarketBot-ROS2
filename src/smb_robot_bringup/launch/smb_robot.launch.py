@@ -262,12 +262,11 @@ def generate_launch_description():
         output='screen',
     )
 
-    # 3. joint_state_publisher — publishes ONLY fixed joints (sensors, frame mounts).
-    #    source_list=[] prevents JSP from auto-filling continuous wheel joints with
-    #    position=0, which would fight with the EKF odom->base_link TF and cause
-    #    base_link to jitter every time the robot moves.
-    #    Continuous wheel joints (left_wheel_joint, right_wheel_joint) stay at their
-    #    URDF default (0 rad) which is fine — we don't visualize wheel rotation.
+    # 3. joint_state_publisher — zero-pose fallback so RSP can resolve all joints.
+    #    ESP32 does not publish /joint_states; without JSP the URDF wheel links
+    #    have no TF and RViz warns. JSP fills them at 0 rad (static wheels).
+    #    This does NOT cause base_link jitter — jitter comes from EKF/odom issues,
+    #    not from wheel joint states being 0.
     jsp_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
@@ -275,7 +274,6 @@ def generate_launch_description():
         parameters=[{
             'use_sim_time': LaunchConfiguration('use_sim_time'),
             'rate': 30,
-            'source_list': [],   # Only publish fixed joints; skip continuous wheel joints
         }],
         output='screen',
     )
