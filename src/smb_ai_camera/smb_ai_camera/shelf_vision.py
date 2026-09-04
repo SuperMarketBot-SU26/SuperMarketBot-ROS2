@@ -2,10 +2,17 @@ import os
 import time
 import cv2
 import numpy as np
+import unicodedata
 from PIL import Image, ImageDraw, ImageFont
 from typing import Dict, List, Any, Tuple, Optional
 from ultralytics import YOLO
 from product_matcher import ProductFeatureMatcher
+
+def remove_accents(s: str) -> str:
+    if not isinstance(s, str):
+        return s
+    s = s.replace('Đ', 'D').replace('đ', 'd')
+    return unicodedata.normalize('NFKD', s).encode('ASCII', 'ignore').decode('utf-8')
 
 class ShelfVisionEngine:
     """
@@ -701,7 +708,7 @@ class ShelfVisionEngine:
             sy = int(split_y)
             # Dashed/divider line with neon yellow
             cv2.line(annotated, (20, sy), (w - 20, sy), (0, 230, 255), 2, cv2.LINE_AA)
-            div_text = "-- ĐƯỜNG PHÂN TẦNG KỆ (TIER DIVIDER) --"
+            div_text = "-- DUONG PHAN TANG KE (TIER DIVIDER) --"
             (tw, th), _ = cv2.getTextSize(div_text, cv2.FONT_HERSHEY_SIMPLEX, 0.42, 1)
             cx = (w - tw) // 2
             cv2.rectangle(annotated, (cx - 8, sy - th - 5), (cx + tw + 8, sy + 5), (20, 20, 25), -1)
@@ -724,11 +731,11 @@ class ShelfVisionEngine:
 
             if is_empty:
                 box_rgb = (255, 0, 0) # Red in RGB
-                caption = f"{tier_prefix}HẾT HÀNG ({int(conf*100)}%)"
+                caption = remove_accents(f"{tier_prefix}HẾT HÀNG ({int(conf*100)}%)")
             else:
                 box_rgb = (0, 140, 255) # Cyan/Orange in RGB
                 score_pct = int(similarity * 100) if similarity is not None else int(conf * 100)
-                caption = f"{tier_prefix}{label} ({score_pct}%)"
+                caption = remove_accents(f"{tier_prefix}{label} ({score_pct}%)")
 
             # Draw box rectangle
             draw.rectangle((x1, y1, x2, y2), outline=box_rgb, width=2)
@@ -765,11 +772,11 @@ class ShelfVisionEngine:
         t1_st = tier1.get("stockStatus", "--")
 
         # Shelf Title
-        cv2.putText(annotated, f"SHELF: {shelf_name.upper()}", (16, 28),
+        cv2.putText(annotated, remove_accents(f"SHELF: {shelf_name.upper()}"), (16, 28),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.62, (255, 255, 255), 2, cv2.LINE_AA)
 
         # Latency & Object count
-        cv2.putText(annotated, f"YOLOv8 Latency: {inf_time}ms | Objects: {total_objs} (Đầy: {density_pct}%)", (16, 56),
+        cv2.putText(annotated, remove_accents(f"YOLOv8 Latency: {inf_time}ms | Objects: {total_objs} (Đầy: {density_pct}%)"), (16, 56),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.44, (180, 180, 180), 1, cv2.LINE_AA)
 
         # Status colors
@@ -814,7 +821,7 @@ class ShelfVisionEngine:
 
         # Density Text
         shelf_empty_ratio = analysis.get("shelfColorRatio", 0.0)
-        density_label = f"SHELF DENSITY: {density_pct}% ({stock_status}) | EMPTY SPACE: {shelf_empty_ratio}%"
+        density_label = remove_accents(f"SHELF DENSITY: {density_pct}% ({stock_status}) | EMPTY SPACE: {shelf_empty_ratio}%")
         cv2.putText(annotated, density_label, (20, bar_y - 8),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1, cv2.LINE_AA)
 
