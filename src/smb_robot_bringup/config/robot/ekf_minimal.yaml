@@ -73,9 +73,9 @@ ekf_filter_node:
 
     odom0: /odom_relay
     odom0_config: [
-      true,  true,  false,  # X Y Z — wheel-encoder translation
-      false, false, false,  # R P Y — wheel yaw DISABLED: IMU gyro exclusively controls heading
-      false, false, false,  # Vx Vy Vz — FALSE: prevent double-counting with position
+      false, false, false,  # X Y Z — FALSE: do not fuse absolute position (avoids coordinate frame mismatch)
+      false, false, false,  # R P Y — FALSE: wheel yaw DISABLED: IMU gyro exclusively controls heading
+      true,  false, false,  # Vx Vy Vz — TRUE: fuse body-frame linear velocity (forward/backward)
       false, false, false,  # Vroll Vpitch Vyaw
       false, false, false]  # Ax Ay Az
 
