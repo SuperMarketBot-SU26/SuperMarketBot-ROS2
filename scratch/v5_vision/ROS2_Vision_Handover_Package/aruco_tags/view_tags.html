@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>SuperMarketBot - 6 ArUco Shelf Tags</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; padding: 20px; text-align: center; }
+        h1 { margin-bottom: 8px; color: #38bdf8; }
+        p { color: #94a3b8; margin-bottom: 24px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #1e293b; border-radius: 12px; padding: 16px; border: 1px solid #334155; }
+        .card img { width: 100%; max-width: 320px; border-radius: 8px; background: white; }
+        .tag-title { font-weight: bold; margin-top: 10px; font-size: 16px; color: #f8fafc; }
+        .tag-desc { font-size: 13px; color: #38bdf8; margin-top: 4px; }
+        @media print {
+            body { background: white; color: black; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .card { border: 1px dashed #ccc; background: white; }
+            .card img { max-width: 250px; }
+            .tag-title { color: black; }
+            .tag-desc { color: #555; }
+            h1, p { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🏷️ BỘ 6 THẺ ARUCO TAG ĐỊNH DANH KỆ HÀNG SIÊU THỊ</h1>
+    <p>Dán thẻ này vào góc mép kệ hàng tương ứng. Camera robot lia qua sẽ nhận diện kệ ngay lập tức (độ trễ 1ms, chính xác 100%).</p>
+    <div class="grid">
+        <div class="card">
+            <img src="/aruco_tags/shelf_tag_1.png" alt="ArUco Tag 1">
+            <div class="tag-title">ArUco ID: 1</div>
+            <div class="tag-desc">KE 1 - DO AN VAT & SNACK</div>
+        </div>
+        <div class="card">
+            <img src="/aruco_tags/shelf_tag_2.png" alt="ArUco Tag 2">
+            <div class="tag-title">ArUco ID: 2</div>
+            <div class="tag-desc">KE 2 - NUOC GIAI KHAT & DO UONG</div>
+        </div>
+        <div class="card">
+            <img src="/aruco_tags/shelf_tag_3.png" alt="ArUco Tag 3">
+            <div class="tag-title">ArUco ID: 3</div>
+            <div class="tag-desc">KE 3 - THUC PHAM TUOI SONG</div>
+        </div>
+        <div class="card">
+            <img src="/aruco_tags/shelf_tag_4.png" alt="ArUco Tag 4">
+            <div class="tag-title">ArUco ID: 4</div>
+            <div class="tag-desc">KE 4 - MI AN LIEN & DONG GOI</div>
+        </div>
+        <div class="card">
+            <img src="/aruco_tags/shelf_tag_5.png" alt="ArUco Tag 5">
+            <div class="tag-title">ArUco ID: 5</div>
+            <div class="tag-desc">KE 5 - DO GIA DUNG & TIEN ICH</div>
+        </div>
+        <div class="card">
+            <img src="/aruco_tags/shelf_tag_6.png" alt="ArUco Tag 6">
+            <div class="tag-title">ArUco ID: 6</div>
+            <div class="tag-desc">KE 6 - GIA VI & TRA</div>
+        </div>
+    </div>
+</body>
+</html>

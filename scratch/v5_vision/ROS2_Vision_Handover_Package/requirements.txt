@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+numpy<2
+opencv-python-headless==4.8.0.76
+opencv-python==4.8.0.76
+deepface
+gunicorn
+tf-keras
