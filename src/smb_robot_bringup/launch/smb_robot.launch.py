@@ -400,7 +400,7 @@ def generate_launch_description():
             'odom_out': '/odom_relay',
             'imu_in': '/imu/data',
             'imu_out': '/imu_relay',
-            'publish_tf': True,
+            'publish_tf': False,
         }],
         output='screen'
     )
