@@ -50,7 +50,7 @@ class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
                         pass
                 
                 if not is_booted:
-                    status = "booting"
+                    status = "starting"
                 else:
                     try:
                         subprocess.check_output(["docker", "exec", "supermarket-bot-ros2", "pgrep", "-f", "slam_toolbox"])
