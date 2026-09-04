@@ -79,7 +79,7 @@ ekf_filter_node:
       false, false, false,  # Vroll Vpitch Vyaw — wheel message does not provide a separate trusted rate
       false, false, false]  # Ax Ay Az — linear acceleration
 
-    odom0_differential: false
+    odom0_differential: true
     odom0_relative: false
 
     # Independent raw MPU6050 gyro. Orientation is intentionally ignored:
