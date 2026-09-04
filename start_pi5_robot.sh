@@ -143,10 +143,15 @@ else
 fi
 
 # 5b. MQTT Bridge credentials (from environment or .env file)
-MQTT_HOST="${MQTT_HOST:-}"
+if [ -f "${SCRIPT_DIR}/.env" ]; then
+    set -a
+    source "${SCRIPT_DIR}/.env"
+    set +a
+fi
+MQTT_HOST="${MQTT_HOST:-3fa4fdf2e8444e6f84df0d24ce7fd301.s1.eu.hivemq.cloud}"
 MQTT_PORT="${MQTT_PORT:-8883}"
-MQTT_USERNAME="${MQTT_USERNAME:-}"
-MQTT_PASSWORD="${MQTT_PASSWORD:-}"
+MQTT_USERNAME="${MQTT_USERNAME:-supermarketbot}"
+MQTT_PASSWORD="${MQTT_PASSWORD:-SuperMarketBot2024!}"
 ROBOT_CODE="${ROBOT_CODE:-RB001}"
 
 MQTT_ARGS=""
@@ -169,9 +174,21 @@ echo "  Workspace   : ${SCRIPT_DIR}"
 echo "  ESP32 Port  : ${ESP32_PORT:-None detected}"
 echo "  LiDAR Port  : ${LIDAR_PORT:-/dev/ttyUSB0 (default)}"
 echo "  RViz GUI    : disabled (headless Docker mode)"
-echo "  SLAM Engine : ${USE_SLAM}"
-echo "  Nav2 Stack  : ${USE_NAV2}"
-echo "  MQTT Bridge : ${USE_MQTT_BRIDGE} (robot_code=${ROBOT_CODE})"
+if [ "${USE_SLAM}" = "true" ]; then
+    echo "  SLAM Engine : ENABLED"
+else
+    echo "  SLAM Engine : disabled (dùng cờ --slam để bật)"
+fi
+if [ "${USE_NAV2}" = "true" ]; then
+    echo "  Nav2 Stack  : ENABLED"
+else
+    echo "  Nav2 Stack  : disabled (chưa bật, dùng cờ --nav2 để bật)"
+fi
+if [ "${USE_MQTT_BRIDGE}" = "true" ]; then
+    echo "  MQTT Bridge : ENABLED (broker=${MQTT_HOST}:${MQTT_PORT}, robot=${ROBOT_CODE})"
+else
+    echo "  MQTT Bridge : DISABLED (chưa bật, thêm cờ --mqtt để kích hoạt)"
+fi
 echo "=========================================================================="
 echo "[start_pi5_robot] Launching engine in active terminal..."
 
