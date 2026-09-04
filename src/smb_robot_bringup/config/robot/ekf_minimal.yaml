@@ -89,7 +89,7 @@ ekf_filter_node:
       false, false, false,  # X Y Z
       false, false, false,  # Roll Pitch Yaw
       false, false, false,  # Vx Vy Vz
-      false, false, true,   # Vroll Vpitch Vyaw
+      false, false, false,  # Vroll Vpitch Vyaw — DISABLED: odom0 already fuses IMU heading from ESP32, prevents double-counting rotation
       false, false, false]  # Ax Ay Az
     imu0_differential: false
     imu0_relative: false
