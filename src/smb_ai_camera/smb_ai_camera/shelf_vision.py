@@ -226,7 +226,7 @@ class ShelfVisionEngine:
 
             detected_objects.append({
                 "label": class_name,
-                "confidence": round(conf, 3),
+                "confidence": round(round(conf * 20) / 20.0, 2),
                 "box": [x1, y1, x2, y2],
                 "shelfId": detected_tag_id or 0,
                 "isEmptySlot": is_empty
@@ -323,14 +323,14 @@ class ShelfVisionEngine:
                     p_top["box"] = [bx1, by1, bx2, mid_y]
                     p_top["label"] = m_top["productName"]
                     p_top["productId"] = m_top["productId"]
-                    p_top["similarity"] = m_top["similarity"]
+                    p_top["similarity"] = round(round(m_top["similarity"] * 20) / 20.0, 2)
                     p_top["isMatched"] = True
 
                     p_bot = dict(prod)
                     p_bot["box"] = [bx1, mid_y, bx2, by2]
                     p_bot["label"] = m_bot["productName"]
                     p_bot["productId"] = m_bot["productId"]
-                    p_bot["similarity"] = m_bot["similarity"]
+                    p_bot["similarity"] = round(round(m_bot["similarity"] * 20) / 20.0, 2)
                     p_bot["isMatched"] = True
 
                     decomposed_products.extend([p_top, p_bot])
@@ -339,7 +339,7 @@ class ShelfVisionEngine:
                 match_res = self.matcher.match_crop(crop, shelf_id=detected_tag_id)
                 prod["label"] = match_res["productName"]
                 prod["productId"] = match_res["productId"]
-                prod["similarity"] = match_res["similarity"]
+                prod["similarity"] = round(round(match_res["similarity"] * 20) / 20.0, 2)
                 prod["isMatched"] = match_res["isMatched"]
                 decomposed_products.append(prod)
 

@@ -15,6 +15,7 @@ import cv2
 import json
 import os
 import sys
+import threading
 
 # Thêm đường dẫn tới thư mục chứa code AI V5
 ai_module_path = os.path.expanduser('~/ros2_ws/src/smb_ai_camera/smb_ai_camera')
@@ -68,6 +69,22 @@ if HAS_VISION_ENGINE:
 last_inference_time = 0.0
 cached_payload = None
 cached_frame = None
+inference_thread = None
+is_inferencing = False
+
+def run_inference(frame_copy):
+    global cached_payload, is_inferencing
+    try:
+        res = engine.analyze_frame(frame_copy)
+        res["timestamp"] = int(time.time() * 1000)
+        # Publish JSON to ROS 2 topic
+        analysis_topic.publish(roslibpy.Message({'data': json.dumps(res, ensure_ascii=False)}))
+        # Update cache for rendering
+        cached_payload = res
+    except Exception as e:
+        print(f"Inference error: {e}")
+    finally:
+        is_inferencing = False
 
 print("🎥 Starting IMX500 Camera Stream with YOLO & ArUco (~15 FPS)...")
 try:
@@ -77,19 +94,12 @@ try:
         # Capture from IMX500 (Natively BGR in numpy)
         frame = picam2.capture_array()
         
-        # --- AI INFERENCE (Throttled to max 20 FPS to save CPU, but depends on model speed) ---
-        if engine is not None and (start_time - last_inference_time) >= 0.05:
+        # --- AI INFERENCE (Run in background thread to not block stream) ---
+        if engine is not None and not is_inferencing and (start_time - last_inference_time) >= 0.1:
             last_inference_time = start_time
-            
-            # Analyze frame
-            res = engine.analyze_frame(frame)
-            res["timestamp"] = int(time.time() * 1000)
-            
-            # Publish JSON to ROS 2 topic
-            analysis_topic.publish(roslibpy.Message({'data': json.dumps(res, ensure_ascii=False)}))
-            
-            # Update cache for rendering
-            cached_payload = res
+            is_inferencing = True
+            inference_thread = threading.Thread(target=run_inference, args=(frame.copy(),), daemon=True)
+            inference_thread.start()
 
         # --- DRAW CACHED BOUNDING BOXES ON EVERY FRAME ---
         if engine is not None and cached_payload is not None:
