@@ -39,15 +39,28 @@ class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
             # Try to infer mode by looking at processes inside docker
             mode = "unknown"
             if status == "running":
-                try:
-                    subprocess.check_output(["docker", "exec", "supermarket-bot-ros2", "pgrep", "-f", "slam_toolbox"])
-                    mode = "slam"
-                except subprocess.CalledProcessError:
+                import socket
+                is_booted = False
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.settimeout(0.2)
                     try:
-                        subprocess.check_output(["docker", "exec", "supermarket-bot-ros2", "pgrep", "-f", "amcl|bt_navigator"])
-                        mode = "amcl"
-                    except subprocess.CalledProcessError:
+                        s.connect(('127.0.0.1', 9090))
+                        is_booted = True
+                    except Exception:
                         pass
+                
+                if not is_booted:
+                    status = "booting"
+                else:
+                    try:
+                        subprocess.check_output(["docker", "exec", "supermarket-bot-ros2", "pgrep", "-f", "slam_toolbox"])
+                        mode = "slam"
+                    except subprocess.CalledProcessError:
+                        try:
+                            subprocess.check_output(["docker", "exec", "supermarket-bot-ros2", "pgrep", "-f", "amcl|bt_navigator"])
+                            mode = "amcl"
+                        except subprocess.CalledProcessError:
+                            pass
 
             self.wfile.write(json.dumps({"status": status, "mode": mode}).encode('utf-8'))
         else:
