@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 import http.server
 import socketserver
+import os
 import json
 import base64
-import os
 import subprocess
 import threading
 
+# Lấy thư mục gốc hiện tại (nơi chứa script này, tức là ~/ros2_ws)
+ROS2_WS = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_PATH = os.path.join(ROS2_WS, "start_pi5_robot.sh")
+MAPS_DIR = os.path.join(ROS2_WS, "maps")
+
 PORT = 5000
-MAPS_DIR = "/home/nhatkhoa1124/ros2_ws/maps"
-SCRIPT_PATH = "/home/nhatkhoa1124/ros2_ws/start_pi5_robot.sh"
-ROS2_WS = "/home/nhatkhoa1124/ros2_ws"
 
 class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
     def _set_headers(self, status=200):
@@ -123,7 +125,7 @@ class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
             os.makedirs(MAPS_DIR, exist_ok=True)
             
             # Use ROS 2 map_saver_cli
-            save_cmd = "source /opt/ros/lyrical/setup.bash && source /home/nhatkhoa1124/ros2_ws/install/setup.bash && ros2 run nav2_map_server map_saver_cli -f /home/nhatkhoa1124/ros2_ws/maps/active_map --ros-args -p map_subscribe_transient_local:=true -r __ns:=/"
+            save_cmd = f"source /opt/ros/lyrical/setup.bash && source {ROS2_WS}/install/setup.bash && ros2 run nav2_map_server map_saver_cli -f {MAPS_DIR}/active_map --ros-args -p map_subscribe_transient_local:=true -r __ns:=/"
             
             result = subprocess.run(save_cmd, shell=True, executable='/bin/bash', cwd=ROS2_WS, capture_output=True, text=True)
             if result.returncode != 0:
