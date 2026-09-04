@@ -157,6 +157,7 @@ class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
 
 def run_server():
     os.makedirs(MAPS_DIR, exist_ok=True)
+    socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", PORT), RobotAPIHandler) as httpd:
         print(f"Robot Agent Server running on port {PORT}")
         httpd.serve_forever()
