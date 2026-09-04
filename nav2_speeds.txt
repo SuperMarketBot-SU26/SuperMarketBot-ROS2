@@ -1,0 +1,25 @@
+--- Controller / FollowPath (Regulated Pure Pursuit) Speeds ---
+Linear Velocity (X):
+  - min_vel_x: 0.015
+  - max_vel_x: 0.035
+  - desired_linear_vel: 0.035
+  - regulated_linear_scaling_min_speed: 0.015
+
+Angular Velocity (Theta / Rotation):
+  - min_vel_theta: 0.025
+  - max_vel_theta: 0.05
+  - rotate_to_heading_angular_vel: 0.035
+
+Acceleration Limits:
+  - acc_lim_x: 0.15
+  - acc_lim_theta: 0.05
+
+--- Behavior: Spin (Xoay tại chỗ) ---
+  - max_rotational_vel: 0.09
+  - min_rotational_vel: 0.05
+  - rotational_acc_lim: 0.12
+
+--- Behavior: Backup (Lùi lại) ---
+  - max_linear_vel: 0.04
+  - min_linear_vel: 0.02
+  - linear_acc_lim: 0.25
