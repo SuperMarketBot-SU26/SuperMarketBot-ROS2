@@ -29,24 +29,25 @@ class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/api/robot/status':
             self._set_headers()
-            # Check if start_pi5_robot.sh is running
+            # Check if docker container is running
             try:
-                subprocess.check_output(["pgrep", "-f", "start_pi5_robot.sh"])
-                status = "running"
+                output = subprocess.check_output(["docker", "ps", "-q", "-f", "name=supermarket-bot-ros2"]).decode('utf-8').strip()
+                status = "running" if output else "stopped"
             except subprocess.CalledProcessError:
                 status = "stopped"
             
-            # Try to infer mode by looking at processes
+            # Try to infer mode by looking at processes inside docker
             mode = "unknown"
-            try:
-                subprocess.check_output(["pgrep", "-f", "slam_toolbox"])
-                mode = "slam"
-            except subprocess.CalledProcessError:
+            if status == "running":
                 try:
-                    subprocess.check_output(["pgrep", "-f", "amcl|bt_navigator"])
-                    mode = "amcl"
+                    subprocess.check_output(["docker", "exec", "supermarket-bot-ros2", "pgrep", "-f", "slam_toolbox"])
+                    mode = "slam"
                 except subprocess.CalledProcessError:
-                    pass
+                    try:
+                        subprocess.check_output(["docker", "exec", "supermarket-bot-ros2", "pgrep", "-f", "amcl|bt_navigator"])
+                        mode = "amcl"
+                    except subprocess.CalledProcessError:
+                        pass
 
             self.wfile.write(json.dumps({"status": status, "mode": mode}).encode('utf-8'))
         else:
@@ -64,38 +65,29 @@ class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
 
         if self.path == '/api/robot/start':
             mode = data.get('mode', 'slam')
-            print(f"Starting robot in mode: {mode}")
+            print(f"Starting robot in mode: {mode} (via Docker)")
             
-            # Kill existing gracefully first to allow ROS 2 to cleanup children
-            os.system('pkill -INT -f "smb.launch.py" 2>/dev/null')
-            os.system('sleep 2')
+            # Kill existing docker container
+            os.system('docker stop supermarket-bot-ros2 2>/dev/null; docker rm supermarket-bot-ros2 2>/dev/null')
             
-            # Force kill any lingering orphans
-            os.system('pkill -9 -f "start_pi5_robot.sh" 2>/dev/null')
-            os.system('pkill -9 -f "smb.launch.py" 2>/dev/null')
-            os.system('pkill -9 -f "slam_toolbox" 2>/dev/null')
-            os.system('pkill -9 -f "amcl" 2>/dev/null')
-            os.system('pkill -9 -f "bt_navigator" 2>/dev/null')
-            os.system('pkill -9 -f "rosbridge_server" 2>/dev/null')
-            
-            # Build command
-            cmd = [SCRIPT_PATH]
+            # Build command for docker
+            bash_cmd = "cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./start_pi5_robot.sh"
             if mode == 'amcl':
-                cmd.extend(['--no-slam', '--nav2'])
+                bash_cmd += " --no-slam --nav2"
             elif mode == 'slam':
-                cmd.extend(['--slam', '--nav2'])
+                bash_cmd += " --slam --nav2"
                 
-            # Launch in background
-            subprocess.Popen(cmd, cwd=ROS2_WS, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            cmd = ['docker', 'run', '-d', '--rm', '--name', 'supermarket-bot-ros2', '-v', f'{ROS2_WS}:/ros2_ws', '--network', 'host', '--privileged', 'supermarket-bot-ros2:latest', 'bash', '-c', bash_cmd]
+            
+            # Launch docker in background
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             
             self._set_headers()
             self.wfile.write(json.dumps({"success": True, "mode": mode}).encode('utf-8'))
 
         elif self.path == '/api/robot/stop':
             print("Stopping robot...")
-            os.system('pkill -9 -f "start_pi5_robot.sh" 2>/dev/null')
-            os.system('pkill -9 -f "smb.launch.py" 2>/dev/null')
-            os.system('pkill -9 -f "micro_ros_agent" 2>/dev/null')
+            os.system('docker stop supermarket-bot-ros2 2>/dev/null; docker rm supermarket-bot-ros2 2>/dev/null')
             self._set_headers()
             self.wfile.write(json.dumps({"success": True}).encode('utf-8'))
 
