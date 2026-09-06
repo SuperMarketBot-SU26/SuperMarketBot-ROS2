@@ -129,8 +129,11 @@ class RobotAPIHandler(http.server.SimpleHTTPRequestHandler):
             print("Saving map from slam_toolbox...")
             os.makedirs(MAPS_DIR, exist_ok=True)
             
-            # Use ROS 2 map_saver_cli
-            save_cmd = f"source /opt/ros/lyrical/setup.bash && source {ROS2_WS}/install/setup.bash && ros2 run nav2_map_server map_saver_cli -f {MAPS_DIR}/active_map --ros-args -p map_subscribe_transient_local:=true -r __ns:=/"
+            # Use ROS 2 map_saver_cli (native or via docker exec if running in container)
+            if os.path.exists("/opt/ros/lyrical/setup.bash"):
+                save_cmd = f"source /opt/ros/lyrical/setup.bash && source {ROS2_WS}/install/setup.bash && ros2 run nav2_map_server map_saver_cli -f {MAPS_DIR}/active_map --ros-args -p map_subscribe_transient_local:=true -r __ns:=/"
+            else:
+                save_cmd = "docker exec $(docker ps -q | head -n 1) bash -c 'source /opt/ros/lyrical/setup.bash && source /ros2_ws/install/setup.bash && ros2 run nav2_map_server map_saver_cli -f /ros2_ws/maps/active_map --ros-args -p map_subscribe_transient_local:=true -r __ns:=/'"
             
             result = subprocess.run(save_cmd, shell=True, executable='/bin/bash', cwd=ROS2_WS, capture_output=True, text=True)
             if result.returncode != 0:
