@@ -432,9 +432,9 @@ class ShelfVisionEngine:
                 dominant_shelf_id = detected_tag_id
                 shelf_category = f"[TAG #{detected_tag_id}] {SHELF_NAMES.get(detected_tag_id)}"
                 tag_locked = True
-        elif top_votes >= 1:
+        elif top_votes >= 3:
             dominant_shelf_id = top_voted_shelf
-            shelf_category = f"{SHELF_NAMES.get(top_voted_shelf)}"
+            shelf_category = f"{SHELF_NAMES.get(top_voted_shelf)} (Dự đoán theo SP)"
             tag_locked = False
         else:
             dominant_shelf_id = 0

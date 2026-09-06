@@ -30,12 +30,14 @@ class ShelfAggregatorNode(Node):
         except json.JSONDecodeError:
             return
             
+        tag_detected = payload.get("tagDetected", False) or (payload.get("arucoTagId") is not None and payload.get("arucoTagId") > 0)
         shelf_id = payload.get("shelfId", 0)
         now = time.time()
         
         if self.state == "IDLE":
-            if shelf_id != 0:
-                self.get_logger().info(f"Detected ArUco ID {shelf_id}. Starting {self.AGGREGATION_WINDOW}s aggregation window.")
+            # Only trigger aggregation when a real ArUco tag is detected on the shelf
+            if tag_detected and shelf_id != 0:
+                self.get_logger().info(f"Detected ArUco Tag #{shelf_id}. Starting {self.AGGREGATION_WINDOW}s aggregation window.")
                 self.state = "AGGREGATING"
                 self.current_shelf_id = shelf_id
                 self.density_history = [payload.get("densityPct", 0.0)]
@@ -47,17 +49,18 @@ class ShelfAggregatorNode(Node):
             if shelf_id == self.current_shelf_id:
                 self.density_history.append(payload.get("densityPct", 0.0))
                 self.status_history.append(payload.get("stockStatus", "Normal"))
-                self.last_seen_time = now
+                if tag_detected:
+                    self.last_seen_time = now
                 
             if (now - self.start_time) >= self.AGGREGATION_WINDOW:
                 self.report_and_cooldown(now)
                 
         elif self.state == "COOLDOWN":
-            if shelf_id == self.current_shelf_id:
-                self.last_seen_time = now # Keep extending cooldown while we still see it
+            if tag_detected and shelf_id == self.current_shelf_id:
+                self.last_seen_time = now # Keep extending cooldown while we still see the same tag
             
             # If we haven't seen the marker for 5 seconds, or we see a completely different marker
-            if (now - self.last_seen_time) > 5.0 or (shelf_id != 0 and shelf_id != self.current_shelf_id):
+            if (now - self.last_seen_time) > 5.0 or (tag_detected and shelf_id != 0 and shelf_id != self.current_shelf_id):
                 self.get_logger().info(f"Cooldown finished for shelf {self.current_shelf_id}. Resetting to IDLE.")
                 self.state = "IDLE"
                 self.current_shelf_id = 0
