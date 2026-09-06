@@ -18,27 +18,22 @@
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="smb">
 
-  <xacro:property name="chassis_length" value="0.30"/>
-  <xacro:property name="chassis_width"  value="0.22"/>
-  <xacro:property name="chassis_height" value="0.13"/>
+  <xacro:property name="chassis_length" value="0.27"/>
+  <xacro:property name="chassis_width"  value="0.145"/>
+  <xacro:property name="chassis_height" value="0.075"/>
   <xacro:property name="wheel_radius"   value="0.04"/>
   <xacro:property name="wheel_thickness" value="0.02"/>
   <xacro:property name="track"          value="0.22"/>
-  <!-- Drive wheels at the FRONT of the chassis (x = +0.05) — driven by motors with
-       encoders. Single ball caster at the BACK (x = -0.05) for free-rolling turns.
+  <!-- Drive wheels at the FRONT of the chassis — driven by motors with
+       encoders. Single ball caster at the BACK for free-rolling turns. -->
 
-       Convention: URDF +X = physical forward = arrow/ESP32 side = motor direction.
-       ESP32 odom +X = motor direction = URDF +X. No odom flip needed.
-       Scan data: lidar on back (-X) with 180° rotation so angle 0° faces backward
-       (toward wall = physical front). -->
-
-  <xacro:property name="wheel_offset_x" value="-0.05"/>
-  <xacro:property name="caster_offset_x" value="0.05"/>
+  <xacro:property name="wheel_offset_x" value="-0.08"/>
+  <xacro:property name="caster_offset_x" value="0.08"/>
   <!-- Caster uses the same radius as the drive wheels so all three contact
        points lie on the same ground plane. The wheel_radius property above
        is reused for the caster sphere. -->
 
-  <xacro:property name="lidar_offset_z" value="0.075"/>
+  <xacro:property name="lidar_offset_z" value="0.36"/>
   <xacro:property name="imu_offset_z"   value="0.05"/>
 
   <!-- Masses kept low so the sim runs smoothly; chassis dominates the dynamics. -->
@@ -248,6 +243,69 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="0.02 0.02 0.005"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Ultrasonic Sensors -->
+  <!-- Front -->
+  <joint name="us_front_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_front_link"/>
+    <origin xyz="0.135 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="us_front_link"/>
+
+  <!-- Rear -->
+  <joint name="us_rear_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_rear_link"/>
+    <origin xyz="-0.135 0 0" rpy="0 0 3.14159"/>
+  </joint>
+  <link name="us_rear_link"/>
+
+  <!-- Left -->
+  <joint name="us_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_left_link"/>
+    <origin xyz="0 0.0725 0" rpy="0 0 1.5708"/>
+  </joint>
+  <link name="us_left_link"/>
+
+  <!-- Right -->
+  <joint name="us_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="us_right_link"/>
+    <origin xyz="0 -0.0725 0" rpy="0 0 -1.5708"/>
+  </joint>
+  <link name="us_right_link"/>
+
+  <!-- AI Camera IMX500 -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <!-- Positioned at the front of the robot, facing forward (URDF +X) -->
+    <origin xyz="0.135 0 0.15" rpy="0 0 0"/>
+  </joint>
+  <link name="camera_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.04 0.02"/>
+      </geometry>
+      <material name="camera_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.04 0.02"/>
       </geometry>
     </collision>
   </link>
