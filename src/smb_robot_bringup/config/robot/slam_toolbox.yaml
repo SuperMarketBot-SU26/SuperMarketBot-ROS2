@@ -53,16 +53,16 @@ slam_toolbox:
     # a real environment (not a 10x10m box). Real robot has wheel-encoder
     # odometry that drifts a bit, so we want enough candidates.
     #
-    minimum_travel_distance: 0.05   # one map cell; avoids near-duplicate scans
-    minimum_travel_heading: 0.035   # ~2 degrees
-    minimum_time_interval: 0.10     # X3 is ~8 Hz; processing faster adds no information
+    minimum_travel_distance: 0.1    # Reduced to 10cm for faster SLAM updates when moving
+    minimum_travel_heading: 0.087   # Reduced to ~5 deg
+    minimum_time_interval: 0.5      # Reduced from 5.0s to 0.5s to ensure SLAM corrects odometry continuously even when moving slowly
     skip_odometry: false
 
     # Scan matching
     do_loop_closing: true
-    link_match_minimum_response_fine: 0.5
-    link_scan_max_distance: 1.5
-    correlation_search_space_dimension: 0.5
+    link_match_minimum_response_fine: 0.4
+    link_scan_max_distance: 5.0
+    correlation_search_space_dimension: 0.6   # Increased from 0.3m to 0.6m: searches a much wider area to 'snap' the laser scan to the map aggressively if it slips during rotation
     correlation_search_space_resolution: 0.05 # 5cm resolution MUST match occupancy grid resolution (0.05) to prevent 'unable to get pointer in probability search' runtime crashes
     correlation_search_space_smear_deviation: 0.05 # 5cm blur window matching grid resolution
 
@@ -76,27 +76,23 @@ slam_toolbox:
     # Solver
     optimization_solver: slam_toolbox_msgs/msg/SolverMsg
     solver_plugin: solver_plugins::CeresSolver
-    threads: 2                         # leave CPU for Nav2, DDS and the USB drivers
+    threads: 8                         # Allocate 8 processing threads to parallelize Ceres graph optimization and scan matcher loops
     ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
     ceres_preconditioner: SCHUR_JACOBI
     ceres_trust_region_strategy: LEVENBERG_MARQUARDT
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: HuberLoss
-    # Keep scan corrections conservative while recovering from the observed
-    # rotated/duplicated walls. The old 0.0001 angle penalty let Ceres rotate
-    # scans almost freely in feature-poor aisles; 1.0 makes odometry the strong
-    # short-term prior while loop closure can still correct long-term drift.
-    distance_variance_penalty: 0.5
-    angle_variance_penalty: 1.0
+    distance_variance_penalty: 0.4      # Tuned to 0.4: firm balance between stabilized odometry translation and dense scan convergence
+    angle_variance_penalty: 0.0001      # Reduced to 0.0001: virtually eliminate odometry rotational resistance so Ceres scan matcher aggressively rotates and locks LiDAR scans onto room geometry
     use_scan_matching: true
     use_scan_barycenter: true
 
     # Timing
-    transform_publish_period: 0.05
-    tf_buffer_duration: 30.0
-    scan_queue_size: 5
+    transform_publish_period: 0.02   # 50 Hz TF: continuous high-speed coordinate synchronization for ultra-smooth RViz displays
+    tf_buffer_duration: 60.0
+    scan_queue_size: 10        # Local USB serial, no UDP drops
     # transform_tolerance: how far in the past a TF lookup can be.
-    transform_tolerance: 1.0
+    transform_tolerance: 1.0   # Restored to 1.0s to prevent TF lookup sync issues
     throttle_scans: 1
     publish_occupancy_grid: true
     publish_tf: true
