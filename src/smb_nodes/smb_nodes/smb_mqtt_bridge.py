@@ -212,13 +212,15 @@ class MqttBridge(Node):
         if not self._mqtt_connected:
             return
             
-        topic = f'smartmarketbot/robot/{self._robot_code}/shelf_report'
+        # Target canonical DB code (RB0001)
+        target_code = 'RB0001' if self._robot_code in ('RB001', 'RB0001') else self._robot_code
+        topic = f'smartmarketbot/robot/{target_code}/shelf_report'
         try:
-            # Re-wrap it in the standard Backend envelope if required,
-            # or just send it directly if the backend expects plain JSON.
             payload = json.loads(msg.data)
+            if 'robotCode' in payload and payload['robotCode'] == 'RB001':
+                payload['robotCode'] = 'RB0001'
             self._mqtt_client.publish(topic, json.dumps(payload))
-            self.get_logger().info(f"Sent shelf report to MQTT: {payload}")
+            self.get_logger().info(f"Sent single shelf report to MQTT ({topic}): {payload}")
         except Exception as e:
             self.get_logger().error(f"Failed to publish shelf report: {e}")
 

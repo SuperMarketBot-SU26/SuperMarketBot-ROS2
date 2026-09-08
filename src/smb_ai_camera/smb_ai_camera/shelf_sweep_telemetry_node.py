@@ -409,8 +409,12 @@ if HAS_ROS2:
                     "isOutOfStock": stock_status == "Out of Stock",
                     "isLowStock": stock_status == "Low Stock"
                 }
-                self.mqtt_client.publish(report_topic, json.dumps(mqtt_payload))
-                self.get_logger().info(f"Đã bắn báo cáo kệ lên MQTT: {report_topic} -> Mật độ: {round(density_pct, 1)}%")
+                # Target canonical DB robotCode (RB0001)
+                target_code = "RB0001" if self.robot_code in ("RB001", "RB0001") else self.robot_code
+                canonical_topic = f"smartmarketbot/robot/{target_code}/shelf_report"
+                mqtt_payload["robotCode"] = target_code
+                self.mqtt_client.publish(canonical_topic, json.dumps(mqtt_payload))
+                self.get_logger().info(f"Đã bắn báo cáo kệ lên MQTT duy nhất 1 lần: {canonical_topic} -> Mật độ: {round(density_pct, 1)}%")
 
         def publish_telemetry(self):
             """Publish telemetry định kỳ lên cả ROS 2 và MQTT (Khớp 100% BE & Staff Map)."""
