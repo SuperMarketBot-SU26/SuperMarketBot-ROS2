@@ -19,8 +19,8 @@
   <exec_depend>smb_msgs</exec_depend>
   <!-- nav2_simple_commander provides BasicNavigator — used by waypoint_follower. -->
   <exec_depend>nav2_simple_commander</exec_depend>
-  <!-- nav2_bringup brings up the navigation stack; waypoint_follower talks to it. -->
-  <exec_depend>nav2_bringup</exec_depend>
+  <!-- nav2_bringup is launched separately by smb_robot.launch.py / docker -->
+  <!-- <exec_depend>nav2_bringup</exec_depend> -->
   <exec_depend>python3-paho-mqtt</exec_depend>
 
   <export>

@@ -826,3 +826,116 @@ class ShelfVisionEngine:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1, cv2.LINE_AA)
 
         return annotated
+
+    def detect_aruco(self, frame: np.ndarray) -> Tuple[Optional[int], Optional[np.ndarray]]:
+        """
+        Detect ArUco tag in the frame.
+        Returns:
+            tag_id: int (1..6) or None
+            tag_box: np.ndarray of shape (4, 2) corners or None
+        """
+        if frame is None or frame.size == 0:
+            return None, None
+        try:
+            if self.aruco_detector is not None:
+                corners, ids, _ = self.aruco_detector.detectMarkers(frame)
+            elif hasattr(cv2, 'aruco') and hasattr(cv2.aruco, 'detectMarkers'):
+                corners, ids, _ = cv2.aruco.detectMarkers(frame, self.aruco_dict, parameters=self.aruco_params)
+            else:
+                corners, ids = None, None
+
+            if ids is not None and len(ids) > 0:
+                for c, marker_id in zip(corners, ids.flatten()):
+                    tid = int(marker_id)
+                    if 1 <= tid <= 6:
+                        pts = c[0].astype(np.int32)
+                        return tid, pts
+        except Exception:
+            pass
+        return None, None
+
+    @staticmethod
+    def compute_sharpness(img: np.ndarray) -> float:
+        """Computes blur/sharpness score using variance of Laplacian."""
+        if img is None or img.size == 0:
+            return 0.0
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
+        return float(cv2.Laplacian(gray, cv2.CV_64F).var())
+
+    def score_sweep_frame(self, frame: np.ndarray, analysis: dict) -> dict:
+        """
+        Calculates a multi-criteria score for a frame captured during a horizontal sweep.
+        Factors:
+        - ArUco Tag size & visibility (closer / more perpendicular = bigger tag area)
+        - Sharpness (higher Laplacian variance = less motion blur)
+        - Shelf Bounds Coverage (products detected inside the shelf area)
+        """
+        sharpness = self.compute_sharpness(frame)
+        h, w = frame.shape[:2]
+        frame_area = float(h * w)
+
+        tag_id = analysis.get("arucoTagId")
+        tag_detected = tag_id is not None
+
+        # Calculate ArUco area normalized
+        aruco_area_ratio = 0.0
+        aruco_boxes = analysis.get("arucoBoxes", [])
+        if aruco_boxes:
+            b = aruco_boxes[0]["box"]
+            bw = b[2] - b[0]
+            bh = b[3] - b[1]
+            aruco_area_ratio = min(1.0, float(bw * bh) / (frame_area * 0.03))
+
+        # Sharpness score normalized (variance 60 to 450 is typical sharp range)
+        sharpness_score = min(1.0, max(0.0, (sharpness - 60.0) / 400.0))
+
+        # Detected products in shelf
+        prod_count = len(analysis.get("detectedProducts", []))
+        prod_score = min(1.0, prod_count / 4.0)
+
+        # Composite score
+        if tag_detected:
+            composite_score = (aruco_area_ratio * 0.40) + (sharpness_score * 0.30) + (prod_score * 0.30)
+        else:
+            composite_score = (sharpness_score * 0.25) + (prod_score * 0.25)
+
+        return {
+            "compositeScore": round(composite_score * 100.0, 1),
+            "sharpness": round(sharpness, 1),
+            "sharpnessScore": round(sharpness_score, 2),
+            "arucoAreaRatio": round(aruco_area_ratio, 2),
+            "tagDetected": tag_detected,
+            "arucoTagId": tag_id,
+            "productCount": prod_count,
+        }
+
+    def process_sweep_frames(self, frames: list) -> dict:
+        """
+        Processes a sequence of frames captured during a horizontal sweep across the shelf.
+        Evaluates each frame and picks the best one.
+        """
+        if not frames:
+            return {"status": "error", "message": "No frames provided"}
+
+        scored_frames = []
+        for idx, frame in enumerate(frames):
+            analysis = self.analyze_frame(frame)
+            score_data = self.score_sweep_frame(frame, analysis)
+            scored_frames.append({
+                "frameIndex": idx,
+                "frame": frame,
+                "analysis": analysis,
+                "scores": score_data
+            })
+
+        # Sort by compositeScore descending
+        scored_frames.sort(key=lambda x: x["scores"]["compositeScore"], reverse=True)
+        best = scored_frames[0]
+
+        return {
+            "bestAnalysis": best["analysis"],
+            "bestScore": best["scores"],
+            "bestFrameIndex": best["frameIndex"],
+            "framesEvaluated": len(frames),
+            "allScores": [f["scores"]["compositeScore"] for f in scored_frames]
+        }

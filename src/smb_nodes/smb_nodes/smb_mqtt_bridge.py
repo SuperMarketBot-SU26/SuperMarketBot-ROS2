@@ -135,6 +135,7 @@ class MqttBridge(Node):
         self.create_subscription(String, '/supervisor/state', self._on_supervisor_state, 10)
         self.create_subscription(Bool, '/emergency_stop', self._on_emergency_stop, 10)
         self.create_subscription(String, '/shelf/density_report', self._on_shelf_report, 10)
+        self._pub_sweep_trigger = self.create_publisher(String, '/shelf/sweep/trigger', 10)
 
         # ---- MQTT client setup ----
         self._mqtt_client = mqtt.Client(
@@ -762,6 +763,20 @@ class MqttBridge(Node):
             self.get_logger().info(
                 f'Rest waypoint "{wp_name}": dwelling 5s')
             self._interruptible_sleep(5)
+
+        elif role in ('shelf_scan', 'scan', 'sweep'):
+            shelf_id = wp_data.get('shelfId', 1)
+            duration = float(wp_data.get('dwellTimeSeconds', 2.0))
+            self.get_logger().info(
+                f'Shelf sweep waypoint "{wp_name}": triggering sweep for shelf #{shelf_id} ({duration}s)')
+            try:
+                sweep_cmd = json.dumps({"shelfId": shelf_id, "duration": duration})
+                t_msg = String()
+                t_msg.data = sweep_cmd
+                self._pub_sweep_trigger.publish(t_msg)
+            except Exception as ex:
+                self.get_logger().warn(f'Failed to publish sweep trigger: {ex}')
+            self._interruptible_sleep(duration)
 
         elif role is not None and role != '':
             self.get_logger().warning(
