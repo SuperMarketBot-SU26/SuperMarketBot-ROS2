@@ -81,22 +81,22 @@ controller_server:
       # co-linear (the case for short in-place headings).
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       debug_trajectory_details: True
-      min_vel_x: 0.015
+      min_vel_x: 0.04
       min_vel_y: 0.0
-      max_vel_x: 0.035
-      min_vel_theta: 0.025
-      max_vel_theta: 0.05
-      acc_lim_x: 0.15
-      acc_lim_theta: 0.05
+      max_vel_x: 0.10
+      min_vel_theta: 0.25
+      max_vel_theta: 1.00
+      acc_lim_x: 0.6
+      acc_lim_theta: 1.5
       # xy_goal_tolerance / yaw_goal_tolerance / stateful inherit from defaults.
-      desired_linear_vel: 0.035
-      lookahead_dist: 0.50
+      desired_linear_vel: 0.10
+      lookahead_dist: 0.40
       use_regulated_linear_velocity_scaling: true
-      regulated_linear_scaling_min_radius: 0.5
-      regulated_linear_scaling_min_speed: 0.015
+      regulated_linear_scaling_min_radius: 0.8
+      regulated_linear_scaling_min_speed: 0.04
       use_rotate_to_heading: true
-      rotate_to_heading_min_angle: 0.785
-      rotate_to_heading_angular_vel: 0.035
+      rotate_to_heading_min_angle: 0.50
+      rotate_to_heading_angular_vel: 0.80
       # transform_tolerance: 300ms tolerance forces Nav2 to suspend motor commands
       # whenever map coordinate transforms lag behind real-time sensor updates.
       transform_tolerance: 0.3

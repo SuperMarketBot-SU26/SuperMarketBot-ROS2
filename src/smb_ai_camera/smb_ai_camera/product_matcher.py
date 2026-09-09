@@ -2,10 +2,20 @@ import os
 import re
 import cv2
 import numpy as np
-import torch
-import torch.nn as nn
-from torchvision import models, transforms
 from typing import Dict, List, Any, Tuple, Optional
+
+try:
+    import torch
+    import torch.nn as nn
+    from torchvision import models, transforms
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
+
+def no_grad_decorator(func):
+    if HAS_TORCH:
+        return torch.no_grad()(func)
+    return func
 
 class ProductFeatureMatcher:
     """
@@ -28,7 +38,15 @@ class ProductFeatureMatcher:
         "mi_a_one": "Mì A-One",
         "chao_an_lien": "Cháo Ăn Liền",
 
-        # Kệ 1 (Đồ ăn vặt)
+        # Kệ 1 (Đồ ăn vặt & Snack)
+        "swing_bit_tet": "Snack Swing Bò Bít Tết",
+        "snack_swing_bit_tet": "Snack Swing Bò Bít Tết",
+        "ostar_trung_muoi": "Snack O'Star Trứng Muối",
+        "snack_ostar_trung_muoi": "Snack O'Star Trứng Muối",
+        "ostar_tao_bien": "Snack O'Star Tảo Biển",
+        "snack_ostar_tao_bien": "Snack O'Star Tảo Biển",
+        "ostar_tao_dam": "Snack O'Star Tảo Đậm",
+        "snack_ostar_tao_dam": "Snack O'Star Tảo Đậm",
         "chocopie": "Bánh ChocoPie Orion",
         "banh_chocopie": "Bánh ChocoPie Orion",
         "banh_tet": "Bánh Tét Mini",
@@ -44,6 +62,10 @@ class ProductFeatureMatcher:
         "banh_mi_que": "Bánh Mì Que Giòn",
 
         # Kệ 2 (Nước giải khát)
+        "nuoc_number_one": "Nước Tinh Khiết Number 1 500ml",
+        "nuoc_number1": "Nước Tinh Khiết Number 1 500ml",
+        "nuoc_tinh_khiet_number_one": "Nước Tinh Khiết Number 1 500ml",
+        "chai_nuoc_number_one": "Nước Tinh Khiết Number 1 500ml",
         "coca_cola": "Coca Cola 330ml",
         "pepsi": "Pepsi 330ml",
         "sting": "Nước Tăng Lực Sting",
@@ -94,29 +116,60 @@ class ProductFeatureMatcher:
 
     def __init__(self, base_dir: str = "reference_products", device: Optional[str] = None):
         self.base_dir = os.path.abspath(base_dir)
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
-        print(f"[ProductMatcher] Initializing on device: {self.device.upper()}...")
-
-        # Pretrained MobileNetV3-Small feature extractor (576-dim output)
-        base_model = models.mobilenet_v3_small(weights=models.MobileNet_V3_Small_Weights.DEFAULT)
-        base_model.eval()
-        self.extractor = nn.Sequential(
-            base_model.features,
-            base_model.avgpool,
-            nn.Flatten()
-        ).to(self.device)
-
-        # Image preprocessing pipeline for ImageNet-pretrained network
-        self.preprocess = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ])
-
-        # Cache reference embeddings: {shelf_id: [ {productId, productName, embedding}, ... ]}
         self.reference_embeddings: Dict[int, List[Dict[str, Any]]] = {}
-        self.load_all_reference_images()
+
+        if HAS_TORCH:
+            self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+            print(f"[ProductMatcher] Initializing on device: {self.device.upper()}...")
+
+            # Pretrained MobileNetV3-Small feature extractor (576-dim output)
+            base_model = models.mobilenet_v3_small(weights=models.MobileNet_V3_Small_Weights.DEFAULT)
+            base_model.eval()
+            self.extractor = nn.Sequential(
+                base_model.features,
+                base_model.avgpool,
+                nn.Flatten()
+            ).to(self.device)
+
+            # Image preprocessing pipeline for ImageNet-pretrained network
+            self.preprocess = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            ])
+            self.load_all_reference_images()
+        else:
+            self.device = "offline"
+            print(f"[ProductMatcher] PyTorch chưa cài đặt. Chạy ở chế độ Offline / Mock Catalog.")
+            self.extractor = None
+            self.preprocess = None
+            self._load_reference_files_offline()
+
+    def _load_reference_files_offline(self):
+        """Quét danh mục 83 ảnh mẫu 6 kệ hàng khi chạy offline không có PyTorch."""
+        self.reference_embeddings.clear()
+        total_photos = 0
+        for shelf_id in range(1, 7):
+            shelf_folder = os.path.join(self.base_dir, f"shelf_{shelf_id}")
+            self.reference_embeddings[shelf_id] = []
+            if not os.path.isdir(shelf_folder):
+                continue
+            for fname in sorted(os.listdir(shelf_folder)):
+                if not fname.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
+                    continue
+                pid = self._clean_product_id(fname)
+                pname = self._get_display_name(pid)
+                dummy_emb = np.zeros(576, dtype=np.float32)
+                dummy_emb[0] = 1.0
+                self.reference_embeddings[shelf_id].append({
+                    "productId": pid,
+                    "productName": pname,
+                    "embedding": dummy_emb,
+                    "filename": fname
+                })
+                total_photos += 1
+        print(f"[ProductMatcher] Đã nạp thành công {total_photos} sản phẩm tham chiếu offline cho 6 Kệ Hàng.")
 
     def _clean_product_id(self, filename: str) -> str:
         """Strips file extension and trailing numeric indices (e.g., 'ly_mi_life_cup_2.jpg' -> 'ly_mi_life_cup')"""
@@ -130,11 +183,16 @@ class ProductFeatureMatcher:
         # Capitalize nicely if not in predefined map
         return " ".join(w.capitalize() for w in product_id.replace("_", " ").split())
 
-    @torch.no_grad()
+    @no_grad_decorator
     def extract_embedding(self, img_bgr: np.ndarray) -> np.ndarray:
         """Extracts an L2-normalized 576-dim vector from a BGR OpenCV image."""
         if img_bgr is None or img_bgr.size == 0:
             return np.zeros(576, dtype=np.float32)
+
+        if not HAS_TORCH or self.extractor is None or self.preprocess is None:
+            vec = np.zeros(576, dtype=np.float32)
+            vec[0] = 1.0
+            return vec
 
         # Convert BGR to RGB
         img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)

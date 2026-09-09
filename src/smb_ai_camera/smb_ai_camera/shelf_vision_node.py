@@ -49,10 +49,10 @@ class ShelfVisionNode(Node):
             from ament_index_python.packages import get_package_share_directory
             resource_dir = get_package_share_directory('smb_ai_camera')
         except Exception as e:
-            self.get_logger().warn(f"Không thể tìm thấy resource directory: {e}")
+            self.get_logger().warning(f"Không thể tìm thấy resource directory: {e}")
             resource_dir = None
             
-        self.get_logger().info(f"Khởi tạo ShelfVisionEngine V5 (YOLO + MobileNetV3 Re-ID) với model: {model_path}...")
+        self.get_logger().info(f"Khởi tạo ShelfVisionEngine V7 (YOLO + MobileNetV3 Re-ID) với model: {model_path}...")
         
         if not HAS_VISION_ENGINE:
             self.get_logger().fatal(f"Không thể nạp ShelfVisionEngine: {IMPORT_ERROR}")
@@ -112,7 +112,7 @@ class ShelfVisionNode(Node):
                     img_msg.data = buffer.tobytes()
                     self.pub_annotated.publish(img_msg)
             except Exception as e:
-                self.get_logger().warn(f"Lỗi vẽ ảnh HUD: {e}")
+                self.get_logger().warning(f"Lỗi vẽ ảnh HUD: {e}")
 
 def main(args=None):
     rclpy.init(args=args)

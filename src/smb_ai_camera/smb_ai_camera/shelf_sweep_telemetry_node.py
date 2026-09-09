@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-ROS 2 Shelf Sweep & Telemetry Node for SuperMarketBot (Phiên bản V6)
+ROS 2 Shelf Sweep & Telemetry Node for SuperMarketBot (Phiên bản V7)
 Tích hợp:
-  1. Horizontal Sweep & Best Frame Selection (Robot lia ngang qua kệ 0.1-0.2 m/s, tự chọn frame nét nhất có ArUco)
-  2. 2-Stage AI Vision (YOLO bounding box + MobileNetV3 Re-ID so khớp 31 SKU trên 6 Kệ hàng)
-  3. Dual-Trigger: Kích hoạt thủ công qua /shelf/sweep/trigger HOẶC tự động khi ArUco lướt qua camera
+  1. Horizontal Sweep & Best Frame Selection (Robot lia ngang qua kệ, tự chọn frame nét nhất có ArUco)
+  2. 2-Stage AI Vision (YOLO bounding box + MobileNetV3 Re-ID so khớp 24 mặt hàng thực tế trên 6 Kệ hàng)
+  3. Multi-Pass ArUco Fallback: Dò tem đa pha chống lóa băng dính chân kệ
   4. Dual Image Support: Nhận cả /camera/image_raw/compressed (Pi IMX500) lẫn /camera/image_raw
   5. Realtime MQTT Telemetry Bridge: Chuẩn hóa khớp 100% với Backend .NET (IncomingRobotPayload) & Staff Map HUD
   6. Closed-Loop Restock Reporting: Chuẩn hóa khớp 100% với Backend (densityPct, stockStatus, timestamp)
@@ -195,7 +195,7 @@ if HAS_ROS2:
             self.auto_sweep_enabled = self.get_parameter('auto_sweep').get_parameter_value().bool_value
             self.min_tag_area = self.get_parameter('min_tag_area').get_parameter_value().double_value
 
-            self.get_logger().info(f"Khởi động ShelfSweepTelemetryNode V6 [Robot: {self.robot_code}]...")
+            self.get_logger().info(f"Khởi động ShelfSweepTelemetryNode V7 [Robot: {self.robot_code}]...")
 
             # Resource directory
             try:
@@ -243,7 +243,7 @@ if HAS_ROS2:
                     self.mqtt_client.loop_start()
                     self.get_logger().info(f"Đã kết nối MQTT Broker tại {mqtt_broker}:{mqtt_port}")
                 except Exception as e:
-                    self.get_logger().warn(f"Không thể kết nối MQTT Broker: {e}. Vẫn tiếp tục chạy chế độ ROS 2.")
+                    self.get_logger().warning(f"Không thể kết nối MQTT Broker: {e}. Vẫn tiếp tục chạy chế độ ROS 2.")
 
             # ROS 2 Subscriptions (Hỗ trợ cả CompressedImage và Image thô)
             self.sub_compressed_image = self.create_subscription(
@@ -266,7 +266,7 @@ if HAS_ROS2:
 
             # Timer publish telemetry định kỳ 1.5s
             self.timer_telemetry = self.create_timer(1.5, self.publish_telemetry)
-            self.get_logger().info("ShelfSweepTelemetryNode V6 đã sẵn sàng!")
+            self.get_logger().info("ShelfSweepTelemetryNode V7 đã sẵn sàng!")
 
         def odom_callback(self, msg: Odometry):
             """Cập nhật tọa độ X, Y và Heading (rad)."""
@@ -456,7 +456,7 @@ def main(args=None):
         print("Môi trường hiện tại không có ROS 2 (rclpy). Chạy demo mô phỏng sweep...")
         engine = ShelfVisionEngine(model_path=os.path.join(current_dir, 'best.pt'))
         sweep = ShelfSweepTelemetryEngine(engine)
-        print("Engine Sweep & Telemetry V6 đã sẵn sàng tích hợp!")
+        print("Engine Sweep & Telemetry V7 đã sẵn sàng tích hợp!")
         return
 
     rclpy.init(args=args)

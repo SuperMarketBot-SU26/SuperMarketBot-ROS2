@@ -5,7 +5,12 @@ import numpy as np
 import unicodedata
 from PIL import Image, ImageDraw, ImageFont
 from typing import Dict, List, Any, Tuple, Optional
-from ultralytics import YOLO
+try:
+    from ultralytics import YOLO
+    HAS_YOLO = True
+except ImportError:
+    HAS_YOLO = False
+
 from product_matcher import ProductFeatureMatcher
 
 def remove_accents(s: str) -> str:
@@ -34,9 +39,19 @@ class ShelfVisionEngine:
 
         self.conf_threshold = conf_threshold
         self.smooth_split_y: Optional[float] = None
-        print(f"[ShelfVision] Loading YOLO model: {model_path}...")
-        self.model = YOLO(model_path)
-        print(f"[ShelfVision] YOLO Model ({model_path}) initialized successfully with classes: {len(self.model.names)}")
+        if HAS_YOLO:
+            print(f"[ShelfVision] Loading YOLO model: {model_path}...")
+            self.model = YOLO(model_path)
+            print(f"[ShelfVision] YOLO Model ({model_path}) initialized successfully with classes: {len(self.model.names)}")
+        else:
+            print(f"[ShelfVision] ultralytics chưa cài đặt. Chạy ở chế độ Mock Vision trên host.")
+            class DummyModel:
+                names = {0: "product", 1: "empty_slot"}
+                def __call__(self, frame, conf=0.15, verbose=False):
+                    class DummyResult:
+                        boxes = []
+                    return [DummyResult()]
+            self.model = DummyModel()
 
         # Initialize 2-Stage Product Feature Matcher (MobileNetV3)
         if resource_dir:
@@ -57,10 +72,12 @@ class ShelfVisionEngine:
             self.font_bold = ImageFont.load_default()
             self.font_small = ImageFont.load_default()
 
-        # Initialize ArUco Detector (DICT_4X4_50)
+        # Initialize ArUco Detector (DICT_4X4_50) with tuned parameters for physical tags & lighting
         try:
             self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
             self.aruco_params = cv2.aruco.DetectorParameters()
+            self.aruco_params.polygonalApproxAccuracyRate = 0.08
+            self.aruco_params.errorCorrectionRate = 0.6
             self.aruco_detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
         except Exception:
             self.aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
@@ -69,7 +86,15 @@ class ShelfVisionEngine:
 
         # Mapping COCO & Supermarket detected objects to Shelf Categories
         self.CLASS_TO_SHELF_MAP = {
-            # Kệ 1: Đồ Ăn Vặt (ShelfID = 1)
+            # Kệ 1: Đồ Ăn Vặt & Snack (ShelfID = 1)
+            "swing_bit_tet": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
+            "snack_swing_bit_tet": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
+            "ostar_trung_muoi": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
+            "snack_ostar_trung_muoi": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
+            "ostar_tao_bien": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
+            "snack_ostar_tao_bien": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
+            "ostar_tao_dam": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
+            "snack_ostar_tao_dam": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
             "chocopie": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
             "banh_tet": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
             "banh_chung": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
@@ -88,6 +113,10 @@ class ShelfVisionEngine:
             "bag": (1, "Kệ 1 - Đồ Ăn Vặt", "Snack & Đồ Ăn Vặt"),
 
             # Kệ 2: Nước Giải Khát & Đồ Uống (ShelfID = 2)
+            "nuoc_number_one": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
+            "nuoc_number1": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
+            "nuoc_tinh_khiet_number_one": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
+            "chai_nuoc_number_one": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "coca_cola": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "sting": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "binh_nuoc": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
@@ -97,6 +126,7 @@ class ShelfVisionEngine:
             "nuoc_khoang_lavie": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "chai_nhua": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "heineken": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
+            "ly_nhua": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "bottle": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "wine glass": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
             "can": (2, "Kệ 2 - Nước Giải Khát & Đồ Uống", "Nước Giải Khát"),
@@ -179,10 +209,29 @@ class ShelfVisionEngine:
         detected_tag_id = None
         aruco_boxes = []
         try:
+            corners, ids = None, None
             if self.aruco_detector is not None:
                 corners, ids, _ = self.aruco_detector.detectMarkers(frame)
             else:
                 corners, ids, _ = cv2.aruco.detectMarkers(frame, self.aruco_dict, parameters=self.aruco_params)
+
+            # Robust fallback pass for varied lighting and tape reflection
+            if ids is None or len(ids) == 0:
+                for poly, ec, wmax in [(0.05, 0.7, 23), (0.08, 0.6, 23), (0.03, 0.7, 35)]:
+                    fb_params = cv2.aruco.DetectorParameters()
+                    fb_params.adaptiveThreshWinSizeMin = 3
+                    fb_params.adaptiveThreshWinSizeMax = wmax
+                    fb_params.adaptiveThreshWinSizeStep = 2
+                    fb_params.polygonalApproxAccuracyRate = poly
+                    fb_params.errorCorrectionRate = ec
+                    if hasattr(cv2.aruco, 'ArucoDetector'):
+                        fb_det = cv2.aruco.ArucoDetector(self.aruco_dict, fb_params)
+                        c_fb, ids_fb, _ = fb_det.detectMarkers(frame)
+                    else:
+                        c_fb, ids_fb, _ = cv2.aruco.detectMarkers(frame, self.aruco_dict, parameters=fb_params)
+                    if ids_fb is not None and len(ids_fb) > 0:
+                        corners, ids = c_fb, ids_fb
+                        break
 
             if ids is not None and len(ids) > 0:
                 for i, tag_id_val in enumerate(ids.flatten()):
@@ -432,9 +481,9 @@ class ShelfVisionEngine:
                 dominant_shelf_id = detected_tag_id
                 shelf_category = f"[TAG #{detected_tag_id}] {SHELF_NAMES.get(detected_tag_id)}"
                 tag_locked = True
-        elif top_votes >= 3:
+        elif top_votes >= 1:
             dominant_shelf_id = top_voted_shelf
-            shelf_category = f"{SHELF_NAMES.get(top_voted_shelf)} (Dự đoán theo SP)"
+            shelf_category = f"{SHELF_NAMES.get(top_voted_shelf)}"
             tag_locked = False
         else:
             dominant_shelf_id = 0
@@ -829,7 +878,7 @@ class ShelfVisionEngine:
 
     def detect_aruco(self, frame: np.ndarray) -> Tuple[Optional[int], Optional[np.ndarray]]:
         """
-        Detect ArUco tag in the frame.
+        Detect ArUco tag in the frame with multi-pass anti-glare fallback.
         Returns:
             tag_id: int (1..6) or None
             tag_box: np.ndarray of shape (4, 2) corners or None
@@ -837,12 +886,29 @@ class ShelfVisionEngine:
         if frame is None or frame.size == 0:
             return None, None
         try:
+            corners, ids = None, None
             if self.aruco_detector is not None:
                 corners, ids, _ = self.aruco_detector.detectMarkers(frame)
             elif hasattr(cv2, 'aruco') and hasattr(cv2.aruco, 'detectMarkers'):
                 corners, ids, _ = cv2.aruco.detectMarkers(frame, self.aruco_dict, parameters=self.aruco_params)
-            else:
-                corners, ids = None, None
+
+            # Robust fallback pass for varied lighting and tape reflection
+            if ids is None or len(ids) == 0:
+                for poly, ec, wmax in [(0.05, 0.7, 23), (0.08, 0.6, 23), (0.03, 0.7, 35)]:
+                    fb_params = cv2.aruco.DetectorParameters()
+                    fb_params.adaptiveThreshWinSizeMin = 3
+                    fb_params.adaptiveThreshWinSizeMax = wmax
+                    fb_params.adaptiveThreshWinSizeStep = 2
+                    fb_params.polygonalApproxAccuracyRate = poly
+                    fb_params.errorCorrectionRate = ec
+                    if hasattr(cv2.aruco, 'ArucoDetector'):
+                        fb_det = cv2.aruco.ArucoDetector(self.aruco_dict, fb_params)
+                        c_fb, ids_fb, _ = fb_det.detectMarkers(frame)
+                    else:
+                        c_fb, ids_fb, _ = cv2.aruco.detectMarkers(frame, self.aruco_dict, parameters=fb_params)
+                    if ids_fb is not None and len(ids_fb) > 0:
+                        corners, ids = c_fb, ids_fb
+                        break
 
             if ids is not None and len(ids) > 0:
                 for c, marker_id in zip(corners, ids.flatten()):
@@ -920,22 +986,38 @@ class ShelfVisionEngine:
         scored_frames = []
         for idx, frame in enumerate(frames):
             analysis = self.analyze_frame(frame)
-            score_data = self.score_sweep_frame(frame, analysis)
+            score_info = self.score_sweep_frame(frame, analysis)
             scored_frames.append({
                 "frameIndex": idx,
                 "frame": frame,
                 "analysis": analysis,
-                "scores": score_data
+                "scoreInfo": score_info
             })
 
-        # Sort by compositeScore descending
-        scored_frames.sort(key=lambda x: x["scores"]["compositeScore"], reverse=True)
+        # Sort by composite score descending
+        scored_frames.sort(key=lambda x: x["scoreInfo"]["compositeScore"], reverse=True)
         best = scored_frames[0]
 
+        best_frame = best["frame"]
+        best_analysis = best["analysis"]
+        best_score = best["scoreInfo"]
+
+        # Render HUD overlay on the best frame with an extra "BEST SWEEP FRAME" banner
+        annotated = self.render_hud_overlay(best_frame, best_analysis)
+        h, w = annotated.shape[:2]
+        # Draw Gold Banner on top
+        cv2.rectangle(annotated, (w // 2 - 160, 5), (w // 2 + 160, 32), (0, 180, 255), -1)
+        cv2.putText(annotated, f"BEST SWEEP FRAME #{best['frameIndex'] + 1} (Score: {best_score['compositeScore']}%)",
+                    (w // 2 - 150, 24), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 1, cv2.LINE_AA)
+
         return {
-            "bestAnalysis": best["analysis"],
-            "bestScore": best["scores"],
+            "status": "success",
+            "totalFramesAnalyzed": len(frames),
             "bestFrameIndex": best["frameIndex"],
+            "bestScore": best_score,
+            "analysis": best_analysis,
+            "bestFrameAnnotated": annotated,
+            "bestAnalysis": best_analysis,
             "framesEvaluated": len(frames),
-            "allScores": [f["scores"]["compositeScore"] for f in scored_frames]
+            "allScores": [f["scoreInfo"]["compositeScore"] for f in scored_frames]
         }

@@ -133,7 +133,7 @@ class ShelfPatrolCaptureNode(Node):
                 resp_data = json.loads(response.read().decode('utf-8'))
                 self.get_logger().info(f"✅ Shelf Scan AI Analysis completed: {resp_data}")
         except Exception as e:
-            self.get_logger().warn(f"⚠️ Upload to {endpoint} failed ({e}). Retrying locally buffered...")
+            self.get_logger().warning(f"⚠️ Upload to {endpoint} failed ({e}). Retrying locally buffered...")
 
 
 def main(args=None):
