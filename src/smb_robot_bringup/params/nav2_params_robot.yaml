@@ -65,10 +65,10 @@ controller_server:
       min_vel_x: 0.04      # Sufficient minimum speed to overcome static friction
       min_vel_y: 0.0
       max_vel_x: 0.10      # Boosted to 0.10 m/s (100% nominal ROS2_LIN_MAX) for strong forward motion
-      min_vel_theta: 0.25  # Minimum rotation to reliably pivot casters
-      max_vel_theta: 1.00  # Boosted to 1.00 rad/s (~57 deg/s) for strong turning authority
+      min_vel_theta: 0.15  # Controlled minimum rotation to allow gentle deceleration
+      max_vel_theta: 0.60  # Reduced to 0.60 rad/s (~34 deg/s) to prevent wheel slip and inertial overshoot
       acc_lim_x: 0.6       # Responsive linear acceleration
-      acc_lim_theta: 1.5   # Quick torque delivery for in-place and arc rotations
+      acc_lim_theta: 0.80  # Smooth angular acceleration (0.80 rad/s^2) to prevent jerky wheel skidding
       desired_linear_vel: 0.10 # Desired cruise speed matching max_vel_x
       use_velocity_scaled_lookahead_dist: true
       min_lookahead_dist: 0.30
@@ -79,8 +79,8 @@ controller_server:
       regulated_linear_scaling_min_radius: 0.80
       regulated_linear_scaling_min_speed: 0.04   # Keep motor torque alive on curves (never drop to 0.01)
       use_rotate_to_heading: true
-      rotate_to_heading_min_angle: 0.50 # Rotate in place if heading error > ~28 deg
-      rotate_to_heading_angular_vel: 0.80 # Strong rotation speed (0.80 rad/s)
+      rotate_to_heading_min_angle: 0.785 # Rotate in place only if heading error > ~45 deg (smooth arcs for smaller errors)
+      rotate_to_heading_angular_vel: 0.40 # Gentle rotation speed (0.40 rad/s ~ 23 deg/s) preventing overshoot
       transform_tolerance: 1.0
       use_collision_detection: false
       max_allowed_time_to_collision_up_to_carrot: 5.0
@@ -196,9 +196,9 @@ behavior_server:
     behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
     spin:
       plugin: "nav2_behaviors::Spin"
-      max_rotational_vel: 2.50
-      min_rotational_vel: 0.80
-      rotational_acc_lim: 5.0
+      max_rotational_vel: 0.60
+      min_rotational_vel: 0.25
+      rotational_acc_lim: 1.0
     backup:
       plugin: "nav2_behaviors::BackUp"
       max_linear_vel: 0.25
