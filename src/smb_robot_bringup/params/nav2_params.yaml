@@ -84,10 +84,10 @@ controller_server:
       min_vel_x: 0.04
       min_vel_y: 0.0
       max_vel_x: 0.10
-      min_vel_theta: 0.15
-      max_vel_theta: 0.60
+      min_vel_theta: 0.20
+      max_vel_theta: 1.20
       acc_lim_x: 0.6
-      acc_lim_theta: 0.80
+      acc_lim_theta: 2.0
       # xy_goal_tolerance / yaw_goal_tolerance / stateful inherit from defaults.
       desired_linear_vel: 0.10
       lookahead_dist: 0.40
@@ -96,7 +96,7 @@ controller_server:
       regulated_linear_scaling_min_speed: 0.04
       use_rotate_to_heading: true
       rotate_to_heading_min_angle: 0.785
-      rotate_to_heading_angular_vel: 0.40
+      rotate_to_heading_angular_vel: 1.20
       # transform_tolerance: 300ms tolerance forces Nav2 to suspend motor commands
       # whenever map coordinate transforms lag behind real-time sensor updates.
       transform_tolerance: 0.3
