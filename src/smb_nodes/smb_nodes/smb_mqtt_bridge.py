@@ -775,13 +775,15 @@ class MqttBridge(Node):
                 f'Rest waypoint "{wp_name}": dwelling 5s')
             self._interruptible_sleep(5)
 
-        elif role in ('sweep', 'shelf_sweep'):
-            shelf_id = wp_data.get('shelfId', 1)
-            duration = float(wp_data.get('dwellTimeSeconds', 2.0))
+        elif role in ('sweep', 'shelf_sweep', 'shelf_patrol', 'patrol'):
+            shelf_id = wp_data.get('shelfId') or wp_data.get('shelf_id') or 1
+            raw_duration = float(wp_data.get('dwellTimeSeconds') or wp_data.get('duration') or 2.5)
+            # Cap sweep duration so robot doesn't sit idle if BE sends legacy 120s dwell
+            duration = min(raw_duration, 3.5) if raw_duration > 5.0 else max(raw_duration, 1.5)
             self.get_logger().info(
-                f'Shelf sweep waypoint "{wp_name}": triggering sweep for shelf #{shelf_id} ({duration}s)')
+                f'Shelf sweep waypoint "{wp_name}": triggering sweep for shelf #{shelf_id} ({duration:.1f}s, role={role})')
             try:
-                sweep_cmd = json.dumps({"shelfId": shelf_id, "duration": duration})
+                sweep_cmd = json.dumps({"shelfId": int(shelf_id), "duration": float(duration)})
                 t_msg = String()
                 t_msg.data = sweep_cmd
                 self._pub_sweep_trigger.publish(t_msg)
