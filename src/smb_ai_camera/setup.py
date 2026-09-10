@@ -45,7 +45,6 @@ setup(
     entry_points={
         'console_scripts': [
             'pi_camera_node = smb_ai_camera.pi_camera_node:main',
-            'shelf_patrol_capture = smb_ai_camera.shelf_patrol_capture:main',
             'shelf_vision_node = smb_ai_camera.shelf_vision_node:main',
             'shelf_sweep_telemetry_node = smb_ai_camera.shelf_sweep_telemetry_node:main',
         ],

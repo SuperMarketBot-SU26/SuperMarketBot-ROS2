@@ -93,6 +93,12 @@ class MqttBridge(Node):
         self._mqtt_password = self.get_parameter('mqtt_password').value
         self._mqtt_use_tls = self.get_parameter('mqtt_use_tls').value
         self._robot_code = self.get_parameter('robot_code').value
+        # Canonical robot aliases: support both 'RB001' and 'RB0001' seamlessly
+        self._robot_codes = [self._robot_code]
+        if self._robot_code == 'RB001' and 'RB0001' not in self._robot_codes:
+            self._robot_codes.append('RB0001')
+        elif self._robot_code == 'RB0001' and 'RB001' not in self._robot_codes:
+            self._robot_codes.append('RB001')
 
         # ---- MQTT topics ----
         self._topic_command = f'smartmarketbot/robot/{self._robot_code}/command'
@@ -249,7 +255,8 @@ class MqttBridge(Node):
             "HeadingRad": self._latest_heading,
             "Estop": self._latest_estop
         }
-        self._mqtt_publish(self._topic_telemetry, payload)
+        for code in self._robot_codes:
+            self._mqtt_publish(f'smartmarketbot/robot/{code}/telemetry', payload)
 
     # ======================================================================
     # MQTT callbacks (called from paho-mqtt's network thread)
@@ -261,9 +268,11 @@ class MqttBridge(Node):
             self._mqtt_connected = True
             self.get_logger().info(
                 f'Connected to MQTT broker {self._mqtt_host}:{self._mqtt_port}')
-            # Subscribe to command topic
-            client.subscribe(self._topic_command, qos=1)
-            self.get_logger().info(f'Subscribed to {self._topic_command}')
+            # Subscribe to command topic for all alias codes (e.g. RB001 and RB0001)
+            for code in self._robot_codes:
+                cmd_topic = f'smartmarketbot/robot/{code}/command'
+                client.subscribe(cmd_topic, qos=1)
+                self.get_logger().info(f'Subscribed to {cmd_topic}')
             # Publish a log to announce we're online
             self._publish_log('MQTT bridge online', level='INFO')
         else:
@@ -285,7 +294,7 @@ class MqttBridge(Node):
         """Called when an MQTT message is received. Posts to command queue."""
         try:
             payload_str = msg.payload.decode('utf-8')
-            self.get_logger().debug(
+            self.get_logger().info(
                 f'MQTT message on {msg.topic}: {payload_str[:200]}...')
             # Enqueue for processing on the ROS timer thread
             self._command_queue.put_nowait(payload_str)
@@ -766,7 +775,7 @@ class MqttBridge(Node):
                 f'Rest waypoint "{wp_name}": dwelling 5s')
             self._interruptible_sleep(5)
 
-        elif role in ('shelf_scan', 'scan', 'sweep'):
+        elif role in ('sweep', 'shelf_sweep'):
             shelf_id = wp_data.get('shelfId', 1)
             duration = float(wp_data.get('dwellTimeSeconds', 2.0))
             self.get_logger().info(
@@ -904,7 +913,8 @@ class MqttBridge(Node):
         if error_msg is not None:
             msg['error'] = error_msg
 
-        self._mqtt_publish(self._topic_nav_status, msg)
+        for code in self._robot_codes:
+            self._mqtt_publish(f'smartmarketbot/robot/{code}/navigation_status', msg)
         self.get_logger().info(
             f'Status → {status}'
             + (f' @ "{waypoint_name}"' if waypoint_name else '')
@@ -912,12 +922,13 @@ class MqttBridge(Node):
 
     def _publish_log(self, message, level='INFO'):
         """Publish a log message to the robot's MQTT log topic."""
-        self._mqtt_publish(self._topic_log, {
-            'level': level,
-            'message': message,
-            'node': 'smb_mqtt_bridge',
-            'timestamp': _utc_iso(),
-        })
+        for code in self._robot_codes:
+            self._mqtt_publish(f'smartmarketbot/robot/{code}/log', {
+                'level': level,
+                'message': message,
+                'node': 'smb_mqtt_bridge',
+                'timestamp': _utc_iso(),
+            })
 
     def _mqtt_publish(self, topic, payload_dict):
         """Publish a JSON dict to an MQTT topic (fire-and-forget)."""

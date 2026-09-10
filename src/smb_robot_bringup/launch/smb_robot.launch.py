@@ -183,7 +183,7 @@ def generate_launch_description():
 
     declare_robot_code_cmd = DeclareLaunchArgument(
         'robot_code',
-        default_value='RB001',
+        default_value='RB0001',
         description='Robot identifier for MQTT topic routing.')
 
     # Camera & OOS Vision args (Task #8 & Task #12)
@@ -476,15 +476,14 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_camera')),
     )
 
-    patrol_node = Node(
+    sweep_node = Node(
         package='smb_ai_camera',
-        executable='shelf_patrol_capture',
-        name='shelf_patrol_capture',
+        executable='shelf_sweep_telemetry_node',
+        name='shelf_sweep_telemetry_node',
         output='screen',
         parameters=[{
-            'backend_url': LaunchConfiguration('backend_url'),
             'robot_code': LaunchConfiguration('robot_code'),
-            'settle_delay_sec': 0.5,
+            'auto_sweep': False,
         }],
         condition=IfCondition(LaunchConfiguration('use_camera')),
     )
@@ -539,7 +538,7 @@ def generate_launch_description():
         mqtt_bridge_node,
         shelf_aggregator_node,
         camera_node,
-        patrol_node,
+        sweep_node,
         rviz_node,
         rosbridge_node,
     ])

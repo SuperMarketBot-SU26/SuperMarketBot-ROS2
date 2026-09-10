@@ -10,6 +10,7 @@ class ShelfAggregatorNode(Node):
     def __init__(self):
         super().__init__('shelf_aggregator')
         self.sub = self.create_subscription(String, '/shelf/analysis', self.analysis_cb, 10)
+        self.sub_trigger = self.create_subscription(String, '/shelf/sweep/trigger', self.trigger_cb, 10)
         self.pub = self.create_publisher(String, '/shelf/density_report', 10)
         
         self.state = "IDLE"
@@ -19,10 +20,27 @@ class ShelfAggregatorNode(Node):
         self.start_time = 0.0
         self.last_seen_time = 0.0
         
-        self.AGGREGATION_WINDOW = 3.0 # seconds
-        self.COOLDOWN_WINDOW = 10.0 # seconds
+        self.AGGREGATION_WINDOW = 2.0 # seconds (được cập nhật theo duration từ lệnh FE)
         
-        self.get_logger().info("Shelf Aggregator Node started. Waiting for ArUco triggers...")
+        self.get_logger().info("Shelf Aggregator Node started. Chỉ quét khi nhận lệnh thủ công từ FE qua /shelf/sweep/trigger.")
+
+    def trigger_cb(self, msg: String):
+        """Kích hoạt quét khi nhận lệnh bấm từ FE."""
+        try:
+            data = json.loads(msg.data)
+            shelf_id = int(data.get("shelfId", 0))
+            duration = float(data.get("duration", 2.0))
+            if shelf_id > 0:
+                self.get_logger().info(f"🎯 Nhận lệnh quét từ FE: Kệ #{shelf_id} trong {duration}s. Bắt đầu gom dữ liệu...")
+                self.state = "AGGREGATING"
+                self.current_shelf_id = shelf_id
+                self.density_history = []
+                self.status_history = []
+                self.AGGREGATION_WINDOW = duration
+                self.start_time = time.time()
+                self.last_seen_time = self.start_time
+        except Exception as e:
+            self.get_logger().error(f"Lỗi cú pháp lệnh trigger từ FE: {e}")
 
     def analysis_cb(self, msg: String):
         try:
@@ -30,42 +48,24 @@ class ShelfAggregatorNode(Node):
         except json.JSONDecodeError:
             return
             
-        tag_detected = payload.get("tagDetected", False) or (payload.get("arucoTagId") is not None and payload.get("arucoTagId") > 0)
         shelf_id = payload.get("shelfId", 0)
         now = time.time()
         
-        if self.state == "IDLE":
-            # Only trigger aggregation when a real ArUco tag is detected on the shelf
-            if tag_detected and shelf_id != 0:
-                self.get_logger().info(f"Detected ArUco Tag #{shelf_id}. Starting {self.AGGREGATION_WINDOW}s aggregation window.")
-                self.state = "AGGREGATING"
-                self.current_shelf_id = shelf_id
-                self.density_history = [payload.get("densityPct", 0.0)]
-                self.status_history = [payload.get("stockStatus", "Normal")]
-                self.start_time = now
+        # ĐÃ XÓA AUTO-TRIGGER: Ở trạng thái IDLE, robot KHÔNG tự động quét khi nhìn thấy ArUco tag
+        if self.state == "AGGREGATING":
+            # Gom mẫu phân tích nếu khớp kệ đang yêu cầu hoặc nếu shelfId từ vision = current_shelf_id
+            if shelf_id == self.current_shelf_id or shelf_id == 0:
+                pct = payload.get("densityPct", payload.get("densityPercentage", None))
+                if pct is not None:
+                    self.density_history.append(float(pct))
+                    self.status_history.append(payload.get("stockStatus", "Normal"))
                 self.last_seen_time = now
                 
-        elif self.state == "AGGREGATING":
-            if shelf_id == self.current_shelf_id:
-                self.density_history.append(payload.get("densityPct", 0.0))
-                self.status_history.append(payload.get("stockStatus", "Normal"))
-                if tag_detected:
-                    self.last_seen_time = now
-                
             if (now - self.start_time) >= self.AGGREGATION_WINDOW:
-                self.report_and_cooldown(now)
-                
-        elif self.state == "COOLDOWN":
-            if tag_detected and shelf_id == self.current_shelf_id:
-                self.last_seen_time = now # Keep extending cooldown while we still see the same tag
-            
-            # If we haven't seen the marker for 5 seconds, or we see a completely different marker
-            if (now - self.last_seen_time) > 5.0 or (tag_detected and shelf_id != 0 and shelf_id != self.current_shelf_id):
-                self.get_logger().info(f"Cooldown finished for shelf {self.current_shelf_id}. Resetting to IDLE.")
-                self.state = "IDLE"
-                self.current_shelf_id = 0
+                self.report_and_reset(now)
 
-    def report_and_cooldown(self, now):
+    def report_and_reset(self, now):
+        self.state = "IDLE"
         if not self.density_history:
             return
             
@@ -93,9 +93,8 @@ class ShelfAggregatorNode(Node):
         msg.data = json.dumps(report, ensure_ascii=False)
         self.pub.publish(msg)
         
-        self.state = "COOLDOWN"
-        self.last_seen_time = now
-        self.get_logger().info("Entering COOLDOWN state. Ignoring this shelf until robot moves away.")
+        self.state = "IDLE"
+        self.get_logger().info("Hoàn tất quét. Đã về trạng thái IDLE sẵn sàng cho lần bấm tiếp theo.")
 
 def main(args=None):
     rclpy.init(args=args)

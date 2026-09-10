@@ -183,7 +183,7 @@ if HAS_ROS2:
             self.declare_parameter('mqtt_broker', '127.0.0.1')
             self.declare_parameter('mqtt_port', 1883)
             self.declare_parameter('enable_mqtt', True)
-            self.declare_parameter('auto_sweep', True)
+            self.declare_parameter('auto_sweep', False)
             self.declare_parameter('min_tag_area', 600.0)
 
             model_path = self.get_parameter('model_path').get_parameter_value().string_value
@@ -322,18 +322,8 @@ if HAS_ROS2:
                     self.handle_sweep_completed(result, header)
                 return
 
-            # 2. Cơ chế Autonomous Auto-Sweep: tự động kích hoạt khi thấy ArUco tag
-            if self.auto_sweep_enabled and self.vision_engine is not None:
-                tag_id, tag_box = self.vision_engine.detect_aruco(cv_frame)
-                if tag_id is not None and tag_box is not None:
-                    tag_area = float(cv2.contourArea(tag_box))
-                    if tag_area >= self.min_tag_area and self.sweep_engine.can_auto_sweep(tag_id):
-                        self.get_logger().info(
-                            f"🔍 Tự động phát hiện ArUco Tag #{tag_id} (area={int(tag_area)}px²). Bắt đầu Sweep 2.0s!")
-                        self.telemetry["status"] = "SCANNING"
-                        self.telemetry["nearestShelf"] = f"Kệ {tag_id}"
-                        self.sweep_engine.start_sweep(shelf_id=tag_id, duration_sec=2.0)
-                        self.sweep_engine.add_frame_to_sweep(cv_frame)
+            # 2. Đã tắt Auto-Sweep: không tự động quét khi chỉ nhìn thấy ArUco tag.
+            # Chỉ thực hiện sweep khi nhận lệnh trigger thủ công từ FE qua topic /shelf/sweep/trigger.
 
         def handle_sweep_completed(self, result: Dict[str, Any], header):
             self.telemetry["status"] = "IDLE"
