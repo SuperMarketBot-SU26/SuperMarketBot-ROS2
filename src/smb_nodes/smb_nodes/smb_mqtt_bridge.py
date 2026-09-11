@@ -49,7 +49,7 @@ from datetime import datetime, timezone
 
 import paho.mqtt.client as mqtt
 import rclpy
-from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped, Twist
 from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 from rclpy.duration import Duration
 from rclpy.executors import ExternalShutdownException
@@ -142,6 +142,7 @@ class MqttBridge(Node):
         self.create_subscription(Bool, '/emergency_stop', self._on_emergency_stop, 10)
         self.create_subscription(String, '/shelf/density_report', self._on_shelf_report, 10)
         self._pub_sweep_trigger = self.create_publisher(String, '/shelf/sweep/trigger', 10)
+        self._pub_manual_cmd_vel = self.create_publisher(Twist, '/cmd_vel_manual', 10)
 
         # ---- MQTT client setup ----
         self._mqtt_client = mqtt.Client(
@@ -368,12 +369,23 @@ class MqttBridge(Node):
             self._handle_resume_nav(inner)
         elif command == 'SET_SPEED':
             self._handle_set_speed(inner)
+        elif command in ('MANUAL_TELEOP', 'JOY'):
+            self._handle_manual_teleop(inner)
         else:
             self.get_logger().warning(f'Unknown command: {command}')
 
     # ======================================================================
     # Command handlers
     # ======================================================================
+
+    def _handle_manual_teleop(self, payload: dict):
+        """Manual teleop is driven DIRECTLY by ESP32 firmware via MQTT.
+
+        ROS2 only cancels any active autonomous navigation to avoid fighting the ESP32.
+        """
+        if self._navigating:
+            self._cancel_requested = True
+            self.get_logger().info('Manual teleop active on ESP32 — cancelling autonomous Nav2 mission.')
 
     def _handle_navigate_waypoints(self, payload: dict):
         """Start waypoint navigation from a NAVIGATE_WAYPOINTS command."""
