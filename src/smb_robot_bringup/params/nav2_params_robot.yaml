@@ -225,8 +225,8 @@ amcl:
     min_particles: 500
     pf_err: 0.05
     pf_z: 0.99
-    recovery_alpha_fast: 0.1
-    recovery_alpha_slow: 0.001
+    recovery_alpha_fast: 0.0
+    recovery_alpha_slow: 0.0
     resample_interval: 1
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
     save_pose_rate: 0.5
@@ -235,10 +235,14 @@ amcl:
     transform_tolerance: 1.0
     update_min_a: 0.2
     update_min_d: 0.25
-    z_hit: 0.5
+    z_hit: 0.85
     z_max: 0.05
-    z_rand: 0.5
+    z_rand: 0.05
     z_short: 0.05
+    do_beamskip: true
+    beam_skip_distance: 0.5
+    beam_skip_threshold: 0.3
+    beam_skip_error_threshold: 0.9
     scan_topic: scan
     set_initial_pose: true
     initial_pose_x: 0.0
