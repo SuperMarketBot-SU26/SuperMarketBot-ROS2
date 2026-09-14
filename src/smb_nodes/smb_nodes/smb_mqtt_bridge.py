@@ -709,12 +709,14 @@ class MqttBridge(Node):
 
                 elif result.status == GoalStatus.STATUS_ABORTED:
                     self.get_logger().error(
-                        f'Navigation to waypoint [{global_idx}] "{wp_name}" '
-                        'failed.')
+                        f'Navigation to waypoint [{global_idx}] "{wp_name}" failed — skipping to next waypoint.')
                     self._publish_nav_status(
                         'ERROR', mission_id=mission_id,
                         waypoint_name=wp_name, waypoint_index=global_idx,
                         error_msg=f'Nav2 failed at waypoint {global_idx}')
+                    # Nếu còn waypoint tiếp theo trong lộ trình, tiếp tục di chuyển thay vì hủy toàn bộ nhiệm vụ
+                    if local_idx < len(goal_poses) - 1:
+                        continue
                     return
 
             # All waypoints completed
