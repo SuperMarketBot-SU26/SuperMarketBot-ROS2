@@ -65,10 +65,10 @@ controller_server:
       min_vel_x: 0.04      # Sufficient minimum speed to overcome static friction
       min_vel_y: 0.0
       max_vel_x: 0.10      # Boosted to 0.10 m/s (100% nominal ROS2_LIN_MAX) for strong forward motion
-      min_vel_theta: 0.45  # Boosted from 0.35 to 0.45 rad/s to maintain solid motor torque during turnarounds
+      min_vel_theta: 0.50  # Maintained at 0.50 rad/s to prevent dropping into motor deadband
       max_vel_theta: 1.00  # Boosted from 0.75 to 1.00 rad/s (~57 deg/s) matching ESP32 ROS2_ANG_MAX_FWD ceiling
       acc_lim_x: 0.6       # Responsive linear acceleration
-      acc_lim_theta: 2.0   # Fast torque delivery (2.0 rad/s^2) to break static pivot friction
+      acc_lim_theta: 2.2   # Balanced torque kick (2.2 rad/s^2) for smooth yet decisive rotation
       desired_linear_vel: 0.10 # Desired cruise speed matching max_vel_x
       use_velocity_scaled_lookahead_dist: true
       min_lookahead_dist: 0.35 # Ensures carrot point stays well ahead of the robot
@@ -79,8 +79,8 @@ controller_server:
       regulated_linear_scaling_min_radius: 0.80
       regulated_linear_scaling_min_speed: 0.04   # Keep motor torque alive on curves
       use_rotate_to_heading: true
-      rotate_to_heading_min_angle: 1.05 # Rotate in place when heading error > 60 deg
-      rotate_to_heading_angular_vel: 0.85 # Boosted from 0.55 to 0.85 rad/s (~49 deg/s) to power through 180 deg turns cleanly
+      rotate_to_heading_min_angle: 0.50 # Rotate in place until heading error < 28 deg (~0.50 rad) before moving forward
+      rotate_to_heading_angular_vel: 0.50 # Smooth rotation speed (0.50 rad/s ~ 29 deg/s) without harsh jerk
       transform_tolerance: 1.0
       use_collision_detection: false
       max_allowed_time_to_collision_up_to_carrot: 5.0
