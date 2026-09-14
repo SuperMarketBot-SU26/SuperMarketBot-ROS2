@@ -85,7 +85,7 @@ class MqttBridge(Node):
         self.declare_parameter('mqtt_username', '')
         self.declare_parameter('mqtt_password', '')
         self.declare_parameter('mqtt_use_tls', True)
-        self.declare_parameter('robot_code', 'RB001')
+        self.declare_parameter('robot_code', 'RB0001')
 
         self._mqtt_host = self.get_parameter('mqtt_host').value
         self._mqtt_port = self.get_parameter('mqtt_port').value
@@ -93,12 +93,8 @@ class MqttBridge(Node):
         self._mqtt_password = self.get_parameter('mqtt_password').value
         self._mqtt_use_tls = self.get_parameter('mqtt_use_tls').value
         self._robot_code = self.get_parameter('robot_code').value
-        # Canonical robot aliases: support both 'RB001' and 'RB0001' seamlessly
+        # Canonical robot identifier — solely RB0001
         self._robot_codes = [self._robot_code]
-        if self._robot_code == 'RB001' and 'RB0001' not in self._robot_codes:
-            self._robot_codes.append('RB0001')
-        elif self._robot_code == 'RB0001' and 'RB001' not in self._robot_codes:
-            self._robot_codes.append('RB001')
 
         # ---- MQTT topics ----
         self._topic_command = f'smartmarketbot/robot/{self._robot_code}/command'
@@ -111,6 +107,8 @@ class MqttBridge(Node):
         self._navigator = None  # Initialized lazily after Nav2 is ready
         self._nav_thread = None
         self._navigating = False
+        self._active_mission_id = None
+        self._recent_cmd_sigs = {}
         self._cancel_requested = False
         self._pause_requested = False
         self._paused_waypoints = []  # Remaining waypoints for resume
@@ -356,6 +354,17 @@ class MqttBridge(Node):
                 f'Invalid inner JSON payload for {command}: {e}')
             return
 
+        # Deduplication for repeat MQTT commands received within 2.5 seconds
+        now = time.monotonic()
+        mission_id_hint = inner.get('missionId', '') if isinstance(inner, dict) else ''
+        cmd_sig = f"{command}:{mission_id_hint or inner_str[:80]}"
+        last_seen = self._recent_cmd_sigs.get(cmd_sig, 0)
+        if now - last_seen < 2.5:
+            self.get_logger().info(f'Dropping duplicate MQTT command [{cmd_sig}] within 2.5s.')
+            return
+        self._recent_cmd_sigs[cmd_sig] = now
+        self._recent_cmd_sigs = {k: v for k, v in self._recent_cmd_sigs.items() if now - v < 10.0}
+
         # Dispatch
         if command == 'NAVIGATE_WAYPOINTS':
             self._handle_navigate_waypoints(inner)
@@ -399,13 +408,19 @@ class MqttBridge(Node):
                 error_msg='Empty waypoints list')
             return
 
-        if self._navigating:
+        if self._navigating or self._active_mission_id == mission_id:
+            if self._active_mission_id == mission_id and mission_id:
+                self.get_logger().info(
+                    f'NAVIGATE_WAYPOINTS duplicate received for active mission {mission_id} — ignoring.')
+                return
             self.get_logger().warning(
                 'NAVIGATE_WAYPOINTS received while already navigating — '
                 'cancelling current navigation first.')
             self._cancel_requested = True
             # Wait briefly for the nav thread to notice
             time.sleep(0.5)
+
+        self._active_mission_id = mission_id
 
         # Clear any paused state
         self._paused_waypoints = []
@@ -732,6 +747,7 @@ class MqttBridge(Node):
                 error_msg=str(e))
         finally:
             self._navigating = False
+            self._active_mission_id = None
             # Return supervisor to IDLE
             self._call_supervisor('idle')
 
