@@ -2,57 +2,40 @@
 <!--
   smb.urdf.xacro — SuperMarketBot robot description.
 
-  Dimensions must stay in sync with src/smb_robot_bringup/worlds/smb_world.sdf.
-  Used by both smb_sim.launch.py (sim) and smb_robot.launch.py (real robot).
+  Dimensions stay in sync with ESP32 Config.h (4WD differential drive).
+  Used by real-robot bringup smb_robot.launch.py.
 
   Physical model:
-    chassis (base_link): 0.30 x 0.22 x 0.13 m
-    wheel radius:        0.04 m
-    wheelbase (track):   0.22 m
-    lidar offset on z:   +0.075 m (relative to base_link origin)
-    imu  offset on z:    +0.05  m (relative to base_link origin)
-
-  Joint dynamics are flat (no continuous motors) because the sim DiffDrive plugin
-  is what actually spins the wheels. Real-robot bringup uses this URDF only as a
-  source for robot_state_publisher (static TFs from base_link to sensor links).
+    chassis (base_link): 0.27 x 0.145 x 0.075 m
+    wheel radius:        0.0325 m (65mm diameter)
+    wheel thickness:     0.026 m
+    track:               0.150 m (wheel-to-wheel distance)
+    wheelbase:           0.140 m (front-to-rear axle distance)
+    lidar offset on z:   +0.36 m (relative to base_link origin)
+    imu offset on z:     +0.05 m (relative to base_link origin)
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="smb">
 
-  <xacro:property name="chassis_length" value="0.27"/>
-  <xacro:property name="chassis_width"  value="0.145"/>
-  <xacro:property name="chassis_height" value="0.075"/>
-  <xacro:property name="wheel_radius"   value="0.04"/>
-  <xacro:property name="wheel_thickness" value="0.02"/>
-  <xacro:property name="track"          value="0.22"/>
-  <!-- Drive wheels at the FRONT of the chassis — driven by motors with
-       encoders. Single ball caster at the BACK for free-rolling turns. -->
-
-  <xacro:property name="wheel_offset_x" value="-0.08"/>
-  <xacro:property name="caster_offset_x" value="0.08"/>
-  <!-- Caster uses the same radius as the drive wheels so all three contact
-       points lie on the same ground plane. The wheel_radius property above
-       is reused for the caster sphere. -->
+  <xacro:property name="chassis_length"  value="0.27"/>
+  <xacro:property name="chassis_width"   value="0.145"/>
+  <xacro:property name="chassis_height"  value="0.075"/>
+  <xacro:property name="wheel_radius"    value="0.0325"/>
+  <xacro:property name="wheel_thickness" value="0.026"/>
+  <xacro:property name="track"           value="0.150"/>
+  <xacro:property name="wheelbase"       value="0.140"/>
+  <xacro:property name="wheel_offset_x"  value="${wheelbase/2}"/>
 
   <xacro:property name="lidar_offset_z" value="0.36"/>
   <xacro:property name="imu_offset_z"   value="0.05"/>
 
-  <!-- Masses kept low so the sim runs smoothly; chassis dominates the dynamics. -->
+  <!-- Masses: chassis dominates the dynamics. -->
   <xacro:property name="chassis_mass"   value="2.0"/>
-  <xacro:property name="wheel_mass"     value="0.1"/>
-  <xacro:property name="caster_mass"    value="0.05"/>
+  <xacro:property name="wheel_mass"     value="0.06"/>
 
   <link name="base_link">
-    <!-- KDL doesn't support a root link with inertia, but RobotDescription does.
-         We ignore the inertia at the root for kinematic purposes (TF tree
-         publishes static transforms only — joints are continuous/revolute/fixed
-         with no dynamics). The dummy chassis makes KDL happy. -->
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="${chassis_mass}"/>
-      <!-- Box inertia for 0.30 x 0.22 x 0.13 m @ 2.0 kg:
-           Ixx = m/12 * (y^2 + z^2) = 2/12 * (0.0484 + 0.0169) = 0.0109
-           Iyy = m/12 * (x^2 + z^2) = 2/12 * (0.09 + 0.0169) = 0.0178
-           Izz = m/12 * (x^2 + y^2) = 2/12 * (0.09 + 0.0484) = 0.0231 -->
       <inertia
         ixx="0.0109" ixy="0" ixz="0"
         iyy="0.0178" iyz="0"
@@ -75,113 +58,47 @@
     </collision>
   </link>
 
-  <!-- Left rear drive wheel: positive y side, REAR of chassis -->
-  <joint name="left_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="left_wheel"/>
-    <origin xyz="${wheel_offset_x} ${track/2} -${wheel_radius}" rpy="-1.5707 0 0"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.1" friction="0.1"/>
-  </joint>
-  <link name="left_wheel">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="${wheel_mass}"/>
-      <!-- Solid cylinder r=0.04, h=0.02, m=0.1:
-           Ixx = Iyy = m/12 * (3r^2 + h^2) = 0.1/12 * (0.0048 + 0.0004) = 0.0000433
-           Izz = m r^2 / 2 = 0.1 * 0.0016 / 2 = 0.00008 -->
-      <inertia
-        ixx="0.0000433" ixy="0" ixz="0"
-        iyy="0.0000433" iyz="0"
-        izz="0.00008"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
-      </geometry>
-      <material name="wheel_dark">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
-      </geometry>
-    </collision>
-  </link>
+  <!-- Macro for 4WD continuous wheels -->
+  <xacro:macro name="diff_wheel" params="name offset_x offset_y">
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin xyz="${offset_x} ${offset_y} -${wheel_radius}" rpy="-1.5707 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.1" friction="0.1"/>
+    </joint>
+    <link name="${name}">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${wheel_mass}"/>
+        <inertia
+          ixx="0.0000192" ixy="0" ixz="0"
+          iyy="0.0000192" iyz="0"
+          izz="0.0000317"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+        </geometry>
+        <material name="wheel_dark">
+          <color rgba="0.2 0.2 0.2 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
 
-  <!-- Right rear drive wheel: negative y side, REAR of chassis -->
-  <joint name="right_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="right_wheel"/>
-    <origin xyz="${wheel_offset_x} -${track/2} -${wheel_radius}" rpy="-1.5707 0 0"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.1" friction="0.1"/>
-  </joint>
-  <link name="right_wheel">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="${wheel_mass}"/>
-      <inertia
-        ixx="0.0000433" ixy="0" ixz="0"
-        iyy="0.0000433" iyz="0"
-        izz="0.00008"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
-      </geometry>
-      <material name="wheel_dark">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
-      </geometry>
-    </collision>
-  </link>
-
-  <!-- One passive front ball caster (free-rolling). Same offset z as the drive wheels
-       (-wheel_radius) so the caster sphere bottom rests on the ground at the
-       same plane as the wheel bottoms.
-       URDF uses 'fixed' (KDL/RViz limitation; ball is SDF-only).
-       SDF uses 'ball' for Gazebo free-rolling physics. -->
-  <joint name="caster_front_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="caster_front"/>
-    <origin xyz="${caster_offset_x} 0 -${wheel_radius}" rpy="0 0 0"/>
-  </joint>
-  <link name="caster_front">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="${caster_mass}"/>
-      <!-- Solid sphere r=0.04, m=0.05: I = 2/5 m r^2 = 0.4 * 0.05 * 0.0016 = 0.000032 -->
-      <inertia
-        ixx="0.000032" ixy="0" ixz="0"
-        iyy="0.000032" iyz="0"
-        izz="0.000032"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <sphere radius="${wheel_radius}"/>
-      </geometry>
-      <material name="caster_dark">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <sphere radius="${wheel_radius}"/>
-      </geometry>
-    </collision>
-  </link>
+  <!-- 4 continuous wheels for 4WD differential drive -->
+  <xacro:diff_wheel name="front_left_wheel"  offset_x="${wheel_offset_x}"  offset_y="${track/2}"/>
+  <xacro:diff_wheel name="rear_left_wheel"   offset_x="-${wheel_offset_x}" offset_y="${track/2}"/>
+  <xacro:diff_wheel name="front_right_wheel" offset_x="${wheel_offset_x}"  offset_y="-${track/2}"/>
+  <xacro:diff_wheel name="rear_right_wheel"  offset_x="-${wheel_offset_x}" offset_y="-${track/2}"/>
 
   <!-- Laser frame: center-mounted on chassis (x = 0.0) and connected directly to Pi 5 USB (not through ESP32).
        The physical sensor connector/zero ray is mounted 90° clockwise from

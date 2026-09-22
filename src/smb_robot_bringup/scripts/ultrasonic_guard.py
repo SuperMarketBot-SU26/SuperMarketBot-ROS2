@@ -54,8 +54,12 @@ class UltrasonicGuard(Node):
         self.get_logger().info(f"Ultrasonic Guard started. Stop dist: {self.stop_distance}m, Abort timeout: {self.abort_timeout}s")
 
     def us_front_cb(self, msg: Range):
-        # Determine if an obstacle is currently in the stop zone
-        if msg.range < self.stop_distance:
+        import math
+        # 0.0, NaN, or values <= 4cm indicate sensor timeout / no echo (clear open space), NOT an obstacle!
+        is_valid_reading = not math.isnan(msg.range) and msg.range > 0.04 and msg.range <= 2.5
+        is_obstacle_close = is_valid_reading and (msg.range < self.stop_distance)
+
+        if is_obstacle_close:
             if not self.obstacle_detected:
                 self.obstacle_detected = True
                 self.obstacle_start_time = time.time()

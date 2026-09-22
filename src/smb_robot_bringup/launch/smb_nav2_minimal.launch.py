@@ -103,12 +103,8 @@ def generate_launch_description() -> LaunchDescription:
             name='controller_server',
             parameters=[configured_params],
             # Upstream remaps controller output cmd_vel -> cmd_vel_nav
-            # because the (optional) smoother would consume that and emit
-            # cmd_vel_smoothed -> velocity_smoother -> cmd_vel. We don't
-            # have those, but the smb_nodes.supervisor FSM (see
-            # smb_robot_bringup launch) already handles the cmd_vel_nav ->
-            # cmd_vel pass-through, so we keep the upstream remap.
-            remappings=remappings + [('cmd_vel', 'cmd_vel_nav_raw')],
+            # (bypassing ultrasonic_guard: direct connection to supervisor)
+            remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
         ),
         ComposableNode(
             package='nav2_planner',
@@ -122,7 +118,7 @@ def generate_launch_description() -> LaunchDescription:
             plugin='behavior_server::BehaviorServer',
             name='behavior_server',
             parameters=[configured_params],
-            remappings=remappings + [('cmd_vel', 'cmd_vel_nav_raw')],
+            remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
         ),
         ComposableNode(
             package='nav2_bt_navigator',

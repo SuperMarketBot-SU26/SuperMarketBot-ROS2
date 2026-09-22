@@ -433,12 +433,13 @@ class MqttBridge(Node):
             f'{len(waypoints_data)} waypoint(s)')
 
         for i, wp in enumerate(waypoints_data):
-            name = wp.get('name', f'Waypoint {i}')
-            role = wp.get('role', None)
+            name = wp.get('name', wp.get('nodeName', f'Waypoint {i + 1}'))
+            role = wp.get('role', wp.get('nodeRole', None))
+            x_val = wp.get('x', wp.get('xCoord', 0.0))
+            y_val = wp.get('y', wp.get('yCoord', 0.0))
+            yaw_val = wp.get('yaw', wp.get('headingYaw', wp.get('heading', wp.get('headingYawDeg', 0.0))))
             self.get_logger().info(
-                f'  [{i}] {name} → ({wp.get("x", 0):.2f}, '
-                f'{wp.get("y", 0):.2f}, yaw={wp.get("yaw", 0):.2f}) '
-                f'role={role}')
+                f'  [{i}] {name} → (x={x_val}, y={y_val}, yaw={yaw_val}) role={role}')
 
         # Convert to PoseStamped array
         goal_poses = self._waypoints_to_poses(waypoints_data)
@@ -890,18 +891,39 @@ class MqttBridge(Node):
         return False
 
     def _waypoints_to_poses(self, waypoints_data):
-        """Convert backend waypoint dicts to PoseStamped list."""
+        """Convert backend waypoint dicts to PoseStamped list with accurate heading yaw."""
         poses = []
         now_msg = self.get_clock().now().to_msg()
-        for wp in waypoints_data:
+        for idx, wp in enumerate(waypoints_data):
             try:
-                x = float(wp.get('x', 0))
-                y = float(wp.get('y', 0))
-                yaw = float(wp.get('yaw', 0))
+                x = float(wp.get('x', wp.get('xCoord', 0.0)))
+                y = float(wp.get('y', wp.get('yCoord', 0.0)))
             except (TypeError, ValueError) as e:
                 self.get_logger().error(
-                    f'Invalid waypoint coordinates: {wp} — {e}')
+                    f'Invalid waypoint coordinates at index {idx}: {wp} — {e}')
                 continue
+
+            raw_yaw = wp.get('yaw', wp.get('headingYaw', wp.get('heading', wp.get('headingYawDeg', None))))
+            try:
+                raw_yaw_f = float(raw_yaw) if raw_yaw is not None else 0.0
+            except (ValueError, TypeError):
+                raw_yaw_f = 0.0
+
+            # If BE sent angle in degrees (e.g. |val| > pi and |val| <= 360), convert to radians
+            if abs(raw_yaw_f) > math.pi and abs(raw_yaw_f) <= 360.0:
+                yaw = math.radians(raw_yaw_f)
+            else:
+                yaw = raw_yaw_f
+
+            # Normalize to [-pi, pi]
+            yaw = (yaw + math.pi) % (2.0 * math.pi) - math.pi
+
+            wp_name = wp.get('name', wp.get('nodeName', f'Node #{wp.get("nodeId", idx + 1)}'))
+            role = wp.get('role', wp.get('nodeRole', ''))
+            self.get_logger().info(
+                f'📍 Waypoint [{idx + 1}/{len(waypoints_data)}] "{wp_name}" (role={role}): '
+                f'Target (X={x:.2f}, Y={y:.2f}), Goal Heading Yaw={math.degrees(yaw):.1f}° ({yaw:.3f} rad)'
+            )
 
             pose = PoseStamped()
             pose.header.frame_id = 'map'
