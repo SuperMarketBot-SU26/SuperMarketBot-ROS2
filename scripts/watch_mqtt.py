@@ -34,7 +34,7 @@ C_RED   = "\033[31m"
 
 def on_connect(client, userdata, flags, rc, properties=None):
     if rc == 0:
-        print(f"{C_GREEN}✅ Đã kết nối thành công tới HiveMQ Broker!{C_RESET}")
+        print(f"{C_GREEN}✅ Đã kết nối thành công tới EMQX Cloud Broker!{C_RESET}")
         print(f"{C_CYAN}📡 Đang lắng nghe các kênh:{C_RESET}")
         for t, q in TOPICS:
             client.subscribe(t, qos=q)
@@ -110,7 +110,7 @@ def main():
     client.on_connect = on_connect
     client.on_message = on_message
 
-    print(f"{C_CYAN}Đang kết nối tới HiveMQ Cloud: {MQTT_HOST}...{C_RESET}")
+    print(f"{C_CYAN}Đang kết nối tới EMQX Cloud: {MQTT_HOST}...{C_RESET}")
     try:
         client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
         client.loop_forever()

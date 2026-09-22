@@ -9,7 +9,7 @@ PASSWORD = "Passsep490"
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print(f"✅ Connected successfully to HiveMQ Cloud!")
+        print(f"✅ Connected successfully to EMQX Cloud!")
         print("🎧 Listening for all messages on all topics...")
         client.subscribe("#")
     else:
