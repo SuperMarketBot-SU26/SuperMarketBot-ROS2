@@ -521,7 +521,7 @@ def generate_launch_description():
         declare_use_camera_cmd,
         declare_backend_url_cmd,
         ydlidar_node,
-        # ultrasonic_guard_node,  # Temporarily disabled per user request
+        ultrasonic_guard_node,
         micro_ros_agent_node,
         unified_relay_node,
         ekf_node,
