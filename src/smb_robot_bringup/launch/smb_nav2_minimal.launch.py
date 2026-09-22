@@ -102,9 +102,9 @@ def generate_launch_description() -> LaunchDescription:
             plugin='nav2_controller::ControllerServer',
             name='controller_server',
             parameters=[configured_params],
-            # Upstream remaps controller output cmd_vel -> cmd_vel_nav_raw
-            # so ultrasonic_guard can intercept and filter obstacles before passing to /cmd_vel_nav
-            remappings=remappings + [('cmd_vel', 'cmd_vel_nav_raw')],
+            # Upstream remaps controller output cmd_vel -> cmd_vel_nav
+            # (bypassing ultrasonic_guard: direct connection to supervisor)
+            remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
         ),
         ComposableNode(
             package='nav2_planner',
@@ -118,7 +118,7 @@ def generate_launch_description() -> LaunchDescription:
             plugin='behavior_server::BehaviorServer',
             name='behavior_server',
             parameters=[configured_params],
-            remappings=remappings + [('cmd_vel', 'cmd_vel_nav_raw')],
+            remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
         ),
         ComposableNode(
             package='nav2_bt_navigator',
