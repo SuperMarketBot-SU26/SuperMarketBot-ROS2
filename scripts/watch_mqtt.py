@@ -11,8 +11,8 @@ import sys
 from datetime import datetime
 import paho.mqtt.client as mqtt
 
-# Cấu hình HiveMQ Cloud (Trùng với Backend & Robot)
-MQTT_HOST = "60922debd474446a84747b871c4a8182.s1.eu.hivemq.cloud"
+# Cấu hình EMQX Cloud (Trùng với Backend & Robot)
+MQTT_HOST = "l07702d7.ala.asia-southeast1.emqxsl.com"
 MQTT_PORT = 8883
 MQTT_USER = "Smartmarketbot"
 MQTT_PASS = "Passsep490"

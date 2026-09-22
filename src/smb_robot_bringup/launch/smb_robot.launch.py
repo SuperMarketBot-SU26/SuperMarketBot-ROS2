@@ -158,8 +158,8 @@ def generate_launch_description():
 
     declare_mqtt_host_cmd = DeclareLaunchArgument(
         'mqtt_host',
-        default_value='60922debd474446a84747b871c4a8182.s1.eu.hivemq.cloud',
-        description='HiveMQ Cloud broker hostname.')
+        default_value='l07702d7.ala.asia-southeast1.emqxsl.com',
+        description='EMQX Cloud broker hostname.')
 
     declare_mqtt_port_cmd = DeclareLaunchArgument(
         'mqtt_port',

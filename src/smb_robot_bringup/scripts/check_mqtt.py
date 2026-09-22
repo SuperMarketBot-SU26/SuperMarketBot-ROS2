@@ -1,8 +1,8 @@
 import paho.mqtt.client as mqtt
 import ssl
 
-# Cấu hình cho HiveMQ Cloud của bạn
-BROKER_URL = "60922debd474446a84747b871c4a8182.s1.eu.hivemq.cloud"
+# Cấu hình cho EMQX Cloud của bạn
+BROKER_URL = "l07702d7.ala.asia-southeast1.emqxsl.com"
 PORT = 8883
 USERNAME = "Smartmarketbot"
 PASSWORD = "Passsep490"

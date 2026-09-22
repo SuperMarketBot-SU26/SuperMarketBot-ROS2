@@ -152,7 +152,7 @@ if [ -f "${SCRIPT_DIR}/.env" ]; then
     source "${SCRIPT_DIR}/.env"
     set +a
 fi
-MQTT_HOST="${MQTT_HOST:-60922debd474446a84747b871c4a8182.s1.eu.hivemq.cloud}"
+MQTT_HOST="${MQTT_HOST:-l07702d7.ala.asia-southeast1.emqxsl.com}"
 MQTT_PORT="${MQTT_PORT:-8883}"
 MQTT_USERNAME="${MQTT_USERNAME:-Smartmarketbot}"
 MQTT_PASSWORD="${MQTT_PASSWORD:-Passsep490}"
