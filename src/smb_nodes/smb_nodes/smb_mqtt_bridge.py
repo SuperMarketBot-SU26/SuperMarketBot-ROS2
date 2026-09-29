@@ -59,6 +59,7 @@ from nav2_msgs.action import NavigateToPose
 from action_msgs.msg import GoalStatus
 from smb_msgs.srv import SupervisorCmd
 from std_msgs.msg import Bool, String
+from std_srvs.srv import Empty
 from sensor_msgs.msg import BatteryState
 
 
@@ -129,9 +130,11 @@ class MqttBridge(Node):
         # ---- Action Clients ----
         self._nav_to_pose_client = ActionClient(self, NavigateToPose, 'navigate_to_pose')
 
-        # ---- Supervisor service client ----
+        # ---- Supervisor & AMCL service clients ----
         self._supervisor_client = self.create_client(
             SupervisorCmd, '/supervisor/cmd')
+        self._amcl_nomotion_client = self.create_client(
+            Empty, '/request_nomotion_update')
 
         # ---- ROS 2 Subscriptions for Telemetry ----
         self.create_subscription(PoseWithCovarianceStamped, '/amcl_pose', self._on_amcl_pose, 10)
@@ -700,6 +703,11 @@ class MqttBridge(Node):
                     self.get_logger().info(
                         f'Arrived at waypoint [{global_idx}] "{wp_name}"')
                     last_completed_local = local_idx
+
+                    # Force AMCL stationary likelihood field update to snap pose to walls
+                    if self._amcl_nomotion_client.service_is_ready():
+                        self.get_logger().info('🎯 Snapping AMCL pose at waypoint via /request_nomotion_update...')
+                        self._amcl_nomotion_client.call_async(Empty.Request())
 
                     # Publish ARRIVED status with full waypoint data
                     self._publish_nav_status(

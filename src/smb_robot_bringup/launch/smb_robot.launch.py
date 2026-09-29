@@ -353,6 +353,16 @@ def generate_launch_description():
         condition=UnlessCondition(LaunchConfiguration('use_slam'))
     )
 
+    # 4.7 AMCL Auto-Corrector — automatically forces AMCL likelihood field updates
+    #     when autonomous navigation arrives at the goal, snapping laser scan to map.
+    amcl_auto_corrector_node = Node(
+        package='smb_nodes',
+        executable='amcl_auto_corrector',
+        name='amcl_auto_corrector',
+        output='screen',
+        condition=UnlessCondition(LaunchConfiguration('use_slam'))
+    )
+
 
     # 5. Nav2 — minimal bringup (same as smb_sim.launch.py uses).
     #    Loaded into a single component_container process for efficiency.
@@ -533,6 +543,7 @@ def generate_launch_description():
         map_server_node,
         lifecycle_manager_localization,
         map_republisher_node,
+        amcl_auto_corrector_node,
         supervisor_node,
         nav2_launch,
         mqtt_bridge_node,

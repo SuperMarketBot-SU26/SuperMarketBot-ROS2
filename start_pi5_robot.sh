@@ -105,6 +105,7 @@ pkill -9 -f "unified_relay" 2>/dev/null || true
 pkill -9 -f "odom_imu_relay" 2>/dev/null || true
 pkill -9 -f "supervisor" 2>/dev/null || true
 pkill -9 -f "smb_mqtt_bridge" 2>/dev/null || true
+pkill -9 -f "amcl_auto_corrector" 2>/dev/null || true
 pkill -9 -f "native_imx500_stream.py" 2>/dev/null || true
 sleep 1
 echo "[start_pi5_robot] Cleanup completed cleanly."

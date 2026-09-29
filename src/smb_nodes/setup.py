@@ -29,6 +29,7 @@ setup(
             'smb_mqtt_bridge = smb_nodes.smb_mqtt_bridge:main',
             'shelf_aggregator_node = smb_nodes.shelf_aggregator_node:main',
             'map_republisher = smb_nodes.map_republisher:main',
+            'amcl_auto_corrector = smb_nodes.amcl_auto_corrector:main',
         ],
     },
 )

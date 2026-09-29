@@ -235,7 +235,7 @@ amcl:
     laser_likelihood_max_dist: 4.0  # Extends wall attraction basin to 4m
     tf_broadcast: True
     transform_tolerance: 1.0
-    update_min_a: 0.08          # Updated threshold: ~4.6 deg (was 0.2 rad / 11.5 deg)
+    update_min_a: 0.05          # Updated threshold: ~2.8 deg (was 0.08 rad / 4.6 deg) for smoother rotation tracking
     update_min_d: 0.08          # Updated threshold: 8 cm (was 0.25 m)
     z_hit: 0.85
     z_max: 0.05
