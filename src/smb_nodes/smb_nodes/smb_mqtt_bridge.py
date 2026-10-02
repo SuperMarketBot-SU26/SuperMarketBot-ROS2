@@ -701,27 +701,15 @@ class MqttBridge(Node):
                 result = result_future.result()
                 if result.status == GoalStatus.STATUS_SUCCEEDED:
                     self.get_logger().info(
-                        f'Nav2 goal succeeded for waypoint [{global_idx}] "{wp_name}". '
-                        'Waiting for robot chassis to settle to a halt...')
+                        f'Arrived at waypoint [{global_idx}] "{wp_name}"')
+                    last_completed_local = local_idx
 
-                    # 1. Chờ 0.6s để triệt tiêu hoàn toàn quán tính của khung gầm 4WD
-                    time.sleep(0.6)
-
-                    # 2. Khóa hạt AMCL khớp với tia laser trên tường tĩnh
+                    # Force AMCL stationary likelihood field update to snap pose to walls
                     if self._amcl_nomotion_client.service_is_ready():
                         self.get_logger().info('🎯 Snapping AMCL pose at waypoint via /request_nomotion_update...')
                         self._amcl_nomotion_client.call_async(Empty.Request())
 
-                    # Đợi 0.3s cho thuật toán likelihood field hội tụ
-                    time.sleep(0.3)
-
-                    # Đánh dấu waypoint đã hoàn tất để không bao giờ bị re-enqueue nếu có lệnh PAUSE_NAV
-                    last_completed_local = local_idx
-
-                    self.get_logger().info(
-                        f'✅ Fully settled & aligned at waypoint [{global_idx}] "{wp_name}". Publishing ARRIVED.')
-
-                    # 3. Chỉ bắn ARRIVED khi xe đã đứng yên hoàn toàn và đã khóa góc
+                    # Publish ARRIVED status with full waypoint data
                     self._publish_nav_status(
                         'ARRIVED', mission_id=mission_id,
                         waypoint_name=wp_name, waypoint_index=global_idx,
@@ -729,28 +717,12 @@ class MqttBridge(Node):
                         playlist=wp_data.get('playlist'),
                         dwell_time=wp_data.get('dwellTimeSeconds'))
 
-                    # 4. Thực hiện dwell chờ khách lấy hàng
+                    # Execute role-based dwell behavior
                     self._execute_dwell(wp_data, mission_id, global_idx)
 
+                    # Update current node ID if present
                     if 'nodeId' in wp_data:
                         self._current_node_id = wp_data['nodeId']
-
-                    # 5. Nếu Backend gửi PAUSE_NAV trong lúc dwell, chỉ lưu các waypoint TIẾP THEO (local_idx + 1)
-                    if self._pause_requested:
-                        remaining_idx = local_idx + 1
-                        remaining_poses = goal_poses[remaining_idx:]
-                        remaining_data = waypoints_data[remaining_idx:]
-                        self._paused_waypoints = remaining_poses
-                        self._paused_waypoint_data = remaining_data
-                        self._paused_mission_id = mission_id
-                        self._paused_start_index = start_index + remaining_idx
-                        self.get_logger().info(
-                            f'Navigation paused after arriving at waypoint [{global_idx}]. '
-                            f'{len(remaining_poses)} remaining waypoint(s) saved for resume.')
-                        self._publish_nav_status(
-                            'PAUSED', mission_id=mission_id,
-                            waypoint_index=global_idx)
-                        return
 
                 elif result.status == GoalStatus.STATUS_CANCELED:
                     self.get_logger().warning(
@@ -832,11 +804,10 @@ class MqttBridge(Node):
                 f'Photo waypoint "{wp_name}": dwelling 5s')
             self._interruptible_sleep(5)
 
-        elif role in ('guide', 'guide_stop'):
-            dwell = wp_data.get('dwellTimeSeconds') or 10
+        elif role == 'guide_stop':
             self.get_logger().info(
-                f'Guide stop "{wp_name}": dwelling {dwell}s (waiting for customer pickup/interaction)')
-            self._interruptible_sleep(dwell)
+                f'Guide stop "{wp_name}": dwelling 10s')
+            self._interruptible_sleep(10)
 
         elif role == 'rest':
             self.get_logger().info(
