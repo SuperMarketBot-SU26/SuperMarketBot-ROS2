@@ -527,8 +527,14 @@ class MqttBridge(Node):
             return
 
         if not self._paused_waypoints:
-            self.get_logger().warning(
-                'RESUME_NAV: no paused navigation to resume')
+            if self._paused_mission_id:
+                self.get_logger().info(
+                    f'RESUME_NAV: all waypoints were already visited for mission {self._paused_mission_id}. Publishing COMPLETED.')
+                self._publish_nav_status('COMPLETED', mission_id=self._paused_mission_id)
+                self._paused_mission_id = None
+            else:
+                self.get_logger().warning(
+                    'RESUME_NAV: no paused navigation to resume')
             return
 
         goal_poses = self._paused_waypoints
@@ -701,15 +707,27 @@ class MqttBridge(Node):
                 result = result_future.result()
                 if result.status == GoalStatus.STATUS_SUCCEEDED:
                     self.get_logger().info(
-                        f'Arrived at waypoint [{global_idx}] "{wp_name}"')
-                    last_completed_local = local_idx
+                        f'Nav2 goal succeeded for waypoint [{global_idx}] "{wp_name}". '
+                        'Waiting for robot chassis to settle to a halt...')
 
-                    # Force AMCL stationary likelihood field update to snap pose to walls
+                    # 1. Physical Settle: Wait for chassis inertia & deceleration to drop to 0
+                    time.sleep(0.6)
+
+                    # 2. AMCL Pose Snap: Fire /request_nomotion_update to snap particles to LaserScan walls
                     if self._amcl_nomotion_client.service_is_ready():
                         self.get_logger().info('🎯 Snapping AMCL pose at waypoint via /request_nomotion_update...')
                         self._amcl_nomotion_client.call_async(Empty.Request())
 
-                    # Publish ARRIVED status with full waypoint data
+                    # Allow 0.3s for AMCL likelihood field evaluation
+                    time.sleep(0.3)
+
+                    # Mark this local waypoint as completed so it is NEVER re-enqueued on pause
+                    last_completed_local = local_idx
+
+                    self.get_logger().info(
+                        f'✅ Fully settled & aligned at waypoint [{global_idx}] "{wp_name}". Publishing ARRIVED.')
+
+                    # 3. Publish ARRIVED status ONLY after robot has completely stopped and aligned
                     self._publish_nav_status(
                         'ARRIVED', mission_id=mission_id,
                         waypoint_name=wp_name, waypoint_index=global_idx,
@@ -717,12 +735,29 @@ class MqttBridge(Node):
                         playlist=wp_data.get('playlist'),
                         dwell_time=wp_data.get('dwellTimeSeconds'))
 
-                    # Execute role-based dwell behavior
+                    # 4. Execute role-based dwell behavior
                     self._execute_dwell(wp_data, mission_id, global_idx)
 
                     # Update current node ID if present
                     if 'nodeId' in wp_data:
                         self._current_node_id = wp_data['nodeId']
+
+                    # 5. Check if PAUSE was requested during dwell (e.g. Backend PAUSE_NAV for guide pickup)
+                    if self._pause_requested:
+                        remaining_idx = local_idx + 1
+                        remaining_poses = goal_poses[remaining_idx:]
+                        remaining_data = waypoints_data[remaining_idx:]
+                        self._paused_waypoints = remaining_poses
+                        self._paused_waypoint_data = remaining_data
+                        self._paused_mission_id = mission_id
+                        self._paused_start_index = start_index + remaining_idx
+                        self.get_logger().info(
+                            f'Navigation paused after arriving at waypoint [{global_idx}]. '
+                            f'{len(remaining_poses)} remaining waypoint(s) saved for resume.')
+                        self._publish_nav_status(
+                            'PAUSED', mission_id=mission_id,
+                            waypoint_index=global_idx)
+                        return
 
                 elif result.status == GoalStatus.STATUS_CANCELED:
                     self.get_logger().warning(
@@ -804,10 +839,11 @@ class MqttBridge(Node):
                 f'Photo waypoint "{wp_name}": dwelling 5s')
             self._interruptible_sleep(5)
 
-        elif role == 'guide_stop':
+        elif role in ('guide', 'guide_stop'):
+            dwell = wp_data.get('dwellTimeSeconds') or 10
             self.get_logger().info(
-                f'Guide stop "{wp_name}": dwelling 10s')
-            self._interruptible_sleep(10)
+                f'Guide stop "{wp_name}": dwelling {dwell}s (waiting for customer pickup/interaction)')
+            self._interruptible_sleep(dwell)
 
         elif role == 'rest':
             self.get_logger().info(
