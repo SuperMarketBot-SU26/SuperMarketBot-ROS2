@@ -8,7 +8,6 @@
 [![Nav2](https://img.shields.io/badge/Navigation2-Autonomous%20Path-0A7BBB?logo=ros&logoColor=white)](https://navigation.ros.org/)
 [![Hardware](https://img.shields.io/badge/Hardware-Raspberry%20Pi%205%20%2B%20ESP32--S3-C51A4A?logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com/)
 [![Vision](https://img.shields.io/badge/AI%20Vision-Sony%20IMX500-008080)](https://www.raspberrypi.com/documentation/accessories/ai-camera.html)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **An autonomous differential-drive robot designed for retail environments, featuring 2D LiDAR SLAM, waypoint-based aisle patrol, on-device AI shelf inventory auditing, and cloud fleet synchronization.**
 
@@ -28,14 +27,14 @@
   <table>
     <tr>
       <td align="center" width="50%">
-        <img src="docs/assets/smb_robot_hardware.png" alt="SuperMarketBot Mobile Robot Hardware" width="100%" />
+        <img src="docs/assets/smb_robot_hardware.png" alt="SuperMarketBot AMR Physical Chassis - Perspective" width="100%" />
         <br />
-        <b>Figure 1:</b> <i>SuperMarketBot AMR Physical Chassis (Raspberry Pi 5 + YDLIDAR + Sony IMX500 AI Camera + ESP32-S3 base)</i>
+        <b>Figure 1:</b> <i>Chassis Overview & Drive Base (Perspective View)</i>
       </td>
       <td align="center" width="50%">
-        <img src="docs/assets/ai_shelf_vision_ui.jpg" alt="AI Shelf Vision and Web Dashboard" width="100%" />
+        <img src="docs/assets/smb_robot_front.jpg" alt="SuperMarketBot Sensor and Compute Stack - Front View" width="100%" />
         <br />
-        <b>Figure 2:</b> <i>Real-time Shelf Auditing UI (ArUco Shelf Tagging, Layer Segmentation, and Out-of-Stock Detection)</i>
+        <b>Figure 2:</b> <i>Frontal Hardware & Sensor Stack (Sony IMX500 AI Camera, Raspberry Pi 5, YDLIDAR, Sonar & Power)</i>
       </td>
     </tr>
   </table>
@@ -78,20 +77,20 @@ flowchart TB
         WebUI["Web Operator Dashboard"]
     end
 
-    subgraph PI5["Raspberry Pi 5 (Ubuntu Core / Host)"]
-        AgentServer["Robot REST Agent Daemon\n(:5000)"]
-        CamNode["Native IMX500 Vision Streamer\n(picamera2 + OpenCV)"]
+    subgraph PI5["Raspberry Pi 5 (Ubuntu Host)"]
+        AgentServer["Robot REST Agent Daemon (:5000)"]
+        CamNode["Native IMX500 Vision Streamer (picamera2)"]
         
-        subgraph DOCKER["Docker Container (ROS 2 Lyrical Core)"]
-            MicroAgent["micro-ROS Agent\n(/dev/ttyUSB0)"]
-            LiDARNode["YDLIDAR Driver\n(/dev/ttyUSB1)"]
+        subgraph DOCKER["Docker Container (ROS 2 Core)"]
+            MicroAgent["micro-ROS Agent (/dev/ttyUSB0)"]
+            LiDARNode["YDLIDAR Driver (/dev/ttyUSB1)"]
             RelayNode["Sensor Relay & TF Publisher"]
             SLAM["SLAM Toolbox / AMCL"]
             Nav2["Nav2 Stack (DWB / Navfn)"]
             Supervisor["SMB Supervisor FSM"]
             MQTTBridge["SMB MQTT Bridge"]
             UltraGuard["Ultrasonic Guard E-Stop"]
-            Rosbridge["rosbridge_suite\n(WebSocket :9090)"]
+            Rosbridge["rosbridge_suite (WebSocket :9090)"]
         end
     end
 
@@ -102,18 +101,18 @@ flowchart TB
     end
 
     %% Connections
-    Backend <-->|MQTT: smartmarketbot/robot/{id}/...| MQTTBridge
-    WebUI <-->|HTTP REST :5000| AgentServer
-    CamNode <-->|WebSocket :9090| Rosbridge
-    MicroAgent <-->|USB Serial 921600 baud| EMBEDDED
-    LiDARNode -->|/scan| SLAM
-    LiDARNode -->|/scan| Nav2
-    RelayNode -->|/odom, /imu/data| SLAM
-    RelayNode -->|/odom, /imu/data| Nav2
-    Nav2 -->|/cmd_vel| RelayNode
-    UltraGuard -.->|Emergency E-Stop /cmd_vel| RelayNode
-    CamNode -->|/camera/image_raw, /shelf/analysis| Supervisor
-    Supervisor -->|Status, OOS Metrics| MQTTBridge
+    Backend <-->|"MQTT Topics"| MQTTBridge
+    WebUI <-->|"HTTP REST :5000"| AgentServer
+    CamNode <-->|"WebSocket :9090"| Rosbridge
+    MicroAgent <-->|"USB Serial 921600"| EMBEDDED
+    LiDARNode -->|"/scan"| SLAM
+    LiDARNode -->|"/scan"| Nav2
+    RelayNode -->|"/odom, /imu/data"| SLAM
+    RelayNode -->|"/odom, /imu/data"| Nav2
+    Nav2 -->|"/cmd_vel"| RelayNode
+    UltraGuard -.->|"Emergency E-Stop"| RelayNode
+    CamNode -->|"/camera/image_raw"| Supervisor
+    Supervisor -->|"Status, OOS Metrics"| MQTTBridge
 ```
 
 ---
@@ -238,7 +237,7 @@ sudo systemctl enable --now robot_agent.service smb-camera.service
 
 ## 🛒 AI Shelf Vision & Inventory Audit
 
-The vision subsystem (`smb_ai_camera`) performs autonomous inventory monitoring while patrolling supermarket aisles:
+The vision subsystem (`smb_ai_camera`) performs autonomous inventory monitoring while patrolling supermarket aisles (using the on-board Sony IMX500 AI Camera shown in Figure 2):
 
 ```
 Camera Frame -> ArUco Detection -> Layer Segmentation -> Product Recognition -> OOS Gap Detection -> Telemetry
@@ -318,9 +317,3 @@ When building upstream Nav2 and micro-ROS on bleeding-edge distros (e.g., Ubuntu
 - **Simulation Immediate Start:** `gz sim` invocations in `smb_sim.launch.py` require `-r` to unpause physics on startup so sensors tick immediately.
 
 </details>
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
