@@ -51,12 +51,19 @@ ros2_ws/
 │   └── micro_ros_agent/       # upstream vendor — re-cloned from ros2_ws.repos
 ├── docs/
 │   └── TOPIC_CONTRACT.md      # firmware ↔ ROS2 interface spec (READ FIRST)
+├── scripts/                   # bringup, test, diagnostic, and deployment scripts
+│   ├── start_pi5_robot.sh     # real-robot hardware bringup (Pi 5 + Docker)
+│   ├── diagnose_mapping.sh    # non-intrusive 10s pre-flight audit
+│   ├── test_sim.sh            # sim wrapper: launches Gazebo + SLAM + RViz
+│   ├── test_robot.sh          # host bringup wrapper: micro-ROS agent + SLAM + RViz
+│   ├── test_teleop.sh         # keyboard driver for /cmd_vel
+│   ├── test_calibration.sh    # wheel encoder calibration wizard
+│   ├── test_odom_drift.sh     # real-time odometry drift monitor
+│   ├── test_nav2_goal.sh      # CLI action goal sender
+│   └── ...
 ├── .cursor/rules/             # AI assistant rules (mirror of BE repo)
 ├── build/ install/ log/       # colcon artifacts — gitignored
 ├── ros2_ws.repos              # vcstool manifest for re-cloning on other machines
-├── test_sim.sh                # sim wrapper: launches Gazebo + SLAM + RViz
-├── test_robot.sh              # real-robot wrapper: launches micro-ROS agent + SLAM + RViz
-├── test_teleop.sh             # keyboard driver for /cmd_vel (works in both modes)
 └── .colcon_defaults           # default colcon flags
 ```
 
@@ -83,12 +90,12 @@ colcon build --parallel-workers 2
 
 # 5a. Run sim bringup (Phase 1+ — verified working)
 source install/setup.bash
-./test_sim.sh             # windowed (Gazebo GUI + RViz)
-./test_sim.sh true        # headless (Gazebo server only, no RViz)
+./scripts/test_sim.sh             # windowed (Gazebo GUI + RViz)
+./scripts/test_sim.sh true        # headless (Gazebo server only, no RViz)
 
 # 5b. Run real-robot bringup (requires ESP32 flashed with MicroRos.h)
-./test_robot.sh           # starts micro-ROS agent + robot bringup + RViz
-./test_robot.sh --check   # verify deps + launch syntax first
+./scripts/test_robot.sh           # starts micro-ROS agent + robot bringup + RViz
+./scripts/test_robot.sh --check   # verify deps + launch syntax first
 ```
 
 > **Note on `micro_ros_agent`:** ROS2 Lyrical does **not** ship `ros-lyrical-micro-ros-agent` in apt. `ros2_ws.repos` vendors it from `micro-ROS/micro-ROS-Agent` (rolling branch). On a fresh machine, after step 2 (`vcs import src < ros2_ws.repos`), the agent source lives at `src/micro_ros_agent/` and is built with `colcon build --packages-select micro_ros_agent`. `test_robot.sh --check` verifies the binary exists.

@@ -1,1 +1,0 @@
-pkill -9 -f parameter_bridge; pkill -9 -f "gz sim"; pkill -9 -f gzserver; pkill -9 -f static_transform_publisher; pkill -9 -f rviz2; sleep 1; ps aux | grep -E 'gz|ros_gz|rviz|static_transform'

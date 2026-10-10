@@ -1,3 +1,0 @@
-[console_scripts]
-pi_camera_node = smb_ai_camera.pi_camera_node:main
-shelf_patrol_capture = smb_ai_camera.shelf_patrol_capture:main

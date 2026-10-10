@@ -29,3 +29,14 @@ __pycache__/
 
 # test_robot runtime logs (regenerated every session)
 .test_robot_logs/
+*.log
+agent_server.log
+
+# Python packaging & build artifacts
+*.egg-info/
+dist/
+*.egg
+
+# Karto / SLAM binary dump
+.data
+

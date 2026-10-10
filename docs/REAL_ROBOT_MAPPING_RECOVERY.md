@@ -23,7 +23,7 @@ docker run -it --rm \
   -v ~/ros2_ws:/ros2_ws \
   --network host --privileged \
   supermarket-bot-ros2:latest \
-  bash -c "cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./start_pi5_robot.sh --build --no-nav2"
+  bash -c "cd /ros2_ws && source /opt/ros/lyrical/setup.bash && ./scripts/start_pi5_robot.sh --build --no-nav2"
 ```
 
 In a second terminal:
@@ -33,7 +33,7 @@ docker exec -it supermarket-bot-ros2 bash
 cd /ros2_ws
 source /opt/ros/lyrical/setup.bash
 source install/setup.bash
-bash ./diagnose_mapping.sh 10
+bash ./scripts/diagnose_mapping.sh 10
 ```
 
 Expected stationary results:

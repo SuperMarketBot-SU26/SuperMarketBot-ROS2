@@ -43,7 +43,6 @@ WORKDIR /ros2_ws
 
 # Copy ONLY src directory first to maximize Docker layer caching
 COPY src/ ./src/
-COPY slam_params.yaml ./slam_params.yaml
 COPY entrypoint.sh /entrypoint.sh
 
 # Fix script permissions
